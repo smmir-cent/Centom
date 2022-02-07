@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(Centom)
+
+## find net-snmp libraries
+FIND_LIBRARY ( NETSNMP_LIBRARY          NAMES netsnmp           )
+FIND_LIBRARY ( NETSNMPAGENT_LIBRARY     NAMES netsnmpagent      )
+FIND_LIBRARY ( NETSNMPMIBS_LIBRARY      NAMES netsnmpmibs       )
+FIND_LIBRARY ( NETSNMPTRAPD_LIBRARY     NAMES netsnmptrapd      )
+FIND_LIBRARY ( SNMP_LIBRARY             NAMES snmp              )
+SET ( SNMP_LIBRARIES ${NETSNMP_LIBRARY} ${NETSNMPAGENT_LIBRARY} ${NETSNMPHELPERS_LIBRARY} ${NETSNMPMIBS_LIBRARY} ${NETSNMPTRAPD_LIBRARY} ${SNMP_LIBRARY} )
+
+add_executable(main src/main.cc)
+
+# found libraries linked into main 
+target_link_libraries(main ${SNMP_LIBRARIES})
