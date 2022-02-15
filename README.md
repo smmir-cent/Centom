@@ -8,5 +8,6 @@
 	developed based on net-snmp C library
 	```sh
 	sudo apt-get update
+	sudo apt-get install clang-format-9
 	sudo apt-get install libsnmp-dev
 	```

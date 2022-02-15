@@ -3,7 +3,7 @@
 #include <string.h>
 
 /* change the word "define" to "undef" to try the (insecure) SNMPv1 version */
-#define DEMO_USE_SNMP_VERSION_3
+#undef DEMO_USE_SNMP_VERSION_3
 
 #ifdef DEMO_USE_SNMP_VERSION_3
 const char *our_v3_passphrase = "The Net-SNMP Demo Password";
@@ -19,12 +19,12 @@ int main(int argc, char **argv) {
 
   netsnmp_variable_list *vars;
   int status;
+
   int count = 1;
 
   /*
    * Initialize the SNMP library
    */
-
   init_snmp("snmpdemoapp");
 
   /*
@@ -73,8 +73,11 @@ int main(int argc, char **argv) {
   session.version = SNMP_VERSION_1;
 
   /* set the SNMPv1 community name used for authentication */
-  session.community = "demopublic";
-  session.community_len = strlen(session.community);
+  // session.community = "demopublic";reinterpret_cast<const unsigned char *>(
+  // "demopublic" ); strcpy( static_cast <char*>( session.community) ,
+  // "demopublic" );
+  strcpy((char *)session.community, "demopublic");
+  session.community_len = strlen((char *)session.community);
 
 #endif /* SNMPv1 */
 
