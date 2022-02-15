@@ -2,6 +2,8 @@
 #include <net-snmp/net-snmp-includes.h>
 #include <string.h>
 
+// #include <string>
+
 /* change the word "define" to "undef" to try the (insecure) SNMPv1 version */
 #undef DEMO_USE_SNMP_VERSION_3
 
@@ -26,72 +28,56 @@ int main(int argc, char **argv) {
    * Initialize the SNMP library
    */
   init_snmp("snmpdemoapp");
+  printf("%s:%d\n", __FILE__, __LINE__);
 
   /*
    * Initialize a "session" that defines who we're going to talk to
    */
   snmp_sess_init(&session); /* set up defaults */
-  session.peername = strdup("test.net-snmp.org");
+  session.peername = strdup("localhost");
+  printf("%s:%d\n", __FILE__, __LINE__);
 
   /* set up the authentication parameters for talking to the server */
 
-#ifdef DEMO_USE_SNMP_VERSION_3
-
-  /* Use SNMPv3 to talk to the experimental server */
-
-  /* set the SNMP version number */
-  session.version = SNMP_VERSION_3;
-
-  /* set the SNMPv3 user name */
-  session.securityName = strdup("MD5User");
-  session.securityNameLen = strlen(session.securityName);
-
-  /* set the security level to authenticated, but not encrypted */
-  session.securityLevel = SNMP_SEC_LEVEL_AUTHNOPRIV;
-
-  /* set the authentication method to MD5 */
-  session.securityAuthProto = usmHMACMD5AuthProtocol;
-  session.securityAuthProtoLen = sizeof(usmHMACMD5AuthProtocol) / sizeof(oid);
-  session.securityAuthKeyLen = USM_AUTH_KU_LEN;
-
-  /* set the authentication key to a MD5 hashed version of our
-     passphrase "The Net-SNMP Demo Password" (which must be at least 8
-     characters long) */
-  if (generate_Ku(session.securityAuthProto, session.securityAuthProtoLen,
-                  (u_char *)our_v3_passphrase, strlen(our_v3_passphrase),
-                  session.securityAuthKey,
-                  &session.securityAuthKeyLen) != SNMPERR_SUCCESS) {
-    snmp_perror(argv[0]);
-    snmp_log(LOG_ERR,
-             "Error generating Ku from authentication pass phrase. \n");
-    exit(1);
-  }
-
-#else /* we'll use the insecure (but simplier) SNMPv1 */
-
   /* set the SNMP version number */
   session.version = SNMP_VERSION_1;
+  printf("%s:%d\n", __FILE__, __LINE__);
 
   /* set the SNMPv1 community name used for authentication */
   // session.community = "demopublic";reinterpret_cast<const unsigned char *>(
   // "demopublic" ); strcpy( static_cast <char*>( session.community) ,
   // "demopublic" );
-  strcpy((char *)session.community, "demopublic");
+  // session.community;
+  printf("%s:%d\n", __FILE__, __LINE__);
+
+  // (char *)session.community;
+  // u_char *temp =
+  // unsigned char *temp =
+  // session.community = reinterpret_cast<const unsigned char *>(
+  //     std::string("demopublic").c_str());
+  // strcpy((char *)session.community, "demopublic");
+
+  char *temp = "public";
+  printf("%s:%d\n", __FILE__, __LINE__);
+  session.community = (u_char *)temp;
+  printf("%s:%d\n", __FILE__, __LINE__);
   session.community_len = strlen((char *)session.community);
 
-#endif /* SNMPv1 */
+  printf("%s:%d\n", __FILE__, __LINE__);
 
   /*
    * Open the session
    */
   SOCK_STARTUP;
   ss = snmp_open(&session); /* establish the session */
+  printf("%s:%d\n", __FILE__, __LINE__);
 
   if (!ss) {
     snmp_sess_perror("ack", &session);
     SOCK_CLEANUP;
     exit(1);
   }
+  printf("%s:%d\n", __FILE__, __LINE__);
 
   /*
    * Create the PDU for the data for our request.
@@ -104,22 +90,16 @@ int main(int argc, char **argv) {
     SOCK_CLEANUP;
     exit(1);
   }
-#if OTHER_METHODS
-  /*
-   *  These are alternatives to the 'snmp_parse_oid' call above,
-   *    e.g. specifying the OID by name rather than numerically.
-   */
-  read_objid(".1.3.6.1.2.1.1.1.0", anOID, &anOID_len);
-  get_node("sysDescr.0", anOID, &anOID_len);
-  read_objid("system.sysDescr.0", anOID, &anOID_len);
-#endif
+  printf("%s:%d\n", __FILE__, __LINE__);
 
   snmp_add_null_var(pdu, anOID, anOID_len);
+  printf("%s:%d\n", __FILE__, __LINE__);
 
   /*
    * Send the Request out.
    */
   status = snmp_synch_response(ss, pdu, &response);
+  printf("%s:%d\n", __FILE__, __LINE__);
 
   /*
    * Process the response.
@@ -128,13 +108,16 @@ int main(int argc, char **argv) {
     /*
      * SUCCESS: Print the result variables
      */
+    printf("%s:%d\n", __FILE__, __LINE__);
 
     for (vars = response->variables; vars; vars = vars->next_variable)
       print_variable(vars->name, vars->name_length, vars);
+    printf("%s:%d\n", __FILE__, __LINE__);
 
     /* manipuate the information ourselves */
     for (vars = response->variables; vars; vars = vars->next_variable) {
       if (vars->type == ASN_OCTET_STR) {
+        printf("%s:%d\n", __FILE__, __LINE__);
         char *sp = (char *)malloc(1 + vars->val_len);
         memcpy(sp, vars->val.string, vars->val_len);
         sp[vars->val_len] = '\0';
@@ -147,6 +130,7 @@ int main(int argc, char **argv) {
     /*
      * FAILURE: print what went wrong!
      */
+    printf("%s:%d\n", __FILE__, __LINE__);
 
     if (status == STAT_SUCCESS)
       fprintf(stderr, "Error in packet\nReason: %s\n",
@@ -156,6 +140,7 @@ int main(int argc, char **argv) {
     else
       snmp_sess_perror("snmpdemoapp", ss);
   }
+  printf("%s:%d\n", __FILE__, __LINE__);
 
   /*
    * Clean up:
