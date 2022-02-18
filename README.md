@@ -3,14 +3,21 @@
 ## Getting Started
 
 ### Prerequisites
-* net-snmp
+```sh
+sudo apt-get update
+```
 
+* net-snmp
 	developed based on net-snmp C library
 	```sh
-	sudo apt-get update
-	sudo apt-get install clang-format-9
 	sudo apt-get install libsnmp-dev
 	```
+
+* clang-format
+	```sh
+	sudo apt-get install clang-format-9
+	```
+
 ### Executing program
 
 ```sh
