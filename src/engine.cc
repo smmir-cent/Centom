@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
   //     std::string("demopublic").c_str());
   // strcpy((char *)session.community, "demopublic");
 
-  char *temp = "public";
+  char *temp = (char *)"public";
   printf("%s:%d\n", __FILE__, __LINE__);
   session.community = (u_char *)temp;
   printf("%s:%d\n", __FILE__, __LINE__);

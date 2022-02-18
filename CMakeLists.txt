@@ -10,6 +10,8 @@ FIND_LIBRARY ( NETSNMPTRAPD_LIBRARY     NAMES netsnmptrapd      )
 FIND_LIBRARY ( SNMP_LIBRARY             NAMES snmp              )
 SET ( SNMP_LIBRARIES ${NETSNMP_LIBRARY} ${NETSNMPAGENT_LIBRARY} ${NETSNMPHELPERS_LIBRARY} ${NETSNMPMIBS_LIBRARY} ${NETSNMPTRAPD_LIBRARY} ${SNMP_LIBRARY} )
 
+include_directories(./include)
+
 add_executable(main src/main.cc)
 add_executable(engine src/engine.cc)
 
