@@ -10,6 +10,7 @@ FIND_LIBRARY ( NETSNMPTRAPD_LIBRARY     NAMES netsnmptrapd      )
 FIND_LIBRARY ( SNMP_LIBRARY             NAMES snmp              )
 SET ( SNMP_LIBRARIES ${NETSNMP_LIBRARY} ${NETSNMPAGENT_LIBRARY} ${NETSNMPHELPERS_LIBRARY} ${NETSNMPMIBS_LIBRARY} ${NETSNMPTRAPD_LIBRARY} ${SNMP_LIBRARY} )
 
+include_directories(third-party/spdlog/include)
 include_directories(./include)
 
 add_executable(main src/main.cc)
@@ -18,3 +19,4 @@ add_executable(engine src/engine.cc)
 # found libraries linked into main 
 target_link_libraries(main ${SNMP_LIBRARIES})
 target_link_libraries(engine ${SNMP_LIBRARIES})
+add_executable(centom_engine src/centom_engine.cc)
