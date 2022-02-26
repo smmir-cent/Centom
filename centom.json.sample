@@ -1,0 +1,4 @@
+{
+    "log_level": "trace",
+    "snmp_version": 1
+}

@@ -1,8 +1,16 @@
 
+#include <iostream>
+
+#include "rapidjson/document.h"
+#include "rapidjson/filereadstream.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
 #include "spdlog/sinks/syslog_sink.h"
 #include "spdlog/spdlog.h"
 
-int main(int argc, char **argv) {
+namespace rj = rapidjson;
+
+int main(int argc, char** argv) {
   // test spdlog
   spdlog::info("Welcome to spdlog!");
   spdlog::error("Some error message with arg: {}", 1);
@@ -25,7 +33,22 @@ int main(int argc, char **argv) {
   SPDLOG_TRACE("Some trace message with param {}", 42);
   SPDLOG_DEBUG("Some debug message");
 
-  std::string ident = "spdlog-example";
+  std::string ident = "centom";
   auto syslog_logger = spdlog::syslog_logger_mt("syslog", ident, LOG_PID);
   syslog_logger->warn("This is warning that will end up in syslog.");
+
+  FILE* fp = fopen("/etc/centom/centom.json", "r");
+
+  char readBuffer[65536];
+  rj::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+  rj::Document document;
+  document.ParseStream(is);
+
+  std::cout << "-------------------------------------------------------------"
+            << std::endl;
+  std::cout << "log_level: " << document["log_level"].GetString() << std::endl;
+  std::cout << "snmp_version: " << document["snmp_version"].GetInt()
+            << std::endl;
+  fclose(fp);
 }
