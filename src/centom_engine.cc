@@ -1,4 +1,5 @@
 
+#include "spdlog/sinks/syslog_sink.h"
 #include "spdlog/spdlog.h"
 
 int main(int argc, char **argv) {
@@ -23,4 +24,8 @@ int main(int argc, char **argv) {
   // define SPDLOG_ACTIVE_LEVEL to desired level
   SPDLOG_TRACE("Some trace message with param {}", 42);
   SPDLOG_DEBUG("Some debug message");
+
+  std::string ident = "spdlog-example";
+  auto syslog_logger = spdlog::syslog_logger_mt("syslog", ident, LOG_PID);
+  syslog_logger->warn("This is warning that will end up in syslog.");
 }
