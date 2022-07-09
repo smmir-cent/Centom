@@ -1,4 +1,5 @@
 {
     "log_level": "trace",
-    "snmp_version": 1
+    "snmp_version": 1,
+    "community": "public"
 }

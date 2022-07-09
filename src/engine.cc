@@ -21,7 +21,6 @@ int main(int argc, char **argv) {
 
   netsnmp_variable_list *vars;
   int status;
-
   int count = 1;
 
   /*

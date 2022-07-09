@@ -13,10 +13,11 @@ SET ( SNMP_LIBRARIES ${NETSNMP_LIBRARY} ${NETSNMPAGENT_LIBRARY} ${NETSNMPHELPERS
 include_directories(./third-party/)
 include_directories(./include)
 
-add_executable(main src/main.cc)
-add_executable(engine src/engine.cc)
+# add_executable(main src/main.cc)
+# add_executable(engine src/engine.cc)
+add_executable(centom_engine src/centom_engine.cc)
+target_link_libraries(centom_engine ${SNMP_LIBRARIES})
 
 # found libraries linked into main 
-target_link_libraries(main ${SNMP_LIBRARIES})
-target_link_libraries(engine ${SNMP_LIBRARIES})
-add_executable(centom_engine src/centom_engine.cc)
+# target_link_libraries(main ${SNMP_LIBRARIES})
+# target_link_libraries(engine ${SNMP_LIBRARIES})

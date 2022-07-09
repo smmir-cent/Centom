@@ -13,6 +13,7 @@ class SNMPMessage {
  public:
   SNMPMessage(std::string oid);
   SNMPMessage();
+  netsnmp_pdu *getPdu();
   ~SNMPMessage();
 };
 
