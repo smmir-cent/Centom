@@ -124,6 +124,11 @@ void snmpTest() {
 
   SOCK_CLEANUP;
 }
+
+void newSnmpTest() {
+  // snmpwalk -v2c -c public localhost > output.txt
+}
+
 // snmpget -v 1 -c public localhost .1.3.6.1.2.1.1.1.0
 
 int main(int argc, char** argv) {
@@ -146,6 +151,7 @@ int main(int argc, char** argv) {
   spdlogTest();
   // spdlog test
   // snmp hello
-  snmpTest();
+  // snmpTest();
   // snmp hello
+  newSnmpTest();
 }
