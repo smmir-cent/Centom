@@ -15,7 +15,7 @@ include_directories(./include)
 
 # add_executable(main src/main.cc)
 # add_executable(engine src/engine.cc)
-add_executable(centom_engine src/centom_engine.cc)
+add_executable(centom_engine src/centom_engine.cc src/snmp/session.cpp)
 target_link_libraries(centom_engine ${SNMP_LIBRARIES})
 
 # found libraries linked into main 

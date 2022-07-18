@@ -4,16 +4,16 @@
 
 #include <iostream>
 
+#include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/syslog_sink.h"
 class Logger {
  private:
-  std::shared_ptr<spdlog::logger> syslog_logger;
+  std::shared_ptr<spdlog::logger> logger;
 
   Logger() {
     // std::cout << "Called constructor of Logger" << std::endl;
     try {
-      this->syslog_logger =
-          spdlog::syslog_logger_st("syslog", "centom", LOG_PID);
+      this->logger = spdlog::stdout_color_mt("console");
     } catch (const spdlog::spdlog_ex &ex) {
       std::cout << "Log failed: " << ex.what() << std::endl;
       exit(-1);
@@ -33,49 +33,49 @@ class Logger {
 
   void setLevel(std::string level) {
     if (level == "trace")
-      this->syslog_logger->set_level(spdlog::level::trace);
+      this->logger->set_level(spdlog::level::trace);
     else if (level == "debug")
-      this->syslog_logger->set_level(spdlog::level::debug);
+      this->logger->set_level(spdlog::level::debug);
     else if (level == "info")
-      this->syslog_logger->set_level(spdlog::level::info);
+      this->logger->set_level(spdlog::level::info);
     else if (level == "warn")
-      this->syslog_logger->set_level(spdlog::level::warn);
+      this->logger->set_level(spdlog::level::warn);
     else if (level == "error")
-      this->syslog_logger->set_level(spdlog::level::err);
+      this->logger->set_level(spdlog::level::err);
     else if (level == "critical")
-      this->syslog_logger->set_level(spdlog::level::critical);
+      this->logger->set_level(spdlog::level::critical);
     else
-      this->syslog_logger->set_level(spdlog::level::debug);
+      this->logger->set_level(spdlog::level::debug);
   }
 
   template <typename... Args>
   void trace(const char *fmt, const Args... args) {
-    this->syslog_logger->trace(fmt, args...);
+    this->logger->trace(fmt, args...);
   }
 
   template <typename... Args>
   void debug(const char *fmt, const Args... args) {
-    this->syslog_logger->debug(fmt, args...);
+    this->logger->debug(fmt, args...);
   }
 
   template <typename... Args>
   void info(const char *fmt, const Args... args) {
-    this->syslog_logger->info(fmt, args...);
+    this->logger->info(fmt, args...);
   }
 
   template <typename... Args>
   void warn(const char *fmt, const Args... args) {
-    this->syslog_logger->warn(fmt, args...);
+    this->logger->warn(fmt, args...);
   }
 
   template <typename... Args>
   void error(const char *fmt, const Args... args) {
-    this->syslog_logger->error(fmt, args...);
+    this->logger->error(fmt, args...);
   }
 
   template <typename... Args>
   void critical(const char *fmt, const Args... args) {
-    this->syslog_logger->critical(fmt, args...);
+    this->logger->critical(fmt, args...);
   }
 };
 

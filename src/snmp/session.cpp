@@ -16,7 +16,7 @@ void Session::startSession(u_char *community) {
   session.peername = (char *)ip.c_str();
 
   // sets SNMP version number
-  session.version = SNMP_VERSION_1;
+  session.version = SNMP_VERSION_2c;
 
   // sets SNMPv1 community name used for authentication
   session.community = community;
@@ -39,13 +39,14 @@ void Session::startSession(u_char *community) {
 
     // sets OID length
     lenOID = MAX_OID_LEN;
-
+    read_objid(requestedOIDs.at(i), OID, &lenOID);
     // parses OID from vector into OID
-    if (!snmp_parse_oid(requestedOIDs.at(i), OID, &lenOID)) {
-      // if there is any error (OID does not exist, OID faulty, ...), outputs
-      // OID and goes on
-      snmp_perror(requestedOIDs.at(i));
-    }
+    /////////////////////////////////////////////////////////////////////////////
+    // if (!snmp_parse_oid(requestedOIDs.at(i), OID, &lenOID)) {
+    //   // if there is any error (OID does not exist, OID faulty, ...), outputs
+    //   // OID and goes on
+    //   snmp_perror(requestedOIDs.at(i));
+    // }
 
     // adds NULL value to end of PDU
     // for SNMPSET PDU put in the value to set the OID to
@@ -74,7 +75,9 @@ void Session::startSession(u_char *community) {
         message.append(":");
         // appends scanned data to message for UI
         message.append(buf);
+        std::cout << "****************\n";
         std::cout << message.c_str() << "\n";
+        std::cout << "****************\n";
       }
     } else {
       // FAILURE: prints what went wrong

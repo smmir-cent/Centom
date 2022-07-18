@@ -3,12 +3,15 @@
 #include <net-snmp/net-snmp-includes.h>
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "logger/logger.hh"
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
+#include "snmp/session.hh"
 namespace rj = rapidjson;
 extern Logger& logger;
 
@@ -124,12 +127,21 @@ void snmpTest() {
 
   SOCK_CLEANUP;
 }
+// snmpwalk -v2c -c public localhost > output.txt
 
 void newSnmpTest() {
-  // snmpwalk -v2c -c public localhost > output.txt
+  std::vector<const char*> oids;
+  const char* temp = std::string("system.sysDescr.0").c_str();
+  // const char* temp = std::string("sysDescr.0").c_str();
+  oids.push_back(temp);
+  Session session("localhost", oids);
+  char* temp0 = (char*)"public";
+  session.startSession((u_char*)temp0);
 }
 
 // snmpget -v 1 -c public localhost .1.3.6.1.2.1.1.1.0
+// snmpget -v 1 -c public localhost sysDescr.0
+// snmpget -v2c -c public localhost sysName.0
 
 int main(int argc, char** argv) {
   FILE* fp = fopen("/etc/centom/centom.json", "r");
@@ -153,5 +165,6 @@ int main(int argc, char** argv) {
   // snmp hello
   // snmpTest();
   // snmp hello
+
   newSnmpTest();
 }

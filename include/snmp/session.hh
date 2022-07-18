@@ -1,6 +1,6 @@
 
-#ifndef SESSION_H
-#define SESSION_H
+#ifndef SESSION_HH
+#define SESSION_HH
 
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
@@ -40,4 +40,4 @@ class Session {
   void startSession(u_char *community);
 };
 
-#endif  // SESSION_H
+#endif  // SESSION_HH
