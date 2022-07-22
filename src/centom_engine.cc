@@ -352,9 +352,13 @@ void snmpTest()
 void newSnmpTest()
 {
   std::vector<const char *> oids;
-  const char *temp = std::string("iso.3.6.1.2.1.1.6.0").c_str();
+  const char *temp = std::string("sysName.0").c_str();
+  const char *temp1 = std::string("sysDescr.0").c_str();
+  const char *temp2 = std::string("sysLocation.0").c_str();
   // const char* temp = std::string("sysDescr.0").c_str();
   oids.push_back(temp);
+  oids.push_back(temp1);
+  oids.push_back(temp2);
   Session session("localhost", oids);
   char *temp0 = (char *)"public";
   session.startSession("uMD5", "PMD51111");

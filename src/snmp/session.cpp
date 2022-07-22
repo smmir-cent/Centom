@@ -24,11 +24,6 @@ void Session::startSession(std::string community_username, std::string password)
 #else
   session.version = SNMP_VERSION_3;
 #endif
-  // session.community = community_username;
-
-  // // sets length of community string
-  // session.community_len =
-  //     strlen(reinterpret_cast<const char *>(session.community));
 
   // sets SNMP authentication
   switch (snmpMode)
@@ -184,8 +179,11 @@ void Session::startSession(std::string community_username, std::string password)
     snmpPDU = snmp_pdu_create(SNMP_MSG_GETNEXT);
 
     // sets OID length
+    oid oid[MAX_OID_LEN];
     lenOID = MAX_OID_LEN;
-    read_objid(requestedOIDs.at(i), OID, &lenOID);
+    // read_objid(requestedOIDs.at(i), OID, &lenOID);
+    get_node(requestedOIDs.at(i), oid, &lenOID);
+    // read_objid(requestedOIDs.at(i), oid, &lenOID);
     // parses OID from vector into OID
     /////////////////////////////////////////////////////////////////////////////
     // if (!snmp_parse_oid(requestedOIDs.at(i), OID, &lenOID)) {
@@ -196,7 +194,7 @@ void Session::startSession(std::string community_username, std::string password)
 
     // adds NULL value to end of PDU
     // for SNMPSET PDU put in the value to set the OID to
-    snmp_add_null_var(snmpPDU, OID, lenOID);
+    snmp_add_null_var(snmpPDU, oid, lenOID);
 
     // sends the request out asynchronously
     // stores returned data in clientResponse variable
