@@ -66,6 +66,7 @@
         "regex": "cpp",
         "iostream": "cpp",
         "mutex": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "random": "cpp"
     }
 }
