@@ -1,0 +1,14 @@
+#ifndef STRUCTURES_HH
+#define STRUCTURES_HH
+
+enum SnmpMode
+{
+    SNMP_MODE_V1,
+    SNMP_MODE_V2C,
+    SNMP_MODE_V3_MD5,
+    SNMP_MODE_V3_MD5_DES,
+    SNMP_MODE_V3_SHA,
+    SNMP_MODE_V3_SHA_AES
+};
+
+#endif // STRUCTURES_HH

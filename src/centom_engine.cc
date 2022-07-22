@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
+#include "structures.hh"
 #include "logger/logger.hh"
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
@@ -15,16 +15,8 @@
 namespace rj = rapidjson;
 
 extern Logger &logger;
+SnmpMode snmpMode = SNMP_MODE_V2C;
 
-enum SnmpMode
-{
-  SNMP_MODE_V1,
-  SNMP_MODE_V2C,
-  SNMP_MODE_V3_MD5,
-  SNMP_MODE_V3_MD5_DES,
-  SNMP_MODE_V3_SHA,
-  SNMP_MODE_V3_SHA_AES
-};
 void spdlogTest()
 {
   TRACE("TRACE");
@@ -99,7 +91,7 @@ void snmpTest()
 
   /////////////////////////////////////////////////////////////////////////
   //#################################################################################################################
-  SnmpMode mode = SNMP_MODE_V3_MD5;
+  SnmpMode mode = SnmpMode::SNMP_MODE_V3_MD5;
   char *snmp_com = (char *)"public";
   std::string username = "uMD5";
   std::string password = "PMD51111";
@@ -360,12 +352,12 @@ void snmpTest()
 void newSnmpTest()
 {
   std::vector<const char *> oids;
-  const char *temp = std::string("system.sysDescr.0").c_str();
+  const char *temp = std::string("iso.3.6.1.2.1.1.6.0").c_str();
   // const char* temp = std::string("sysDescr.0").c_str();
   oids.push_back(temp);
   Session session("localhost", oids);
   char *temp0 = (char *)"public";
-  session.startSession((u_char *)temp0);
+  session.startSession("uMD5", "PMD51111");
 }
 
 // snmpget -v 1 -c public localhost .1.3.6.1.2.1.1.1.0
@@ -382,18 +374,35 @@ int main(int argc, char **argv)
   rj::Document document;
   document.ParseStream(is);
   std::string log_level = document["log_level"].GetString();
-  int snmp_version = document["snmp_version"].GetInt();
+  std::string snmp_version = document["snmp_version"].GetString();
   std::cout << "log_level: " << log_level << std::endl;
   std::cout << "snmp_version: " << snmp_version
             << std::endl;
   fclose(fp);
   logger.setLevel(document["log_level"].GetString());
+
+  if (snmp_version == "SNMP_MODE_V1")
+    snmpMode = SnmpMode::SNMP_MODE_V1;
+  else if (snmp_version == "SNMP_MODE_V2C")
+    snmpMode = SnmpMode::SNMP_MODE_V2C;
+  else if (snmp_version == "SNMP_MODE_V3_MD5")
+    snmpMode = SnmpMode::SNMP_MODE_V3_MD5;
+  else if (snmp_version == "SNMP_MODE_V3_MD5_DES")
+    snmpMode = SnmpMode::SNMP_MODE_V3_MD5_DES;
+  else if (snmp_version == "SNMP_MODE_V3_SHA")
+    snmpMode = SnmpMode::SNMP_MODE_V3_SHA;
+  else if (snmp_version == "SNMP_MODE_V3_SHA_AES")
+    snmpMode = SnmpMode::SNMP_MODE_V3_SHA_AES;
+  else
+    snmpMode = SnmpMode::SNMP_MODE_V2C;
+
   // spdlog test
   spdlogTest();
   // spdlog test
   // snmp hello
-  snmpTest();
+  // snmpTest();
   // snmp hello
+  init_snmp("snmpapp");
 
-  // newSnmpTest();
+  newSnmpTest();
 }

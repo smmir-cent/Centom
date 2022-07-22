@@ -7,8 +7,11 @@
 
 #include <string>
 #include <vector>
+#include "structures.hh"
 
-class Session {
+extern SnmpMode snmpMode;
+class Session
+{
   // holds information about who we're going to be talking to.
   // one object will be filled with information, the other is a pointer returned
   // by the library
@@ -35,9 +38,9 @@ class Session {
   // stores OIDs that are requested later on
   std::vector<const char *> requestedOIDs;
 
- public:
+public:
   Session(std::string host, std::vector<const char *> oids);
-  void startSession(u_char *community);
+  void startSession(std::string community_username, std::string password);
 };
 
-#endif  // SESSION_HH
+#endif // SESSION_HH
