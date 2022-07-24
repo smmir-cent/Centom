@@ -20,5 +20,20 @@ cd backend
 python3 -m venv env
 source env/bin/activate
 pip3 install -r requirements.txt
+sqlite3 project/db.sqlite
+```
+
+```sql
+CREATE TABLE user (
+	id INTEGER PRIMARY KEY,
+	name TEXT NOT NULL,
+	surname TEXT NOT NULL,
+	email TEXT NOT NULL UNIQUE,
+	mobile_number TEXT NOT NULL,
+	password TEXT NOT NULL
+);
+```
+
+```sh
 python3 -m project.__init__
 ```
