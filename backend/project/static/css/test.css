@@ -118,3 +118,12 @@ button:focus {
 .thanks-message {
     display: none
 }
+
+.bd-example {
+    position: relative;
+    /* display: inline-block; */
+    padding: 1rem;
+    margin: 1rem -0.75rem 0;
+    border: solid #dee2e6;
+    border-width: 1px 0 0;
+}

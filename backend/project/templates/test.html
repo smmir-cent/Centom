@@ -8,14 +8,13 @@
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="{{url_for('static', filename='js/test.js')}}"></script>
   <link href="{{url_for('static', filename='css/test.css')}}" rel="stylesheet">
 </head>
 
 <div class="container mt-5">
   <div class="row d-flex justify-content-center align-items-center">
     <div class="col-md-8">
-      <form id="regForm">
+      <form method="POST" action="/test" id="regForm">
         <h1 style="color:black" id="register">Simple Test</h1>
 
         <h6 style="color:black">IP</h6>
@@ -23,26 +22,30 @@
           <input placeholder="192.168.1.1 ..." oninput="this.className = ''" name="ip">
         </p>
         <h6 style="color:black">OIDs</h6>
+        <div class="bd-example">
 
-        <div style="color:black" class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-          <label style="color:black" class="form-check-label" for="flexCheckDefault">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-          <label style="color:black" class="form-check-label" for="flexCheckChecked">
-            Checked checkbox
-          </label>
-        </div>
-
-        <!-- <div style="overflow:auto;" id="nextprevious">
-          <div style="float:right;">
-            <button type="button" id="prevBtn" onclick="nextPrev(-1)"><i class="fa fa-angle-double-left"></i></button>
-            <button type="button" id="nextBtn" onclick="nextPrev(1)"><i class="fa fa-angle-double-right"></i></button>
+          <div class="form-check">
+            <input class="form-check-input" name="c_check" type="checkbox" value="Default checkbox"
+              id="flexCheckDefault">
+            <label style="color:black;display: block;float: left" class="form-check-label" for="flexCheckDefault">
+              Default checkbox
+            </label>
           </div>
-        </div>  -->
+          <br>
+          <div class="form-check">
+            <input class="form-check-input" name="c_check" type="checkbox" value="Checked checkbox"
+              id="flexCheckChecked" checked>
+            <label style="color:black;display: block;float: left" class="form-check-label" for="flexCheckChecked">
+              Checked checkbox
+            </label>
+          </div>
+        </div>
+        <br>
+        <div style="overflow:auto;" id="nextprevious">
+          <div style="float:right;">
+            <button type="submit" class="btn btn-success">Scan</button>
+          </div>
+        </div>
       </form>
     </div>
   </div>
