@@ -1,0 +1,5 @@
+{
+    "log_level": "trace",
+    "snmp_version": "SNMP_MODE_V3_MD5",
+    "community": "public"
+}
