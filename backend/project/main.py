@@ -1,7 +1,8 @@
 # main.py
 
-from flask import Blueprint, render_template,request
+from flask import Blueprint, render_template,request,Markup
 from flask_login import login_required, current_user
+import subprocess
 
 main = Blueprint('main', __name__)
 
@@ -11,7 +12,7 @@ def index():
 
 @main.route('/test')
 def test():
-    return render_template('test.html')
+    return render_template('test.html',result="NONE")
 
 
 @main.route('/profile')
@@ -21,12 +22,17 @@ def profile():
 
 @main.route('/test', methods=['POST'])
 def testScan():
+    ip = request.form["ip"]
     print(request.form["ip"])
     selected = request.form.getlist('c_check')
-    print(selected)
-    any_selected = bool(selected)
-    print(any_selected)
-    ## todo run snmp based on form's inputs
-    
-    return render_template('index.html')
+    args = ['../build/centom_engine']
+    args.extend([ip])
+    args.extend(selected)
+    print(args)
+    print("*********************************")
+    result = subprocess.run(args, stdout=subprocess.PIPE)
+    print(result.stdout.decode('utf-8'))
+    result = result.stdout.decode('utf-8')
+    result = Markup(result.replace('\n', '<br>'))
+    return render_template('test.html',result=result)
 
