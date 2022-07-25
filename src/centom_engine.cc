@@ -403,10 +403,20 @@ int main(int argc, char **argv)
   // spdlog test
   spdlogTest();
   // spdlog test
-  // snmp hello
-  // snmpTest();
-  // snmp hello
-  init_snmp("snmpapp");
 
-  newSnmpTest();
+  std::string ip(argv[1]);
+  std::vector<const char *> oids;
+  // std::string oids[argc - 2];
+  for (int i = 2; i < argc; ++i)
+  {
+    oids.push_back(argv[i]);
+    // std::cout << argv[i] << "\n";
+  }
+
+  init_snmp("snmpapp");
+  Session session(ip, oids);
+  char *temp0 = (char *)"public";
+  session.startSession("uMD5", "PMD51111");
+  // snmpTest();
+  // newSnmpTest();
 }
