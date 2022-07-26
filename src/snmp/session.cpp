@@ -256,21 +256,21 @@ void Session::getOids(std::vector<const char *> oids)
 
 void Session::walkOids(std::vector<const char *> oids)
 {
-  netsnmp_session *ss;
-  netsnmp_pdu *pdu, *response;
-  netsnmp_variable_list *vars;
-  int arg;
-  oid name[MAX_OID_LEN];
-  size_t name_length;
-  oid root[MAX_OID_LEN];
-  size_t rootlen;
-  oid end_oid[MAX_OID_LEN];
-  size_t end_len = 0;
-  int count;
-  int running;
-  int status = STAT_ERROR;
   for (int i = 0; i < oids.size(); i++)
   {
+    netsnmp_session *ss;
+    netsnmp_pdu *pdu, *response;
+    netsnmp_variable_list *vars;
+    int arg;
+    oid name[MAX_OID_LEN];
+    size_t name_length;
+    oid root[MAX_OID_LEN];
+    size_t rootlen;
+    oid end_oid[MAX_OID_LEN];
+    size_t end_len = 0;
+    int count;
+    int running;
+    int status = STAT_ERROR;
     rootlen = MAX_OID_LEN;
     if (snmp_parse_oid(oids.at(i), root, &rootlen) == NULL)
     {
@@ -286,139 +286,139 @@ void Session::walkOids(std::vector<const char *> oids)
     end_oid[end_len - 1]++;
 
     SOCK_STARTUP;
-  }
 
-  ss = snmp_open(&session);
-  if (ss == NULL)
-  {
-    /*
-     * diagnose snmp_open errors with the input netsnmp_session pointer
-     */
-
-    snmp_sess_perror("snmpwalk", &session);
-    SOCK_CLEANUP;
-    exit(1);
-  }
-
-  /*
-   * get first object to start walk
-   */
-  memmove(name, root, rootlen * sizeof(oid));
-  name_length = rootlen;
-
-  running = 1;
-
-  while (running)
-  {
-    /*
-     * create PDU for GETNEXT request and add object name to request
-     */
-    pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
-    snmp_add_null_var(pdu, name, name_length);
-
-    /*
-     * do the request
-     */
-
-    status = snmp_synch_response(ss, pdu, &response);
-    if (status == STAT_SUCCESS)
+    ss = snmp_open(&session);
+    if (ss == NULL)
     {
+      /*
+       * diagnose snmp_open errors with the input netsnmp_session pointer
+       */
 
-      if (response->errstat == SNMP_ERR_NOERROR)
+      snmp_sess_perror("snmpwalk", &session);
+      SOCK_CLEANUP;
+      exit(1);
+    }
+
+    /*
+     * get first object to start walk
+     */
+    memmove(name, root, rootlen * sizeof(oid));
+    name_length = rootlen;
+
+    running = 1;
+
+    while (running)
+    {
+      /*
+       * create PDU for GETNEXT request and add object name to request
+       */
+      pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
+      snmp_add_null_var(pdu, name, name_length);
+
+      /*
+       * do the request
+       */
+
+      status = snmp_synch_response(ss, pdu, &response);
+      if (status == STAT_SUCCESS)
       {
-        /*
-         * check resulting variables
-         */
-        for (vars = response->variables; vars;
-             vars = vars->next_variable)
-        {
-          if (snmp_oid_compare(end_oid, end_len,
-                               vars->name, vars->name_length) <= 0)
-          {
-            /*
-             * not part of this subtree
-             */
-            running = 0;
-            continue;
-          }
 
-          print_variable(vars->name, vars->name_length, vars);
-          if ((vars->type != SNMP_ENDOFMIBVIEW) &&
-              (vars->type != SNMP_NOSUCHOBJECT) &&
-              (vars->type != SNMP_NOSUCHINSTANCE))
+        if (response->errstat == SNMP_ERR_NOERROR)
+        {
+          /*
+           * check resulting variables
+           */
+          for (vars = response->variables; vars;
+               vars = vars->next_variable)
           {
-            /*
-             * not an exception value
-             */
-            if (snmp_oid_compare(name, name_length,
-                                 vars->name,
-                                 vars->name_length) >= 0)
+            if (snmp_oid_compare(end_oid, end_len,
+                                 vars->name, vars->name_length) <= 0)
             {
-              fprintf(stderr, "Error: OID not increasing: ");
-              fprint_objid(stderr, name, name_length);
-              fprintf(stderr, " >= ");
-              fprint_objid(stderr, vars->name,
-                           vars->name_length);
-              fprintf(stderr, "\n");
+              /*
+               * not part of this subtree
+               */
               running = 0;
+              continue;
             }
-            memmove((char *)name, (char *)vars->name,
-                    vars->name_length * sizeof(oid));
-            name_length = vars->name_length;
+
+            print_variable(vars->name, vars->name_length, vars);
+            if ((vars->type != SNMP_ENDOFMIBVIEW) &&
+                (vars->type != SNMP_NOSUCHOBJECT) &&
+                (vars->type != SNMP_NOSUCHINSTANCE))
+            {
+              /*
+               * not an exception value
+               */
+              if (snmp_oid_compare(name, name_length,
+                                   vars->name,
+                                   vars->name_length) >= 0)
+              {
+                fprintf(stderr, "Error: OID not increasing: ");
+                fprint_objid(stderr, name, name_length);
+                fprintf(stderr, " >= ");
+                fprint_objid(stderr, vars->name,
+                             vars->name_length);
+                fprintf(stderr, "\n");
+                running = 0;
+              }
+              memmove((char *)name, (char *)vars->name,
+                      vars->name_length * sizeof(oid));
+              name_length = vars->name_length;
+            }
+            else
+              /*
+               * an exception value, so stop
+               */
+              running = 0;
           }
-          else
-            /*
-             * an exception value, so stop
-             */
-            running = 0;
-        }
-      }
-      else
-      {
-        /*
-         * error in response, print it
-         */
-        running = 0;
-        if (response->errstat == SNMP_ERR_NOSUCHNAME)
-        {
-          printf("End of MIB\n");
         }
         else
         {
-          fprintf(stderr, "Error in packet.\nReason: %s\n",
-                  snmp_errstring(response->errstat));
-          if (response->errindex != 0)
+          /*
+           * error in response, print it
+           */
+          running = 0;
+          if (response->errstat == SNMP_ERR_NOSUCHNAME)
           {
-            fprintf(stderr, "Failed object: ");
-            for (count = 1, vars = response->variables;
-                 vars && count != response->errindex;
-                 vars = vars->next_variable, count++)
-              /*EMPTY*/;
-            if (vars)
-              fprint_objid(stderr, vars->name,
-                           vars->name_length);
-            fprintf(stderr, "\n");
+            printf("End of MIB\n");
+          }
+          else
+          {
+            fprintf(stderr, "Error in packet.\nReason: %s\n",
+                    snmp_errstring(response->errstat));
+            if (response->errindex != 0)
+            {
+              fprintf(stderr, "Failed object: ");
+              for (count = 1, vars = response->variables;
+                   vars && count != response->errindex;
+                   vars = vars->next_variable, count++)
+                /*EMPTY*/;
+              if (vars)
+                fprint_objid(stderr, vars->name,
+                             vars->name_length);
+              fprintf(stderr, "\n");
+            }
           }
         }
       }
-    }
-    else if (status == STAT_TIMEOUT)
-    {
+      else if (status == STAT_TIMEOUT)
+      {
 
-      fprintf(stderr, "Timeout: No Response from %s\n",
-              session.peername);
-      running = 0;
+        fprintf(stderr, "Timeout: No Response from %s\n",
+                session.peername);
+        running = 0;
+      }
+      else
+      { /* status == STAT_ERROR */
+        snmp_sess_perror("snmpwalk", ss);
+        running = 0;
+      }
+      if (response)
+        snmp_free_pdu(response);
     }
-    else
-    { /* status == STAT_ERROR */
-      snmp_sess_perror("snmpwalk", ss);
-      running = 0;
-    }
-    if (response)
-      snmp_free_pdu(response);
+
+    snmp_close(ss);
+
+    SOCK_CLEANUP;
   }
-
-  snmp_close(ss);
-
-  SOCK_CLEANUP;
 }
