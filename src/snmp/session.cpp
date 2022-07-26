@@ -176,7 +176,7 @@ void Session::startSession(std::string community_username, std::string password)
   for (int i = 0; i < requestedOIDs.size(); i++)
   {
     // creates the PDU for the data for request by using GETNEXT
-    snmpPDU = snmp_pdu_create(SNMP_MSG_GETNEXT);
+    snmpPDU = snmp_pdu_create(SNMP_MSG_GET);
 
     // sets OID length
     oid oid[MAX_OID_LEN];
