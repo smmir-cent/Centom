@@ -25,7 +25,7 @@ def testScan():
     ip = request.form["ip"]
     print(request.form["ip"])
     selected = request.form.getlist('c_check')
-    args = ['../build/centom_engine']
+    args = ['../build/centom_engine','-get']
     args.extend([ip])
     args.extend(selected)
     print(args)
