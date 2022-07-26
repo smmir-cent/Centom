@@ -35,12 +35,13 @@ class Session
   // holds clients IP
   std::string ip;
 
-  // stores OIDs that are requested later on
-  std::vector<const char *> requestedOIDs;
+  std::string community_username;
+  std::string password;
 
 public:
-  Session(std::string host, std::vector<const char *> oids);
-  void startSession(std::string community_username, std::string password);
+  Session(std::string host, std::string comuser, std::string passwd);
+  void getOids(std::vector<const char *> oids);
+  void walkOids(std::vector<const char *> oids);
 };
 
 #endif // SESSION_HH

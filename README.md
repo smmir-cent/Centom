@@ -39,7 +39,7 @@ git clone https://github.com/smmir-cent/Centom.git
 mkdir build ; cd build 
 cmake .. ; make -j4
 ## test:
-./centom_engine [ip] [oids]
+centom_engine [-walk | -get] [ip] [OIDs]
 ```
 ### Executing Backend
 
