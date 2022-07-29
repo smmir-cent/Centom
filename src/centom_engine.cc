@@ -12,6 +12,7 @@
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
 #include "snmp/session.hh"
+#include "snmp/trap.hh"
 namespace rj = rapidjson;
 
 extern Logger &logger;
@@ -71,6 +72,7 @@ int main(int argc, char **argv)
   std::vector<const char *> oids;
   bool is_walk = false;
   bool is_get = false;
+  bool is_trap = false;
 
   if (strcmp(argv[1], "-walk") == 0)
   {
@@ -80,32 +82,56 @@ int main(int argc, char **argv)
   {
     is_get = true;
   }
+  else if (strcmp(argv[1], "-trap") == 0)
+  {
+    is_trap = true;
+  }
   else
   {
     std::cout << "USAGE: centom_engine [-walk | -get] [ip] [OIDs]\n";
     return 1;
   }
 
-  std::string ip(argv[2]);
-  for (int i = 3; i < argc; ++i)
-  {
-    oids.push_back(argv[i]);
-  }
-  if (oids.size() == 0)
-  {
-    std::cout << "USAGE: centom_engine [-walk | -get] [ip] [OIDs]\n";
-    return 1;
-  }
-  char *temp0 = (char *)"public";
-  init_snmp("snmpapp");
-  Session session(ip, "uMD5", "PMD51111");
-
   if (is_walk)
   {
+    std::string ip(argv[2]);
+    for (int i = 3; i < argc; ++i)
+    {
+      oids.push_back(argv[i]);
+    }
+    if (oids.size() == 0)
+    {
+      std::cout << "USAGE: centom_engine [-walk | -get] [ip] [OIDs]\n";
+      return 1;
+    }
+    char *temp0 = (char *)"public";
+    init_snmp("snmpapp");
+    Session session(ip, "uMD5", "PMD51111");
     session.walkOids(oids);
   }
   else if (is_get)
   {
+    std::string ip(argv[2]);
+    for (int i = 3; i < argc; ++i)
+    {
+      oids.push_back(argv[i]);
+    }
+    if (oids.size() == 0)
+    {
+      std::cout << "USAGE: centom_engine [-walk | -get] [ip] [OIDs]\n";
+      return 1;
+    }
+    char *temp0 = (char *)"public";
+    init_snmp("snmpapp");
+    Session session(ip, "uMD5", "PMD51111");
+
     session.getOids(oids);
+  }
+  else if (is_trap)
+  {
+    TrapListener trap_listener;
+    trap_listener.listen();
+
+    // todo
   }
 }
