@@ -1,4 +1,4 @@
-<!-- templates/test.html -->
+<!-- templates/quick-scan.html -->
 
 {% extends "base.html" %}
 
@@ -8,7 +8,7 @@
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <link href="{{url_for('static', filename='css/test.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='css/quick-scan.css')}}" rel="stylesheet">
   <link href="{{url_for('static', filename='css/profile.css')}}" rel="stylesheet">
 </head>
 
@@ -16,8 +16,8 @@
 <div class="container mt-5">
   <div class="row d-flex justify-content-center align-items-center">
     <div class="col-md-8">
-      <form method="POST" action="/test" id="regForm">
-        <h1 style="color:black" id="register">Simple Test</h1>
+      <form method="POST" action="/quick-scan" id="regForm">
+        <h1 style="color:black" id="register">Quick Scan</h1>
 
         <h6 style="color:black">IP</h6>
         <p>

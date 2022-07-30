@@ -10,9 +10,9 @@ main = Blueprint('main', __name__)
 def index():
     return render_template('index.html')
 
-@main.route('/test')
-def test():
-    return render_template('test.html',result="NONE")
+@main.route('/quick-scan')
+def quick_scan():
+    return render_template('quick-scan.html',result="NONE")
 
 
 @main.route('/profile')
@@ -20,8 +20,8 @@ def test():
 def profile():
     return render_template('profile.html', name=current_user.name, surname=current_user.surname, mobile_number=current_user.mobile_number, email=current_user.email)
 
-@main.route('/test', methods=['POST'])
-def testScan():
+@main.route('/quick-scan', methods=['POST'])
+def quick_scan_post():
     ip = request.form["ip"]
     print(request.form["ip"])
     selected = request.form.getlist('c_check')
@@ -34,5 +34,5 @@ def testScan():
     print(result.stdout.decode('utf-8'))
     result = result.stdout.decode('utf-8')
     result = Markup(result.replace('\n', '<br>'))
-    return render_template('test.html',result=result)
+    return render_template('quick-scan.html',result=result)
 
