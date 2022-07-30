@@ -10,12 +10,14 @@ FIND_LIBRARY ( NETSNMPTRAPD_LIBRARY     NAMES netsnmptrapd      )
 FIND_LIBRARY ( SNMP_LIBRARY             NAMES snmp              )
 SET ( SNMP_LIBRARIES ${NETSNMP_LIBRARY} ${NETSNMPAGENT_LIBRARY} ${NETSNMPHELPERS_LIBRARY} ${NETSNMPMIBS_LIBRARY} ${NETSNMPTRAPD_LIBRARY} ${SNMP_LIBRARY} )
 
+file(GLOB_RECURSE SRC_FILES "src/snmp/*.cc")
+
 include_directories(./third-party/)
 include_directories(./include)
 
 # add_executable(main src/main.cc)
 # add_executable(engine src/engine.cc)
-add_executable(centom_engine src/centom_engine.cc src/snmp/session.cpp)
+add_executable(centom_engine src/centom_engine.cc ${SRC_FILES})
 target_link_libraries(centom_engine ${SNMP_LIBRARIES})
 
 # found libraries linked into main 
