@@ -3,7 +3,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager 
-
+from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity,unset_jwt_cookies, jwt_required, JWTManager
+from datetime import timedelta
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 
@@ -12,7 +13,9 @@ def create_app():
 
     app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopO'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-
+    app.config["JWT_SECRET_KEY"] = "please-remember-to-change-me"
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+    jwt = JWTManager(app)
     db.init_app(app)
 
     login_manager = LoginManager()
@@ -36,4 +39,4 @@ def create_app():
 
     return app
 if __name__ == "__main__":
-    create_app().run(host= '0.0.0.0', port=5000)
+    create_app().run(host= '0.0.0.0', port=5000,debug=True)

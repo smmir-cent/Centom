@@ -3,7 +3,7 @@
 from flask import Blueprint, render_template,request,Markup
 from flask_login import login_required, current_user
 import subprocess
-
+from flask_jwt_extended import jwt_required
 main = Blueprint('main', __name__)
 
 @main.route('/')
@@ -36,3 +36,16 @@ def quick_scan_post():
     result = Markup(result.replace('\n', '<br>'))
     return render_template('quick-scan.html',result=result)
 
+
+##############################################
+
+
+@main.route('/profile2')
+@jwt_required()
+def my_profile():
+    response_body = {
+        "name": "Nagato",
+        "about" :"Hello! I'm a full stack developer that loves python and javascript"
+    }
+
+    return response_body
