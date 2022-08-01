@@ -1,29 +1,36 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Login from './components/login'
-import Profile from './components/profile'
-import Header from './components/header'
+import React from 'react';
+import Navbar from './components/navbar';
+import Profile from './components/profile';
+import { BrowserRouter as Router, Routes, Route }
+  from 'react-router-dom';
+import Home from './pages';
+import Login from './pages/login';
+
 import useToken from './components/useToken'
-import './App.css'
 
 function App() {
   const { token, removeToken, setToken } = useToken();
 
   return (
-    <BrowserRouter>
-      <div className="App">
-        <Header token={removeToken} />
-        {!token && token !== "" && token !== undefined ?
-          <Login setToken={setToken} />
-          : (
-            <>
+    <Router>
+      <body>
+        <section class="hero is-primary is-fullheight">
+          <Navbar />
+          <div class="hero-body">
+            <div class="container has-text-centered">
               <Routes>
-                <Route exact path="/profile" element={<Profile token={token} setToken={setToken} />}></Route>
+                <Route exact path='/' element={<Home />} />
+                <Route exact path='/home' element={<Home />} />
+                <Route exact path='/profile' element={<Profile />} />
+                <Route exact path="/login" element={<Login token={token} setToken={setToken} />}></Route>
               </Routes>
-            </>
-          )}
-      </div>
-    </BrowserRouter>
+            </div>
+          </div>
+        </section>
+      </body>
+    </Router>
   );
 }
+
 
 export default App;
