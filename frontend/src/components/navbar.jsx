@@ -4,7 +4,7 @@ import useToken from './useToken'
 import Login from '../pages/login';
 
 const Navbar = () => {
-    const { token, removeToken, setToken } = useToken();
+    const { token, removeToken, setToken, getToken } = useToken();
 
     return (
         <>
@@ -17,40 +17,47 @@ const Navbar = () => {
                                 <a href="/home" className="navbar-item">
                                     Home
                                 </a>
-
-                                {(!token && token !== "" && token !== undefined) ?
-
+                                {/* {console.log(getToken())} */}
+                                {(getToken()) ?
                                     (
                                         <>
                                             <a href="/profile" className="navbar-item">
                                                 Profile
                                             </a>
                                         </>
-                                    ) : {}}
+                                    ) : <></>}
 
 
-                                {/* {% if current_user.is_authenticated %} */}
-                                {/* {% endif %} */}
-                                {/* {% if not current_user.is_authenticated %} */}
-                                <a href="/login" className="navbar-item">
-                                    Login
-                                </a>
+                                {(!getToken()) ?
+                                    (
+                                        <>
+                                            <a href="/login" className="navbar-item">
+                                                Login
+                                            </a>
+                                        </>
+                                    ) : <></>}
+
                                 <a href="/sign-up" className="navbar-item">
                                     Sign Up
                                 </a>
-                                {/* {% endif %} */}
+                                {(getToken()) ?
+                                    (
+                                        <>
+                                            <a href="/quick-scan" className="navbar-item">
+                                                Quick Scan
+                                            </a>
+                                        </>
+                                    ) : <></>}
 
-                                {/* {% if current_user.is_authenticated %} */}
-                                <a href="/quick-scan" className="navbar-item">
-                                    Quick Scan
-                                </a>
-                                {/* {% endif %} */}
+                                {(getToken()) ?
+                                    (
+                                        <>
+                                            <a href="/logout" className="navbar-item">
+                                                Logout
+                                            </a>
+                                        </>
+                                    ) : <></>}
 
-                                {/* {% if current_user.is_authenticated %} */}
-                                <a href="/logout" className="navbar-item">
-                                    Logout
-                                </a>
-                                {/* {% endif %} */}
                             </div>
                         </div>
                     </div>

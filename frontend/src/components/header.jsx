@@ -20,8 +20,8 @@ function Header(props) {
     }
 
     return (
-        <header classNameName="App-header">
-            <img src={logo} classNameName="App-logo" alt="logo" />
+        <header className="App-header">
+            <img src={logo} className="App-logo" alt="logo" />
             <button onClick={logMeOut}>
                 Logout
             </button>

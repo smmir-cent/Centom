@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from "axios";
+import useToken from '../components/useToken'
 
 function Login(props) {
 
@@ -9,6 +10,7 @@ function Login(props) {
         is_remember: "off",
         is_wrong_message: ""
     })
+    const { token, removeToken, setToken, getToken } = useToken();
 
     function loginButton(event) {
         axios({
@@ -23,6 +25,8 @@ function Login(props) {
             .then((response) => {
                 if (response.data.access_token) {
                     props.setToken(response.data.access_token)
+                    setToken(response.data.access_token)
+                    token = response.data.access_token
                 }
             }).catch((error) => {
                 if (error.response) {
@@ -64,7 +68,7 @@ function Login(props) {
 
 
 
-                <form classNameName="login">
+                <form className="login">
                     <div className="field">
                         <div className="control">
                             <input onChange={handleChange} className="input is-large" type="email" name="email" placeholder="Your Email" autoFocus="" value={loginForm.email} />

@@ -10,7 +10,7 @@ import useToken from './components/useToken'
 import Header from './components/header';
 
 function App() {
-  const { token, removeToken, setToken } = useToken();
+  const { token, removeToken, setToken, getToken } = useToken();
 
   return (
     <Router>

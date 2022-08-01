@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import axios from "axios";
+import useToken from './useToken'
 
 function Profile(props) {
 
-    const [profileData, setProfileData] = useState(null)
+    const [profileData, setProfileData] = useState({ profile_name: "", about_me: "" })
+    const { token, removeToken, setToken, getToken } = useToken();
+
     function getData() {
         axios({
             method: "GET",
@@ -29,7 +32,7 @@ function Profile(props) {
     }
 
     return (
-        <div classNameName="Profile">
+        <div className="Profile">
 
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
                 integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossOrigin="anonymous" />
