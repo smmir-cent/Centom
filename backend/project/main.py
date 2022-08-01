@@ -40,12 +40,16 @@ def quick_scan_post():
 ##############################################
 
 
-@main.route('/profile2')
+@main.route('/profile2',methods=["GET"])
 @jwt_required()
 def my_profile():
+    current_user = get_jwt_identity()
+    print("enter profile2")
     response_body = {
-        "name": "Nagato",
-        "about" :"Hello! I'm a full stack developer that loves python and javascript"
+        # "name": current_user.name, 
+        # "surname": current_user.surname, 
+        # "mobile_number": current_user.mobile_number, 
+        # "email": current_user.email 
     }
 
-    return response_body
+    return response_body,200

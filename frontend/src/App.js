@@ -7,7 +7,6 @@ import Home from './pages';
 import Login from './pages/login';
 
 import useToken from './components/useToken'
-import Header from './components/header';
 
 function App() {
   const { token, removeToken, setToken, getToken } = useToken();
@@ -22,8 +21,8 @@ function App() {
               <Routes>
                 <Route exact path='/' element={<Home />} />
                 <Route exact path='/home' element={<Home />} />
-                <Route exact path='/profile' element={<Profile />} />
-                <Route exact path='/logout' element={<Header />} />
+                <Route exact path='/profile2' element={<Profile />} />
+                {/* <Route exact path='/logout' element={<Header />} /> */}
                 <Route exact path="/login" element={<Login token={token} setToken={setToken} />}></Route>
               </Routes>
             </div>
