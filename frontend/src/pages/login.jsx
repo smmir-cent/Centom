@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from 'react';
 import axios from "axios";
 
-import '../bulma.min.css';
+function Login(props) {
 
-const Login = (props) => {
     const [loginForm, setloginForm] = useState({
         email: "",
-        password: ""
+        password: "",
+        is_remember: "off",
+        is_wrong_message: ""
     })
 
     function loginButton(event) {
@@ -16,13 +16,17 @@ const Login = (props) => {
             url: "/token",
             data: {
                 email: loginForm.email,
-                password: loginForm.password
+                password: loginForm.password,
+                is_remember: loginForm.is_remember,
             }
         })
             .then((response) => {
-                props.setToken(response.data.access_token)
+                if (response.data.access_token) {
+                    props.setToken(response.data.access_token)
+                }
             }).catch((error) => {
                 if (error.response) {
+                    updateErrMsg(error.response.data.is_wrong_message)
                     console.log(error.response)
                     console.log(error.response.status)
                     console.log(error.response.headers)
@@ -31,12 +35,18 @@ const Login = (props) => {
 
         setloginForm(({
             email: "",
-            password: ""
+            password: "",
+            is_remember: false,
+            is_wrong_message: ""
         }))
 
         event.preventDefault()
     }
-
+    const updateErrMsg = (msg) => {
+        setloginForm(previousState => {
+            return { ...previousState, is_wrong_message: msg }
+        });
+    }
     function handleChange(event) {
         const { value, name } = event.target
         setloginForm(prevNote => ({
@@ -46,33 +56,33 @@ const Login = (props) => {
     }
 
     return (
-        <div class="column is-4 is-offset-4">
-            <h3 class="title">Login</h3>
-            <div class="box">
+        <div className="column is-4 is-offset-4">
+            <h3 className="title">Login</h3>
+            <div className="box">
 
-                <div class="notification is-danger">
+                <div className={loginForm.is_wrong_message ? "notification is-danger" : ""}>{loginForm.is_wrong_message ? loginForm.is_wrong_message : ""}</div>
 
-                </div>
 
-                <form method="POST" action="/login">
-                    <div class="field">
-                        <div class="control">
-                            <input onChange={handleChange} class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="" />
+
+                <form classNameName="login">
+                    <div className="field">
+                        <div className="control">
+                            <input onChange={handleChange} className="input is-large" type="email" name="email" placeholder="Your Email" autoFocus="" value={loginForm.email} />
                         </div>
                     </div>
 
-                    <div class="field">
-                        <div class="control">
-                            <input onChange={handleChange} class="input is-large" type="password" name="password" placeholder="Your Password" />
+                    <div className="field">
+                        <div className="control">
+                            <input onChange={handleChange} className="input is-large" type="password" name="password" placeholder="Your Password" text={loginForm.password} value={loginForm.password} />
                         </div>
                     </div>
-                    <div class="field">
-                        <label class="checkbox">
-                            <input onChange={handleChange} type="checkbox" />
+                    <div className="field">
+                        <label className="checkbox">
+                            <input onChange={handleChange} type="checkbox" name="is_remember" />
                             Remember me
                         </label>
                     </div>
-                    <button onClick={loginButton} class="button is-block is-info is-large is-fullwidth">Login</button>
+                    <button onClick={loginButton} className="button is-block is-info is-large is-fullwidth">Login</button>
                 </form>
             </div>
         </div>

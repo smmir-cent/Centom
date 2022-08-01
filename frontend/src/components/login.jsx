@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import axios from "axios";
-
+///////////////////////////////////////////////////////////
 function Login(props) {
 
     const [loginForm, setloginForm] = useState({
         email: "",
-        password: ""
+        password: "",
+        is_remember: false
     })
 
     function logMeIn(event) {
@@ -14,7 +15,8 @@ function Login(props) {
             url: "/token",
             data: {
                 email: loginForm.email,
-                password: loginForm.password
+                password: loginForm.password,
+                is_remember: loginForm.is_remember,
             }
         })
             .then((response) => {
@@ -29,7 +31,8 @@ function Login(props) {
 
         setloginForm(({
             email: "",
-            password: ""
+            password: "",
+            is_remember: false
         }))
 
         event.preventDefault()
@@ -46,7 +49,7 @@ function Login(props) {
     return (
         <div>
             <h1>Login</h1>
-            <form className="login">
+            <form classNameName="login">
                 <input onChange={handleChange}
                     type="email"
                     text={loginForm.email}

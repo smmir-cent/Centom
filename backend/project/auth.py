@@ -95,13 +95,18 @@ def refresh_expiring_jwts(response):
 def create_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
+    remember = request.json.get("is_remember", None)
+    print(email)
+    print(password)
+    print(remember)
     ## todo: DB
-    if email != "test" or password != "test":
-        return {"msg": "Wrong email or password"}, 401
+    if email != "test@gmail.com" or password != "test":
+        return {"is_wrong_message": "Wrong email or password"}, 401
 
     access_token = create_access_token(identity=email)
     response = {"access_token":access_token}
-    return response
+    print(response)
+    return response,200
 
 
 @auth.route("/logout2", methods=["POST"])

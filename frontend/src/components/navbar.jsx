@@ -8,13 +8,13 @@ const Navbar = () => {
 
     return (
         <>
-            <div class="hero-head">
-                <nav class="navbar">
-                    <div class="container">
+            <div className="hero-head">
+                <nav className="navbar">
+                    <div className="container">
 
-                        <div id="navbarMenuHeroA" class="navbar navbar-expand-lg navbar-light">
-                            <div class="navbar-end">
-                                <a href="/home" class="navbar-item">
+                        <div id="navbarMenuHeroA" className="navbar navbar-expand-lg navbar-light">
+                            <div className="navbar-end">
+                                <a href="/home" className="navbar-item">
                                     Home
                                 </a>
 
@@ -22,7 +22,7 @@ const Navbar = () => {
 
                                     (
                                         <>
-                                            <a href="/profile" class="navbar-item">
+                                            <a href="/profile" className="navbar-item">
                                                 Profile
                                             </a>
                                         </>
@@ -32,22 +32,22 @@ const Navbar = () => {
                                 {/* {% if current_user.is_authenticated %} */}
                                 {/* {% endif %} */}
                                 {/* {% if not current_user.is_authenticated %} */}
-                                <a href="/login" class="navbar-item">
+                                <a href="/login" className="navbar-item">
                                     Login
                                 </a>
-                                <a href="/sign-up" class="navbar-item">
+                                <a href="/sign-up" className="navbar-item">
                                     Sign Up
                                 </a>
                                 {/* {% endif %} */}
 
                                 {/* {% if current_user.is_authenticated %} */}
-                                <a href="/quick-scan" class="navbar-item">
+                                <a href="/quick-scan" className="navbar-item">
                                     Quick Scan
                                 </a>
                                 {/* {% endif %} */}
 
                                 {/* {% if current_user.is_authenticated %} */}
-                                <a href="/Logout" class="navbar-item">
+                                <a href="/logout" className="navbar-item">
                                     Logout
                                 </a>
                                 {/* {% endif %} */}
