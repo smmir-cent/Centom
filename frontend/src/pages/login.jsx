@@ -8,14 +8,14 @@ function Login(props) {
         email: "",
         password: "",
         is_remember: "off",
-        is_wrong_message: ""
+        message: ""
     })
     const { token, removeToken, setToken, getToken } = useToken();
 
     function loginButton(event) {
         axios({
             method: "POST",
-            url: "/token",
+            url: "/login",
             data: {
                 email: loginForm.email,
                 password: loginForm.password,
@@ -30,7 +30,7 @@ function Login(props) {
                 }
             }).catch((error) => {
                 if (error.response) {
-                    updateErrMsg(error.response.data.is_wrong_message)
+                    updateErrMsg(error.response.data.message)
                     console.log(error.response)
                     console.log(error.response.status)
                     console.log(error.response.headers)
@@ -41,14 +41,14 @@ function Login(props) {
             email: "",
             password: "",
             is_remember: false,
-            is_wrong_message: ""
+            message: ""
         }))
 
         event.preventDefault()
     }
     const updateErrMsg = (msg) => {
         setloginForm(previousState => {
-            return { ...previousState, is_wrong_message: msg }
+            return { ...previousState, message: msg }
         });
     }
     function handleChange(event) {
@@ -64,7 +64,7 @@ function Login(props) {
             <h3 className="title">Login</h3>
             <div className="box">
 
-                <div className={loginForm.is_wrong_message ? "notification is-danger" : ""}>{loginForm.is_wrong_message ? loginForm.is_wrong_message : ""}</div>
+                <div className={loginForm.message ? "notification is-danger" : ""}>{loginForm.message ? loginForm.message : ""}</div>
 
 
 

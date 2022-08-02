@@ -10,3 +10,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(1000))
     surname = db.Column(db.String(1000))
     mobile_number = db.Column(db.String(1000))
+
+
+
+      

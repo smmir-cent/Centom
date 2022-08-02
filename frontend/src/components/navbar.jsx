@@ -21,7 +21,7 @@ const Navbar = () => {
                                 {(getToken()) ?
                                     (
                                         <>
-                                            <a href="/profile2" className="navbar-item">
+                                            <a href="/profile" className="navbar-item">
                                                 Profile
                                             </a>
                                         </>

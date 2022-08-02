@@ -1,6 +1,7 @@
 import React from 'react';
 import Navbar from './components/navbar';
 import Profile from './components/profile';
+import Logout from './components/logout';
 import { BrowserRouter as Router, Routes, Route }
   from 'react-router-dom';
 import Home from './pages';
@@ -21,8 +22,8 @@ function App() {
               <Routes>
                 <Route exact path='/' element={<Home />} />
                 <Route exact path='/home' element={<Home />} />
-                <Route exact path='/profile2' element={<Profile />} />
-                {/* <Route exact path='/logout' element={<Header />} /> */}
+                <Route exact path='/profile' element={<Profile />} />
+                <Route exact path='/logout' element={<Logout />} />
                 <Route exact path="/login" element={<Login token={token} setToken={setToken} />}></Route>
               </Routes>
             </div>

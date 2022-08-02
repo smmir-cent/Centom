@@ -1,12 +1,11 @@
-import logo from '../logo.svg'
 import axios from "axios";
 
-function Header(props) {
+function Logout(props) {
 
     function logMeOut() {
         axios({
             method: "POST",
-            url: "/logout2",
+            url: "/logout",
         })
             .then((response) => {
                 props.token()
@@ -21,7 +20,6 @@ function Header(props) {
 
     return (
         <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
             <button onClick={logMeOut}>
                 Logout
             </button>
@@ -29,4 +27,4 @@ function Header(props) {
     )
 }
 
-export default Header;
+export default Logout;

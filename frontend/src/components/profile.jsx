@@ -10,9 +10,9 @@ function Profile(props) {
     function getData() {
         axios({
             method: "GET",
-            url: "/profile2",
+            url: "/profile",
             headers: {
-                Authorization: 'Bearer ' + props.token
+                Authorization: getToken()
             }
         })
             .then((response) => {
