@@ -65,9 +65,6 @@ function Login(props) {
             <div className="box">
 
                 <div className={loginForm.message ? "notification is-danger" : ""}>{loginForm.message ? loginForm.message : ""}</div>
-
-
-
                 <form className="login">
                     <div className="field">
                         <div className="control">

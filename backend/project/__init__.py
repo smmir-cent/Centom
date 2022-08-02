@@ -3,7 +3,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager 
-from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity,unset_jwt_cookies, jwt_required, JWTManager
+from flask_jwt_extended import JWTManager
 from datetime import timedelta
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()

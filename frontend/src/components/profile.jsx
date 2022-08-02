@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from "axios";
 import useToken from './useToken'
 
@@ -18,11 +18,6 @@ function Profile(props) {
             .then((response) => {
                 const res = response.data
                 res.access_token && props.setToken(res.access_token)
-                console.log("res.name")
-                console.log(res.name)
-                console.log(res.surname)
-                console.log(res.mobile_number)
-                console.log(res.email)
                 setProfileData(({
                     name: res.name,
                     surname: res.surname,
@@ -44,7 +39,10 @@ function Profile(props) {
         })
         )
     }
-    getData();
+    useEffect(() => {
+        getData();
+    }, []);
+
     return (
         <div className="Profile">
 
@@ -55,7 +53,7 @@ function Profile(props) {
                 integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossOrigin="anonymous"></script>
             <div className="container rounded bg-white mt-5 mb-5">
                 <div className="row">
-                    <div className="col-md-auto border-right">
+                    <div className="col-md-7 border-right">
                         <div className="p-3 py-5">
                             <div className="d-flex justify-content-between align-items-center mb-3">
                                 <h4 style={{ color: "black" }} className=" text-right">Profile Settings</h4>
@@ -68,7 +66,7 @@ function Profile(props) {
                             </div>
                             <div className="row mt-3">
                                 <div className="col-md-12"><label style={{ color: "black" }} className="labels">Role</label><input readOnly type="text"
-                                    className="form-control" placeholder="Your Role" value="------------------------" /></div>
+                                    className="form-control" placeholder="Your Role" value="Admin" /></div>
                                 <div className="col-md-12"><label style={{ color: "black" }} className="labels">Mobile Number</label><input onChange={handleChange} type="text"
                                     className="form-control" placeholder="enter phone number" value={profileData.mobile_number} /></div>
                                 <div className="col-md-12"><label style={{ color: "black" }} className="labels">Email ID</label><input onChange={handleChange} type="text"

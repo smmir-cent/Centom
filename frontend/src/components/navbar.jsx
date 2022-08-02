@@ -17,7 +17,6 @@ const Navbar = () => {
                                 <a href="/home" className="navbar-item">
                                     Home
                                 </a>
-                                {/* {console.log(getToken())} */}
                                 {(getToken()) ?
                                     (
                                         <>
