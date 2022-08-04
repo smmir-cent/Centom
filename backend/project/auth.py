@@ -144,19 +144,33 @@ def login_post():
     return jsonify({'message' : 'Could not verify'}),403
 
 
-@auth.route('/signup', methods=['POST'])
+@auth.route('/sign-up', methods=['POST'])
 def signup_post():
+    auth = request.json
 
-    email = request.form.get('email')
-    name = request.form.get('name')
-    surname = request.form.get('surname')
-    mobile_number = request.form.get('mobile_number')
-    password = request.form.get('password')
+    email = auth.get('email')
+    name = auth.get('name')
+    surname = auth.get('surname')
+    mobile_number = auth.get('mobile_number')
+    password = auth.get('password')
+
+    print("recieved form")
+    print(email)
+    print(name)
+    print(surname)
+    print(mobile_number)
+    print(password)
+    print("/recieved form")
+
+
+
+
+
 
     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
 
     if user: # if a user is found, we want to redirect back to signup page so user can try again  
-        return jsonify({'message' : 'User already exists. Please Log in.'}), 202
+        return jsonify({'message' : 'User already exists. Please Log in.'}), 401
 
     # create new user with the form data. Hash the password so plaintext version isn't saved.
     new_user = User(email=email, name=name,surname=surname,mobile_number=mobile_number, password=generate_password_hash(password, method='sha256'))

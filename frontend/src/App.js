@@ -10,6 +10,7 @@ import Home from './main-pages';
 import Login from './auth-pages/login';
 import Logout from './auth-pages/logout';
 import useToken from './auth-pages/useToken'
+import SignUp from './auth-pages/signup';
 
 function App() {
   const { token, removeToken, setToken, getToken } = useToken();
@@ -27,6 +28,8 @@ function App() {
                 <Route exact path='/profile' element={<Profile getToken={getToken} />} />
                 <Route exact path='/logout' element={<Logout getToken={getToken} removeToken={removeToken} />} />
                 <Route exact path="/login" element={<Login token={token} setToken={setToken} />}></Route>
+                <Route exact path='/sign-up' element={<SignUp />} />
+
               </Routes>
             </div>
           </div>
