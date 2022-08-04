@@ -1,13 +1,15 @@
 import React from 'react';
-import Navbar from './components/navbar';
-import Profile from './components/profile';
-import Logout from './components/logout';
 import { BrowserRouter as Router, Routes, Route }
   from 'react-router-dom';
-import Home from './pages';
-import Login from './pages/login';
 
-import useToken from './components/useToken'
+import Navbar from './profile-pages/navbar';
+import Profile from './profile-pages/profile';
+
+import Home from './main-pages';
+
+import Login from './auth-pages/login';
+import Logout from './auth-pages/logout';
+import useToken from './auth-pages/useToken'
 
 function App() {
   const { token, removeToken, setToken, getToken } = useToken();
