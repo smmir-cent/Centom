@@ -11,6 +11,7 @@ import Login from './auth-pages/login';
 import Logout from './auth-pages/logout';
 import useToken from './auth-pages/useToken'
 import SignUp from './auth-pages/signup';
+import QuickScan from './main-pages/quick-scan';
 
 function App() {
   const { token, removeToken, setToken, getToken } = useToken();
@@ -29,6 +30,7 @@ function App() {
                 <Route exact path='/logout' element={<Logout getToken={getToken} removeToken={removeToken} />} />
                 <Route exact path="/login" element={<Login token={token} setToken={setToken} />}></Route>
                 <Route exact path='/sign-up' element={<SignUp />} />
+                <Route exact path='/quick-scan' element={<QuickScan />} />
 
               </Routes>
             </div>
