@@ -1,11 +1,7 @@
 import React from "react";
 import '../bulma.min.css';
-import useToken from './useToken'
-import Login from '../pages/login';
 
-const Navbar = () => {
-    const { token, removeToken, setToken, getToken } = useToken();
-
+function Navbar(props) {
     return (
         <>
             <div className="hero-head">
@@ -17,7 +13,7 @@ const Navbar = () => {
                                 <a href="/home" className="navbar-item">
                                     Home
                                 </a>
-                                {(getToken()) ?
+                                {(props.getToken()) ?
                                     (
                                         <>
                                             <a href="/profile" className="navbar-item">
@@ -27,7 +23,7 @@ const Navbar = () => {
                                     ) : <></>}
 
 
-                                {(!getToken()) ?
+                                {(!props.getToken()) ?
                                     (
                                         <>
                                             <a href="/login" className="navbar-item">
@@ -39,7 +35,7 @@ const Navbar = () => {
                                 <a href="/sign-up" className="navbar-item">
                                     Sign Up
                                 </a>
-                                {(getToken()) ?
+                                {(props.getToken()) ?
                                     (
                                         <>
                                             <a href="/quick-scan" className="navbar-item">
@@ -48,7 +44,7 @@ const Navbar = () => {
                                         </>
                                     ) : <></>}
 
-                                {(getToken()) ?
+                                {(props.getToken()) ?
                                     (
                                         <>
                                             <a href="/logout" className="navbar-item">

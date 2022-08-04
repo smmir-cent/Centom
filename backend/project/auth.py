@@ -1,5 +1,6 @@
 # auth.py
 
+from crypt import methods
 from flask import Blueprint,current_app, render_template, make_response,redirect, url_for, request, flash, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import User
@@ -69,15 +70,12 @@ auth = Blueprint('auth', __name__)
 
 
 
-@auth.route("/logout")
+@auth.route("/logout",methods=['POST'])
 def logout():
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
-    return response    
-
-
-
-
+    print(response)
+    return response
 
 
 def token_required(f):
@@ -96,8 +94,6 @@ def token_required(f):
             current_user = User.query\
                 .filter_by(email = decoded_data['email'])\
                 .first()
-            print("+55+945654+946+49+")
-            print(current_user)
         except:
             return jsonify({
                 'message' : 'Token is invalid !!'

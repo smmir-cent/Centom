@@ -16,14 +16,14 @@ function App() {
     <Router>
       <div>
         <section className="hero is-primary is-fullheight">
-          <Navbar />
+          <Navbar getToken={getToken} />
           <div className="hero-body">
             <div className="container has-text-centered">
               <Routes>
                 <Route exact path='/' element={<Home />} />
                 <Route exact path='/home' element={<Home />} />
-                <Route exact path='/profile' element={<Profile />} />
-                <Route exact path='/logout' element={<Logout />} />
+                <Route exact path='/profile' element={<Profile getToken={getToken} />} />
+                <Route exact path='/logout' element={<Logout getToken={getToken} removeToken={removeToken} />} />
                 <Route exact path="/login" element={<Login token={token} setToken={setToken} />}></Route>
               </Routes>
             </div>

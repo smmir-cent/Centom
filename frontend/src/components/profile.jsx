@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react'
 import axios from "axios";
-import useToken from './useToken'
 
 function Profile(props) {
 
     const [profileData, setProfileData] = useState({ name: "", surname: "", mobile_number: "", email: "" })
-    const { token, removeToken, setToken, getToken } = useToken();
 
     function getData() {
         axios({
             method: "GET",
             url: "/profile",
             headers: {
-                Authorization: getToken()
+                Authorization: props.getToken()
             }
         })
             .then((response) => {
