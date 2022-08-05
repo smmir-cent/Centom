@@ -30,7 +30,7 @@ function App() {
                 <Route exact path='/logout' element={<Logout getToken={getToken} removeToken={removeToken} />} />
                 <Route exact path="/login" element={<Login token={token} setToken={setToken} />}></Route>
                 <Route exact path='/sign-up' element={<SignUp />} />
-                <Route exact path='/quick-scan' element={<QuickScan />} />
+                <Route exact path='/quick-scan' element={<QuickScan getToken={getToken} />} />
 
               </Routes>
             </div>

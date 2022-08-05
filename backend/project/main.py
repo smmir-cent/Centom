@@ -1,31 +1,51 @@
 # main.py
 
-from flask import Blueprint
+from flask import Blueprint,request,Markup
+from project.auth import token_required
 import subprocess
-from .auth import token_required
-from .models import User
 
 main = Blueprint('main', __name__)
 
-# @main.route('/quick-scan')
-# def quick_scan():
-#     return render_template('quick-scan.html',result="NONE")
+@main.route('/quick-scan', methods=['POST'])
+@token_required
+def quick_scan_post(current_user):
+    form = request.json
+    ip = form.get("ip")
+    options = form.get("options")
+    print("#################")
+    print(ip)
+    print(options)
+    print("#################")
+    # get = []
+    # walk = []
+    oids = {'get':[],'walk':[]}
+    for item in options:
+        oids[item['mode']].append(item['oid'])
 
-# @main.route('/quick-scan', methods=['POST'])
-# def quick_scan_post():
-#     ip = request.form["ip"]
-#     print(request.form["ip"])
-#     selected = request.form.getlist('c_check')
-#     args = ['../build/centom_engine','-get']
-#     args.extend([ip])
-#     args.extend(selected)
-#     print(args)
-#     print("*********************************")
-#     result = subprocess.run(args, stdout=subprocess.PIPE)
-#     print(result.stdout.decode('utf-8'))
-#     result = result.stdout.decode('utf-8')
-#     result = Markup(result.replace('\n', '<br>'))
-#     return render_template('quick-scan.html',result=result)
+    print(oids)
+
+    for item in oids.keys():
+        mode = '-'+ item
+        args = ['../build/centom_engine',mode]
+        args.extend([ip])
+        args.extend( oids[item])
+        # print("****************")
+        # print(args)
+        result = subprocess.run(args, stdout=subprocess.PIPE)
+        print(result.stdout.decode('utf-8'))
+        result = result.stdout.decode('utf-8')
+        result += '\n\n\n'
+        result = Markup(result.replace('\n', '<br>'))
+    # return render_template('quick-scan.html',result=result)
+
+    print(result)
+
+
+
+    return {},200
+    # print(args)
+    # print("*********************************")
+
 
 
 ##############################################
