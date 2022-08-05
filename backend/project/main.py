@@ -53,3 +53,10 @@ def my_profile(current_user):
     }
 
     return response_body,200
+
+
+
+@main.route('/net-discovery', methods=['GET'])
+@token_required
+def network_discovery_get(current_user):
+    pass

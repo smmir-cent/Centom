@@ -47,6 +47,16 @@ function Navbar(props) {
                                 {(props.getToken()) ?
                                     (
                                         <>
+                                            <a href="/net-discovery" className="navbar-item">
+                                                Net Discovery
+                                            </a>
+                                        </>
+                                    ) : <></>}
+
+
+                                {(props.getToken()) ?
+                                    (
+                                        <>
                                             <a href="/logout" className="navbar-item">
                                                 Logout
                                             </a>
