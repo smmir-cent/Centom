@@ -135,3 +135,7 @@ button:focus {
     border: solid #dee2e6;
     border-width: 1px 0 0;
 }
+
+#result {
+    white-space: pre-wrap;
+}

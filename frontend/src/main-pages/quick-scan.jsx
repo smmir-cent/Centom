@@ -49,7 +49,8 @@ function QuickScan(props) {
                     options: formValues
                 }
             }).then((response) => {
-                setResult(response.data.message)
+                const res = response.data
+                setResult(res.result)
             }).catch((error) => {
                 if (error.response) {
                     setResult(error.response.data.message)
@@ -116,22 +117,26 @@ function QuickScan(props) {
 
             {/* /////////////// */}
 
+            {
+                result ?
+                    < div className="container rounded bg-white mt-5 mb-5" >
+                        <div className="col-md-auto border-center">
+                            <div className="p-3 py-5">
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 style={{ color: "black" }} className=" text-right">Result</h4>
+                                </div>
+                                <img src={require("../assets/photos/O18mJ1K.png")} width="100" className="mb-4" />
+                                <div>
+                                    <span id="result" style={{ color: "black" }}>{result}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div >
+                    : null
+            }
 
 
-            < div className="container rounded bg-white mt-5 mb-5" >
-                <div className="col-md-auto border-center">
-                    <div className="p-3 py-5">
-                        <div className="d-flex justify-content-between align-items-center mb-3">
-                            <h4 style={{ color: "black" }} className=" text-right">Result</h4>
-                        </div>
-                        <img src={require("../assets/photos/O18mJ1K.png")} width="100" className="mb-4" />
-                        <div>
-                            {/* <span style={{ color: "black" }}> {{ result }}</span> */}
-                        </div>
-                    </div>
-                </div>
-            </div >
-        </div>
+        </div >
     )
 
 };

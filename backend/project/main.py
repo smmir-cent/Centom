@@ -1,6 +1,6 @@
 # main.py
 
-from flask import Blueprint,request,Markup
+from flask import Blueprint,request
 from project.auth import token_required
 import subprocess
 
@@ -12,43 +12,34 @@ def quick_scan_post(current_user):
     form = request.json
     ip = form.get("ip")
     options = form.get("options")
-    print("#################")
-    print(ip)
-    print(options)
-    print("#################")
-    # get = []
-    # walk = []
+    # print("#################")
+    # print(ip)
+    # print(options)
+    # print("#################")
+
     oids = {'get':[],'walk':[]}
     for item in options:
         oids[item['mode']].append(item['oid'])
 
     print(oids)
-
+    result = ""
     for item in oids.keys():
         mode = '-'+ item
         args = ['../build/centom_engine',mode]
         args.extend([ip])
         args.extend( oids[item])
-        # print("****************")
-        # print(args)
-        result = subprocess.run(args, stdout=subprocess.PIPE)
-        print(result.stdout.decode('utf-8'))
-        result = result.stdout.decode('utf-8')
-        result += '\n\n\n'
-        result = Markup(result.replace('\n', '<br>'))
-    # return render_template('quick-scan.html',result=result)
+
+        engine_result = subprocess.run(args, stdout=subprocess.PIPE)
+        print(engine_result.stdout.decode('utf-8'))
+        result += engine_result.stdout.decode('utf-8')
+        result += "\n\n"
+        # result = Markup(result.replace('\n', '<br/>'))
 
     print(result)
+    return {"result":result},200
 
 
 
-    return {},200
-    # print(args)
-    # print("*********************************")
-
-
-
-##############################################
 
 
 @main.route('/profile',methods=["GET"])
