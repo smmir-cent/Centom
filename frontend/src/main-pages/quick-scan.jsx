@@ -82,7 +82,7 @@ function QuickScan(props) {
                                     <div className="form-row align-items-center">
                                         <div className="col-auto my-1">
                                             <select name="mode" onChange={e => handleChange(index, e)} defaultValue={'get'} className="custom-select mr-sm-2" id="inlineFormCustomSelect">
-                                                <option value="get">get</option>
+                                                <option value="get">Get</option>
                                                 <option value="walk">Walk</option>
                                             </select>
                                             <input type="text" name="oid" value={element.oid || ""} onChange={e => handleChange(index, e)} />
