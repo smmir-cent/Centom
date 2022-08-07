@@ -1,6 +1,9 @@
 import subprocess
 import sys
 import ipaddress
+import networkx as nx
+import matplotlib.pyplot as plt
+
 
 system_oid = '1.3.6.1.2.1.1'
 
@@ -17,10 +20,25 @@ def ip_validation(address):
         print("{} is an invalid IP address/or network".format(address))
         exit()
 
+def vis_graph():
+    G = nx.Graph()
+    G.add_nodes_from([1,2, 3,4,5,6,7,8])
+    G.add_edge(1, 2)
+    G.add_edge(3, 2)
+    G.add_edge(1, 4)
+    G.add_edge(4, 6)
+    G.add_edge(4, 5)
+    G.add_edge(5, 7)
+    G.add_edge(7, 8)
+    pos = nx.spring_layout(G, seed=47)  # Seed layout for reproducibility
+    nx.draw(G, pos=pos, with_labels = True)
+    plt.savefig("G.png")
+    # plt.show()
+    exit()
 
 
 if __name__ == "__main__":
-
+    vis_graph()
     if len(sys.argv) < 2:
         print("not enough args(subnet)")
         print("usage: python3 net-dis/main.py [ip]")
@@ -47,8 +65,21 @@ if __name__ == "__main__":
             else:
                 print(f'{str(ip)} is alive')
                 targets.append(ip)
+                break
     
     print("alive servers/switches/routers")
     print(targets)
+
+    for ip in targets:
+        args = ['traceroute','-I','-d','-h 10',str(ip)]
+        trace_result = subprocess.run(args, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        result_out = trace_result.stdout.decode('utf-8')
+        result_err = trace_result.stderr.decode('utf-8')
+        print(result_out)
+        print("#########")
+        print(result_err)
+        ## todo: extract len(targets) paths
+    
+
 
 
