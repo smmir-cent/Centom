@@ -4,6 +4,7 @@ import ipaddress
 import networkx as nx
 import matplotlib.pyplot as plt
 
+import re
 
 system_oid = '1.3.6.1.2.1.1'
 
@@ -19,6 +20,8 @@ def ip_validation(address):
     except ValueError:
         print("{} is an invalid IP address/or network".format(address))
         exit()
+
+def line_iterator(str): return iter(str.splitlines())
 
 def vis_graph():
     G = nx.Graph()
@@ -38,7 +41,7 @@ def vis_graph():
 
 
 if __name__ == "__main__":
-    vis_graph()
+    # vis_graph()
     if len(sys.argv) < 2:
         print("not enough args(subnet)")
         print("usage: python3 net-dis/main.py [ip]")
@@ -65,21 +68,30 @@ if __name__ == "__main__":
             else:
                 print(f'{str(ip)} is alive')
                 targets.append(ip)
-                break
+                # break
     
+    # targets = ['185.13.228.162','127.0.0.1','142.251.36.46']
     print("alive servers/switches/routers")
     print(targets)
 
+    paths = {}
     for ip in targets:
-        args = ['traceroute','-I','-d','-h 10',str(ip)]
+        paths[str(ip)] = []
+        args = ['traceroute','-I','-d','-m 3',str(ip)]
         trace_result = subprocess.run(args, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         result_out = trace_result.stdout.decode('utf-8')
         result_err = trace_result.stderr.decode('utf-8')
-        print(result_out)
-        print("#########")
-        print(result_err)
-        ## todo: extract len(targets) paths
-    
+        # print(result_out)
 
-
-
+        for line in line_iterator(result_out):
+            if 'traceroute'in line:
+                continue
+            # if str(ip) in line:
+            #     continue
+            match = re.search(r"\(([\d.]+)\)", line)
+            if match:
+                current_ip = match.group(1)
+                paths[str(ip)].append(current_ip)
+                
+    ## todo: add each path as edeges to graph
+    print(paths)
