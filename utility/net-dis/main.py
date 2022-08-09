@@ -1,12 +1,8 @@
 import subprocess
 import sys
 import ipaddress
-import networkx as nx
-import matplotlib.pyplot as plt
-
 import re
 
-system_oid = '1.3.6.1.2.1.1'
 
 def ip_validation(address):
     try:
@@ -23,35 +19,30 @@ def ip_validation(address):
 
 def line_iterator(str): return iter(str.splitlines())
 
-def vis_graph():
-    G = nx.Graph()
-    G.add_nodes_from([1,2, 3,4,5,6,7,8])
-    G.add_edge(1, 2)
-    G.add_edge(3, 2)
-    G.add_edge(1, 4)
-    G.add_edge(4, 6)
-    G.add_edge(4, 5)
-    G.add_edge(5, 7)
-    G.add_edge(7, 8)
-    pos = nx.spring_layout(G, seed=47)  # Seed layout for reproducibility
-    nx.draw(G, pos=pos, with_labels = True)
-    plt.savefig("G.png")
-    # plt.show()
-    exit()
+# def vis_graph():
+#     G = nx.Graph()
+#     G.add_nodes_from([1,2, 3,4,5,6,7,8])
+#     G.add_edge(1, 2)
+#     G.add_edge(3, 2)
+#     G.add_edge(1, 4)
+#     G.add_edge(4, 6)
+#     G.add_edge(4, 5)
+#     G.add_edge(5, 7)
+#     G.add_edge(7, 8)
+#     pos = nx.spring_layout(G, seed=47)  # Seed layout for reproducibility
+#     nx.draw(G, pos=pos, with_labels = True)
+#     plt.savefig("G.png")
+#     # plt.show()
+#     exit()
 
 
-if __name__ == "__main__":
-    # vis_graph()
-    if len(sys.argv) < 2:
-        print("not enough args(subnet)")
-        print("usage: python3 net-dis/main.py [ip]")
-        exit()
+def scan_net(net_ip):
 
-    ip_validation(sys.argv[1])
+    ip_validation(net_ip)
     targets = []
-    mask = int(sys.argv[1].split('/',1)[1])
+    mask = int(net_ip.split('/',1)[1])
 
-    for ip in ipaddress.IPv4Network(sys.argv[1]):
+    for ip in ipaddress.IPv4Network(net_ip):
         # print(ip)
         bin_ip = ('.'.join([bin(int(x)+256)[3:] for x in str(ip).split('.')])).replace('.','')
         host_bits = bin_ip[mask-32:]
@@ -81,7 +72,7 @@ if __name__ == "__main__":
         trace_result = subprocess.run(args, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         result_out = trace_result.stdout.decode('utf-8')
         result_err = trace_result.stderr.decode('utf-8')
-        # print(result_out)
+
 
         for line in line_iterator(result_out):
             if 'traceroute'in line:
@@ -92,6 +83,17 @@ if __name__ == "__main__":
             if match:
                 current_ip = match.group(1)
                 paths[str(ip)].append(current_ip)
-                
+
     ## todo: add each path as edeges to graph
     print(paths)
+    return paths
+
+
+
+if __name__ == "__main__":
+    # vis_graph()
+    if len(sys.argv) < 2:
+        print("not enough args(subnet)")
+        print("usage: python3 net-dis/main.py [ip]")
+        exit()
+    scan_net(sys.argv[1])
