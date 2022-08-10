@@ -61,6 +61,10 @@ CREATE TABLE user (
 	mobile_number TEXT NOT NULL,
 	password TEXT NOT NULL
 );
+CREATE TABLE network (
+	name TEXT PRIMARY KEY,
+	info TEXT NOT NULL
+);
 ```
 
 ```sh

@@ -9,28 +9,39 @@ import axios from 'axios';
 function NetDiscovery(props) {
 
     const [result, setResult] = useState()
-    const [ip, setIp] = useState("")
+    const [checked, setChecked] = React.useState(false);
+    const [info, setInfo] = useState({ name: "", ip: "" })
 
     let handleSubmit = (event) => {
         event.preventDefault();
     }
-    function handleIpChange(event) {
-        setIp(event.target.value);
+    function handleInfoChange(event) {
+        const { value, name } = event.target
+        setInfo(prevNote => ({
+            ...prevNote, [name]: value
+        })
+        )
     }
+    const handleChange = () => {
+        setChecked(!checked);
+    };
 
     function scanButton() {
         axios({
-            method: "POST",
+            method: checked ? "POST" : "GET",
             url: "/net-discovery",
             headers: {
                 Authorization: props.getToken()
             },
             data: {
-                ip: ip,
+                ip: info.ip,
+                name: info.name
             }
         }).then((response) => {
+            // graph rendering
             const res = response.data
-            setResult(res.result)
+            console.log(res.message)
+            setResult(res.message)
         }).catch((error) => {
             if (error.response) {
                 setResult(error.response.data.message)
@@ -50,10 +61,13 @@ function NetDiscovery(props) {
                             <h1 style={{ color: "black" }} id="register">Network Discovery</h1>
 
                             <h4 style={{ color: "black" }}>Network IP Address</h4>
-                            <input onChange={handleIpChange} placeholder="192.168.1.0/24 ..." name="ip" />
+
+                            <input onChange={handleInfoChange} placeholder="192.168.1.0/24 ..." name="ip" />
+                            <br />
+                            <input onChange={handleInfoChange} placeholder="Name ..." name="name" />
                             <div className="bd-example">
                                 <div className="form-check">
-                                    <input className="form-check-input" style={{ marginTop: "0em" }} name="c_check" type="checkbox" value="sysDescr.0" id="flexCheckDefault" />
+                                    <input onChange={handleChange} className="form-check-input" style={{ marginTop: "0em" }} name="c_check" type="checkbox" value="sysDescr.0" id="flexCheckDefault" />
                                     <label className="form-check-label" style={{ color: "black", display: "block", float: "left" }} htmlFor="flexCheckDefault">
                                         Save in DB
                                     </label>
