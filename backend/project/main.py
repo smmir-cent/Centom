@@ -5,10 +5,10 @@ from project.auth import token_required
 import subprocess
 import sys
 import json
-sys.path.insert(0,'./../../utility/net-dis/net-dis.py')
-from net-dis.py import scan_net
-from backend.project.models import Network
-from backend.project import db
+sys.path.insert(1,'../utility/net-dis')
+from discovery import scan_net
+from project.models import Network
+from project import db
 
 main = Blueprint('main', __name__)
 

@@ -50,9 +50,15 @@ function NetDiscovery(props) {
                             <h1 style={{ color: "black" }} id="register">Network Discovery</h1>
 
                             <h4 style={{ color: "black" }}>Network IP Address</h4>
-                            <p>
-                                <input onChange={handleIpChange} placeholder="192.168.1.1 ..." name="ip" />
-                            </p>
+                            <input onChange={handleIpChange} placeholder="192.168.1.0/24 ..." name="ip" />
+                            <div className="bd-example">
+                                <div className="form-check">
+                                    <input className="form-check-input" style={{ marginTop: "0em" }} name="c_check" type="checkbox" value="sysDescr.0" id="flexCheckDefault" />
+                                    <label className="form-check-label" style={{ color: "black", display: "block", float: "left" }} htmlFor="flexCheckDefault">
+                                        Save in DB
+                                    </label>
+                                </div>
+                            </div>
                             <br />
                             <div style={{ overflow: "auto" }} id="nextprevious">
                                 <div style={{ float: "right" }}>

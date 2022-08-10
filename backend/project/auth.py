@@ -2,14 +2,13 @@
 
 from flask import Blueprint,current_app, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from backend.project.models import User
-from backend.project import db
+from project.models import User
+from project import db
 from flask_jwt_extended import unset_jwt_cookies
 from functools import wraps
 from datetime import datetime, timedelta
 import jwt
 auth = Blueprint('auth', __name__)
-
 
 ##############################################
 
