@@ -45,7 +45,7 @@ int main(int argc, char **argv)
   document.ParseStream(is);
   std::string log_level = document["log_level"].GetString();
   std::string snmp_version = document["snmp_version"].GetString();
-  std::cout << "log_level: " << log_level << std::endl;
+  // std::cout << "log_level: " << log_level << std::endl;
   std::cout << "snmp_version: " << snmp_version
             << std::endl;
   fclose(fp);
@@ -67,12 +67,13 @@ int main(int argc, char **argv)
     snmpMode = SnmpMode::SNMP_MODE_V2C;
 
   // spdlog test
-  spdlogTest();
+  // spdlogTest();
   // spdlog test
   std::vector<const char *> oids;
   bool is_walk = false;
   bool is_get = false;
   bool is_trap = false;
+  bool is_sys_test = false;
 
   if (strcmp(argv[1], "-walk") == 0)
   {
@@ -86,9 +87,13 @@ int main(int argc, char **argv)
   {
     is_trap = true;
   }
+  else if (strcmp(argv[1], "-systest") == 0)
+  {
+    is_sys_test = true;
+  }
   else
   {
-    std::cout << "USAGE: centom_engine [-walk | -get] [ip] [OIDs]\n";
+    std::cout << "USAGE: centom_engine [ -walk | -get | -trap | -systest ] [ip] [OIDs]\n";
     return 1;
   }
 
@@ -101,7 +106,7 @@ int main(int argc, char **argv)
     }
     if (oids.size() == 0)
     {
-      std::cout << "USAGE: centom_engine [-walk | -get] [ip] [OIDs]\n";
+      std::cout << "USAGE: centom_engine [ -walk | -get | -trap | -systest ] [ip] [OIDs]\n";
       return 1;
     }
     char *temp0 = (char *)"public";
@@ -118,7 +123,7 @@ int main(int argc, char **argv)
     }
     if (oids.size() == 0)
     {
-      std::cout << "USAGE: centom_engine [-walk | -get] [ip] [OIDs]\n";
+      std::cout << "USAGE: centom_engine [ -walk | -get | -trap | -systest ] [ip] [OIDs]\n";
       return 1;
     }
     char *temp0 = (char *)"public";
@@ -126,6 +131,16 @@ int main(int argc, char **argv)
     Session session(ip, "uMD5", "PMD51111");
 
     session.getOids(oids);
+  }
+  else if (is_sys_test)
+  {
+
+    std::string ip(argv[2]);
+    oids.push_back("system");
+    char *temp0 = (char *)"public";
+    init_snmp("snmpapp");
+    Session session(ip, "uMD5", "PMD51111");
+    session.walkOids(oids);
   }
   else if (is_trap)
   {

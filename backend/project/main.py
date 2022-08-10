@@ -1,8 +1,14 @@
 # main.py
 
-from flask import Blueprint,request
+from flask import Blueprint,request,jsonify
 from project.auth import token_required
 import subprocess
+import sys
+import json
+sys.path.insert(0,'./../../utility/net-dis/net-dis.py')
+from net-dis.py import scan_net
+from backend.project.models import Network
+from backend.project import db
 
 main = Blueprint('main', __name__)
 
@@ -12,10 +18,6 @@ def quick_scan_post(current_user):
     form = request.json
     ip = form.get("ip")
     options = form.get("options")
-    # print("#################")
-    # print(ip)
-    # print(options)
-    # print("#################")
 
     oids = {'get':[],'walk':[]}
     for item in options:
@@ -33,14 +35,9 @@ def quick_scan_post(current_user):
         print(engine_result.stdout.decode('utf-8'))
         result += engine_result.stdout.decode('utf-8')
         result += "\n\n"
-        # result = Markup(result.replace('\n', '<br/>'))
 
     print(result)
     return {"result":result},200
-
-
-
-
 
 @main.route('/profile',methods=["GET"])
 @token_required
@@ -56,7 +53,44 @@ def my_profile(current_user):
 
 
 
-@main.route('/net-discovery', methods=['GET'])
+@main.route('/net-discovery',methods=["GET"])
 @token_required
-def network_discovery_get(current_user):
-    pass
+def net_dis(current_user):
+    pass 
+    # get subnet
+    # run net-dis utility
+    # return net graph image or json to render in js
+
+@main.route('/net-discovery',methods=["POST"])
+@token_required
+def net_dis_post(current_user):
+    # get subnet
+    form = request.json
+    subnet = form.get("subnet")
+    name = form.get("name")
+    net = Network.query.filter_by(name=name).first() # if this returns a user, then the email already exists in database
+    if net: # if a net is found, user must try again  
+        return jsonify({'message' : 'Network already exists. Please try again.'}), 401
+
+    # run net-dis utility
+    res_info = scan_net(subnet)
+    if len(res_info) == 0:
+        ## invalid IP network
+        return {"message":"invalid IP network"},200
+    
+    # add infos to network table
+    
+    # info: {subnet:res_info}
+    # name: name
+
+    # create new net with the form data.
+    info = {subnet:res_info}
+    new_net = Network(name=name,info=json.dumps(info, indent = 4))
+
+    # add the new net to the database
+    db.session.add(new_net)
+    db.session.commit()
+
+    # return net graph image or json to render in js
+    return jsonify({'message' : info}), 200
+
