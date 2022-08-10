@@ -1,52 +1,14 @@
 # auth.py
 
-from crypt import methods
-from flask import Blueprint,current_app, render_template, make_response,redirect, url_for, request, flash, jsonify
+from flask import Blueprint,current_app, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import User
-from . import db
-from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity,unset_jwt_cookies, jwt_required, JWTManager
+from backend.project.models import User
+from backend.project import db
+from flask_jwt_extended import unset_jwt_cookies
 from functools import wraps
 from datetime import datetime, timedelta
 import jwt
 auth = Blueprint('auth', __name__)
-
-# @auth.route('/signup')
-# def signup():
-#     return render_template('signup.html')
-
-# @auth.route('/signup', methods=['POST'])
-# def signup_post():
-
-#     email = request.form.get('email')
-#     name = request.form.get('name')
-#     surname = request.form.get('surname')
-#     mobile_number = request.form.get('mobile_number')
-#     password = request.form.get('password')
-
-#     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
-
-#     if user: # if a user is found, we want to redirect back to signup page so user can try again  
-#         flash('Email address already exists')
-#         return redirect(url_for('auth.signup'))
-
-#     # create new user with the form data. Hash the password so plaintext version isn't saved.
-#     new_user = User(email=email, name=name,surname=surname,mobile_number=mobile_number, password=generate_password_hash(password, method='sha256'))
-
-#     # add the new user to the database
-#     db.session.add(new_user)
-#     db.session.commit()
-
-#     return redirect(url_for('auth.login'))
-
-# @auth.route('/logout')
-# @login_required
-# def logout():
-#     logout_user()
-#     return redirect(url_for('main.index'))
-
-
-
 
 
 ##############################################

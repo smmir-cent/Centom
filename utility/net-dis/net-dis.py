@@ -14,8 +14,8 @@ def ip_validation(address):
         else:
             raise ValueError 
     except ValueError:
-        print("{} is an invalid IP address/or network".format(address))
-        exit()
+        print("{} is an invalid IP network".format(address))
+        return False
 
 def line_iterator(str): return iter(str.splitlines())
 
@@ -38,7 +38,8 @@ def line_iterator(str): return iter(str.splitlines())
 
 def scan_net(net_ip):
 
-    ip_validation(net_ip)
+    if not ip_validation(net_ip):
+        return {}
     targets = []
     mask = int(net_ip.split('/',1)[1])
 
