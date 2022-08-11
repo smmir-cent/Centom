@@ -101,7 +101,7 @@ function NetDiscovery(props) {
                                             <div className="d-flex justify-content-between align-items-center mb-3">
                                                 <h4 style={{ color: "black" }} className=" text-right">Result</h4>
                                             </div>
-                                            <img src={require("../assets/photos/O18mJ1K.png")} width="100" className="mb-4" />
+                                            <img alt='success' src={require("../assets/photos/O18mJ1K.png")} width="100" className="mb-4" />
                                             <div>
                                                 <Network id="result" data={result}></Network>
                                             </div>
