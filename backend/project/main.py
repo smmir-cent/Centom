@@ -54,14 +54,14 @@ def my_profile(current_user):
 
 
 def create_network_json(res_info):
-    network_graph = {"nodes": [],"links": []}
+    network_graph = {"nodes": [],"edges": []}
     all_nodes = {}
     ids = 1
 
     all_nodes["manager"] = ids
     network_graph['nodes'].append({
         "id" : ids,
-        "name" : "manager"
+        "label" : "manager"
         })
     ids += 1
     for node in res_info.keys():
@@ -69,7 +69,7 @@ def create_network_json(res_info):
             all_nodes[node] = ids
             network_graph['nodes'].append({
                 "id" : ids,
-                "name" : node
+                "label" : node
             })
             ids += 1
 
@@ -79,15 +79,15 @@ def create_network_json(res_info):
                 all_nodes[node] = ids
                 network_graph['nodes'].append({
                     "id" : ids,
-                    "name" : node
+                    "label" : node
                 })
                 ids += 1
 
 
     for dest in res_info.keys():
-        network_graph['links'].append({
-           "source": all_nodes['manager'],
-           "target": all_nodes[dest]
+        network_graph['edges'].append({
+           "from": all_nodes['manager'],
+           "to": all_nodes[dest]
            })        
         lst = copy.deepcopy(res_info[dest])
         lst.pop(0)
@@ -98,9 +98,9 @@ def create_network_json(res_info):
 
         for (source, destination) in zip(res_info[dest],lst):
             print(source, destination)
-            network_graph['links'].append({
-                "source": all_nodes[source],
-                "target": all_nodes[destination]
+            network_graph['edges'].append({
+                "from": all_nodes[source],
+                "to": all_nodes[destination]
                 })
     return network_graph
 
@@ -113,11 +113,13 @@ def net_dis_post(current_user):
     form = request.json
     subnet = form.get("ip")
     name = form.get("name")
+    save = form.get("save")
     print("subnet")
     print(subnet)
     print(name)
+    print(save)
     print("name")
-    if request.method == 'POST':
+    if save:
         net = Network.query.filter_by(name=name).first() # if this returns a user, then the email already exists in database
         if net: # if a net is found, user must try again  
             return jsonify({'message' : 'Network already exists. Please try again.'}), 401
@@ -134,7 +136,7 @@ def net_dis_post(current_user):
     # name: name
     ############################################## res_info.keys(): have snmp agent
     network_graph = create_network_json(res_info)
-    if request.method == 'POST':
+    if save:
         # create new net with the form data.
         info = {subnet:network_graph}
         new_net = Network(name=name,info=json.dumps(info, indent = 4))
