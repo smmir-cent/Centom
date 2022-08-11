@@ -1,17 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Graph from "react-graph-vis";
 
 
 const Network = (props) => {
     const options = {
         layout: {
-            hierarchical: true
+            hierarchical: false
         },
         edges: {
             color: "#000000"
         },
-        height: "500px"
+        height: "600px"
     };
     const events = {
         select: function (event) {

@@ -1,5 +1,6 @@
 # main.py
 
+import random
 from flask import Blueprint,request,jsonify
 from project.auth import token_required
 import subprocess
@@ -52,6 +53,9 @@ def my_profile(current_user):
 
     return response_body,200
 
+def random_color():
+    return "#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)])
+
 
 def create_network_json(res_info):
     network_graph = {"nodes": [],"edges": []}
@@ -61,7 +65,8 @@ def create_network_json(res_info):
     all_nodes["manager"] = ids
     network_graph['nodes'].append({
         "id" : ids,
-        "label" : "manager"
+        "label" : "manager",
+        "color": random_color()
         })
     ids += 1
     for node in res_info.keys():
@@ -69,7 +74,8 @@ def create_network_json(res_info):
             all_nodes[node] = ids
             network_graph['nodes'].append({
                 "id" : ids,
-                "label" : node
+                "label" : node,
+                "color": random_color()
             })
             ids += 1
 
@@ -79,7 +85,8 @@ def create_network_json(res_info):
                 all_nodes[node] = ids
                 network_graph['nodes'].append({
                     "id" : ids,
-                    "label" : node
+                    "label" : node,
+                    "color": random_color()
                 })
                 ids += 1
 
