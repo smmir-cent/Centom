@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../bulma.min.css';
 import './quick-scan.css';
 import '../profile-pages/profile.css';
+import './loading.css';
+
 import axios from 'axios';
 import Network from './network';
 
@@ -12,6 +14,7 @@ function NetDiscovery(props) {
     const [result, setResult] = useState({})
     const [checked, setChecked] = React.useState(false);
     const [info, setInfo] = useState({ name: "", ip: "" })
+    const [loading, setLoading] = useState(false)
 
     let handleSubmit = (event) => {
         event.preventDefault();
@@ -28,6 +31,7 @@ function NetDiscovery(props) {
     };
 
     function scanButton() {
+        setLoading(true)
         axios({
             method: "POST",
             url: "/net-discovery",
@@ -41,6 +45,7 @@ function NetDiscovery(props) {
             }
         }).then((response) => {
             // graph rendering
+            setLoading(false)
             const res = response.data
             console.log(res.message)
             setResult(res.message)
@@ -84,21 +89,26 @@ function NetDiscovery(props) {
                         </form>
                     </div>
                     {
-                        Object.keys(result).length !== 0 ?
-                            < div className="container rounded bg-white mt-5 mb-5" >
-                                <div className="col-md-auto border-center">
-                                    <div className="p-3 py-5">
-                                        <div className="d-flex justify-content-between align-items-center mb-3">
-                                            <h4 style={{ color: "black" }} className=" text-right">Result</h4>
-                                        </div>
-                                        <img src={require("../assets/photos/O18mJ1K.png")} width="100" className="mb-4" />
-                                        <div>
-                                            <Network id="result" data={result}></Network>
+                        loading ? (
+                            <div className="loader-container">
+                                <div className="spinner"></div>
+                            </div>
+                        ) : (
+                            Object.keys(result).length !== 0 ?
+                                < div className="container rounded bg-white mt-5 mb-5" >
+                                    <div className="col-md-auto border-center">
+                                        <div className="p-3 py-5">
+                                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                                <h4 style={{ color: "black" }} className=" text-right">Result</h4>
+                                            </div>
+                                            <img src={require("../assets/photos/O18mJ1K.png")} width="100" className="mb-4" />
+                                            <div>
+                                                <Network id="result" data={result}></Network>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div >
-                            : null
+                                </div >
+                                : null)
                     }
                 </div>
             </div>
