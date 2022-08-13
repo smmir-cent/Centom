@@ -63,6 +63,7 @@ CREATE TABLE user (
 );
 CREATE TABLE network (
 	name TEXT PRIMARY KEY,
+	subnet TEXT NOT NULL,
 	info TEXT NOT NULL
 );
 ```

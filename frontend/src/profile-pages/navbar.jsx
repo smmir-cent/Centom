@@ -53,6 +53,14 @@ function Navbar(props) {
                                         </>
                                     ) : <></>}
 
+                                {(props.getToken()) ?
+                                    (
+                                        <>
+                                            <a href="/net-config" className="navbar-item">
+                                                Network Config
+                                            </a>
+                                        </>
+                                    ) : <></>}
 
                                 {(props.getToken()) ?
                                     (

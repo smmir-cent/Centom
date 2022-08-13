@@ -14,6 +14,7 @@ import SignUp from './auth-pages/signup';
 
 import QuickScan from './main-pages/quick-scan';
 import NetDiscovery from './main-pages/net-discovery';
+import NetConfig from './main-pages/net-config';
 
 function App() {
   const { token, removeToken, setToken, getToken } = useToken();
@@ -34,6 +35,7 @@ function App() {
                 <Route exact path='/sign-up' element={<SignUp />} />
                 <Route exact path='/quick-scan' element={<QuickScan getToken={getToken} />} />
                 <Route exact path='/net-discovery' element={<NetDiscovery getToken={getToken} />} />
+                <Route exact path='/net-config' element={<NetConfig getToken={getToken} />} />
 
               </Routes>
             </div>

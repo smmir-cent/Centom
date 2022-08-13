@@ -145,8 +145,7 @@ def net_dis_post(current_user):
     network_graph = create_network_json(res_info)
     if save:
         # create new net with the form data.
-        info = {subnet:network_graph}
-        new_net = Network(name=name,info=json.dumps(info, indent = 4))
+        new_net = Network(name=name,subnet=subnet,info=json.dumps(network_graph, indent = 4))
 
         # add the new net to the database
         db.session.add(new_net)
@@ -155,3 +154,22 @@ def net_dis_post(current_user):
     # return net graph image or json to render in js
     return jsonify({'message' : network_graph}), 200
 
+
+
+@main.route('/get-networks',methods=["GET"])
+@token_required
+def get_networks(current_user):
+    networks = Network.query.all()
+    response_body = {'networks':[]}
+    
+    for network in networks:
+        print('###################')
+        print(network.name)
+        print(network.subnet)
+        print('###################')
+        response_body["networks"].append({
+            'name':network.name,
+            'subnet':network.subnet
+        })
+    
+    return response_body,200
