@@ -16,4 +16,5 @@ class Network(db.Model):
     __tablename__ = "network"
     name = db.Column(db.String(100), primary_key=True) # primary keys are required by SQLAlchemy
     subnet = db.Column(db.String(100))
+    agents = db.Column(db.String(1000))
     info = db.Column(db.String(1000))

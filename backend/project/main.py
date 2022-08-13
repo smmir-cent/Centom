@@ -145,7 +145,7 @@ def net_dis_post(current_user):
     network_graph = create_network_json(res_info)
     if save:
         # create new net with the form data.
-        new_net = Network(name=name,subnet=subnet,info=json.dumps(network_graph, indent = 4))
+        new_net = Network(name=name,subnet=subnet,agents=json.dumps({'agents':list(res_info.keys())}),info=json.dumps(network_graph, indent = 4))
 
         # add the new net to the database
         db.session.add(new_net)
@@ -163,13 +163,37 @@ def get_networks(current_user):
     response_body = {'networks':[]}
     
     for network in networks:
-        print('###################')
-        print(network.name)
-        print(network.subnet)
-        print('###################')
+        # print('###################')
+        # print(network.name)
+        # print(network.subnet)
+        # print('###################')
         response_body["networks"].append({
             'name':network.name,
             'subnet':network.subnet
         })
     
     return response_body,200
+
+
+
+
+@main.route('/get-ips',methods=["GET"])
+@token_required
+def get_ips(current_user):
+    args = request.args
+    subnet = args.get("subnet")
+    ips = Network.query.filter_by(name=subnet).first()    
+    agents = json.loads(ips.agents)    
+    response_body = {'ips':agents['agents']}
+    return response_body,200
+
+
+@main.route('/get-ip-info',methods=["GET"])
+@token_required
+def get_ip_info(current_user):
+    args = request.args
+    ip = args.get("ip")
+    # ips = Network.query.filter_by(name=subnet).first()    
+    # agents = json.loads(ips.agents)    
+    # response_body = {'ips':'a'}
+    # return response_body,200    
