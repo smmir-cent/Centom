@@ -6,7 +6,7 @@ from project.auth import token_required
 import subprocess
 import sys
 import json
-sys.path.insert(1,'../utility/net-dis')
+sys.path.insert(1,'./utility/net-dis')
 from discovery import scan_net
 from project.models import Network
 from project import db
