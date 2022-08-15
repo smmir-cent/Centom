@@ -193,7 +193,8 @@ def get_ips(current_user):
 def get_ip_info(current_user):
     args = request.args
     ip = args.get("ip")
+    subnet = args.get("subnet")
+    response_body = {'ips':'a'}
     # ips = Network.query.filter_by(name=subnet).first()    
     # agents = json.loads(ips.agents)    
-    # response_body = {'ips':'a'}
-    # return response_body,200    
+    return response_body,200    

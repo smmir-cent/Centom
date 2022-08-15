@@ -18,3 +18,13 @@ class Network(db.Model):
     subnet = db.Column(db.String(100))
     agents = db.Column(db.String(1000))
     info = db.Column(db.String(1000))
+
+
+class NetConfig(db.Model):
+    __tablename__ = "net_config"
+    ip = db.Column(db.String(100), primary_key=True) # primary keys are required by SQLAlchemy
+    subnet = db.Column(db.String(100))
+    username = db.Column(db.String(100))
+    password = db.Column(db.String(100))
+    engine_id = db.Column(db.String(100))
+    ## todo: cpu,hard,disk

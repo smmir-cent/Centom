@@ -12,7 +12,6 @@ const NetConfig = (props) => {
     const [ips, setIps] = useState([])
     const [selectedNet, setSelectedNet] = useState('');
     const [selectedIP, setSelectedIP] = useState('');
-    // const availableState = data.countries.find((c) => c.name === selectedCountry);
     const [config, setConfig] = useState([{
         ip: "",
         network: "",
@@ -51,6 +50,9 @@ const NetConfig = (props) => {
         if (req_net.length === 0) {
             alert('choose a network')
             setSelectedNet('');
+            setSelectedIP('');
+            setIps([]);
+
         } else {
             setSelectedNet(req_net);
 
@@ -60,7 +62,7 @@ const NetConfig = (props) => {
 
         let req_ip = event.target.selectedOptions[0].value
         if (req_ip.length === 0) {
-            alert('choose a network')
+            alert('choose a ip')
             setSelectedIP('');
         } else {
             setSelectedIP(req_ip);
@@ -89,7 +91,7 @@ const NetConfig = (props) => {
 
 
     useEffect(() => {
-        console.log(selectedNet);
+        console.log(selectedIP);
         if (selectedNet.length !== 0) {
             axios({
                 method: "GET",
@@ -98,14 +100,15 @@ const NetConfig = (props) => {
                     Authorization: props.getToken()
                 },
                 params: {
-                    ip: selectedIP
+                    ip: selectedIP,
+                    subnet: selectedNet
                 }
             }).then((response) => {
                 console.log(response.data);
             })
 
         }
-    }, [selectedNet]);
+    }, [selectedIP]);
 
 
 
@@ -139,7 +142,7 @@ const NetConfig = (props) => {
                                 ips.length !== 0 ? (
                                     <div>
                                         <label style={{ color: "black" }}>IPs: </label>
-                                        <select value={selectedNet} id="" className=" form-select" onChange={handleIpChange} >
+                                        <select value={selectedIP} id="" className=" form-select" onChange={handleIpChange} >
                                             <option value="">Choose a IP</option>
                                             {createSelectIps()}
                                         </select>
