@@ -15,6 +15,13 @@ sudo apt-get update
  sudo apt-get install libsnmp-dev snmp-mibs-downloader
  ```
 
+* redis
+ used for monitoring infos
+
+ ```sh
+ sudo apt-get install redis-server 
+ ```
+
 * clang-format
 
  ```sh
