@@ -7,7 +7,9 @@ import subprocess
 import sys
 import json
 sys.path.insert(1,'./utility/net-dis')
+sys.path.insert(1,'./utility/net-config')
 from discovery import scan_net
+from net_config import save_ip_net_config
 from project.models import Network
 from project import db
 import copy
@@ -113,7 +115,7 @@ def create_network_json(res_info):
 
 
 
-@main.route('/net-discovery',methods=['GET', 'POST'])
+@main.route('/net-discovery',methods=['POST'])
 @token_required
 def net_dis_post(current_user):
     # get subnet
@@ -198,3 +200,27 @@ def get_ip_info(current_user):
     # ips = Network.query.filter_by(name=subnet).first()    
     # agents = json.loads(ips.agents)    
     return response_body,200    
+
+
+
+
+@main.route('/net-config',methods=['POST'])
+@token_required
+def net_config_post(current_user):
+    # get subnet
+    form = request.json
+    config_json = {}
+    config_json['ip'] = form.get("ip")
+    config_json['network'] = form.get("network")
+    config_json['username'] = form.get("username")
+    config_json['password'] = form.get("password")
+    config_json['engineId'] = form.get("engineId")
+    config_json['oid_name'] = form.get("oid_name")
+    config_json['oid_location'] = form.get("oid_location")
+    config_json['oid_description'] = form.get("oid_description")
+    config_json['params'] = json.loads(form.get("params"))['params']
+    save_ip_net_config(config_json)
+    # print("////////////////////")
+    # print(json.dumps(config_json, indent=4))
+    # print("////////////////////")
+    return jsonify({'message' : "Saved Successfully."}), 200

@@ -29,16 +29,14 @@ const NetConfig = (props) => {
     let json_sample = {
         params: [
             {
-                "fav_name": {
-                    oid: "value",
-                    rate: 5
-                }
+                name: "fav_name",
+                oid: "value",
+                rate: 5
             },
             {
-                "fav_name2": {
-                    oid: "value2",
-                    rate: 52
-                }
+                name: "fav_name2",
+                oid: "value2",
+                rate: 52
             }
         ]
     };
@@ -161,7 +159,37 @@ const NetConfig = (props) => {
 
     function submitButton() {
         console.log(JSON.stringify(config, null, 2))
-        //todo
+        axios({
+            method: "POST",
+            url: "/net-config",
+            headers: {
+                Authorization: props.getToken()
+            },
+            data: {
+                ip: config.ip,
+                network: config.network,
+                username: config.username,
+                password: config.password,
+                engineId: config.engineId,
+                oid_name: config.oid_name,
+                oid_location: config.oid_location,
+                oid_description: config.oid_description,
+                params: config.params
+            }
+        }).then((response) => {
+            // graph rendering
+            // setLoading(false)
+            // const res = response.data
+            // console.log(res.message)
+            // setResult(res.message)
+        }).catch((error) => {
+            if (error.response) {
+                // setResult(error.response.data.message)
+                console.log(error.response)
+                console.log(error.response.status)
+                console.log(error.response.headers)
+            }
+        })
     }
     return (
         <div>
