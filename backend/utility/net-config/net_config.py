@@ -30,7 +30,14 @@ def save_ip_net_config(config_json):
     redis_cache.set(key_signature+'_password', password)
     ## ip_net_engineid ---> value
     redis_cache.set(key_signature+'_engineId', engineId)
-#
+    ## ip_net_oid_name ---> value
+    redis_cache.set(key_signature+'_oid_name', oid_name)
+    ## ip_net_oid_location ---> value
+    redis_cache.set(key_signature+'_oid_location', oid_location)
+    ## ip_net_oid_description ---> value
+    redis_cache.set(key_signature+'_oid_description', oid_description)    
+
+
     ## ip_net_oidname ---> {oid , rate}
     param_list = []
     for param in params:
@@ -49,6 +56,26 @@ def save_ip_net_config(config_json):
 
     return True
 
+
+
+
+def get_ip_net_config(ip , network):
+    key_signature = f'{ip}_{network}'
+    redis_cache = redis.Redis(host='localhost', port=6379, db=0)
+    username = redis_cache.get(key_signature+'_username').decode('utf-8')
+    password = redis_cache.get(key_signature+'_password').decode('utf-8')
+    engineId = redis_cache.get(key_signature+'_engineId').decode('utf-8')
+    oid_name = redis_cache.get(key_signature+'_oid_name').decode('utf-8')
+    oid_location = redis_cache.get(key_signature+'_oid_location').decode('utf-8')
+    oid_description = redis_cache.get(key_signature+'_oid_description').decode('utf-8')
+    json_config = {}
+    json_config['username'] = username
+    json_config['password'] = password
+    json_config['engineId'] = engineId
+    json_config['oid_name'] = oid_name
+    json_config['oid_location'] = oid_location
+    json_config['oid_description'] = oid_description    
+    return json_config
 
 if __name__ == '__main__':
     pass

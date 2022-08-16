@@ -9,7 +9,7 @@ import json
 sys.path.insert(1,'./utility/net-dis')
 sys.path.insert(1,'./utility/net-config')
 from discovery import scan_net
-from net_config import save_ip_net_config
+from net_config import save_ip_net_config,get_ip_net_config
 from project.models import Network
 from project import db
 import copy
@@ -190,20 +190,6 @@ def get_ips(current_user):
     return response_body,200
 
 
-@main.route('/get-ip-info',methods=["GET"])
-@token_required
-def get_ip_info(current_user):
-    args = request.args
-    ip = args.get("ip")
-    subnet = args.get("subnet")
-    response_body = {'ips':'a'}
-    # ips = Network.query.filter_by(name=subnet).first()    
-    # agents = json.loads(ips.agents)    
-    return response_body,200    
-
-
-
-
 @main.route('/net-config',methods=['POST'])
 @token_required
 def net_config_post(current_user):
@@ -224,3 +210,19 @@ def net_config_post(current_user):
     # print(json.dumps(config_json, indent=4))
     # print("////////////////////")
     return jsonify({'message' : "Saved Successfully."}), 200
+
+
+
+
+
+
+
+@main.route('/monitoring',methods=['POST'])
+@token_required
+def get_net_config(current_user):
+    # get subnet
+    form = request.json
+    ip = form.get("ip")
+    network = form.get("network")
+    config_json = get_ip_net_config(ip,network)
+    return jsonify({'message' : config_json}), 200

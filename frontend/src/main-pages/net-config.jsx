@@ -127,25 +127,25 @@ const NetConfig = (props) => {
     }, [selectedNet]);
 
 
-    useEffect(() => {
-        console.log(selectedIP);
-        if (selectedNet.length !== 0) {
-            axios({
-                method: "GET",
-                url: "/get-ip-info",
-                headers: {
-                    Authorization: props.getToken()
-                },
-                params: {
-                    ip: selectedIP,
-                    subnet: selectedNet
-                }
-            }).then((response) => {
-                console.log(response.data);
-            })
+    // useEffect(() => {
+    //     console.log(selectedIP);
+    //     if (selectedNet.length !== 0) {
+    //         axios({
+    //             method: "GET",
+    //             url: "/get-ip-info",
+    //             headers: {
+    //                 Authorization: props.getToken()
+    //             },
+    //             params: {
+    //                 ip: selectedIP,
+    //                 subnet: selectedNet
+    //             }
+    //         }).then((response) => {
+    //             console.log(response.data);
+    //         })
 
-        }
-    }, [selectedIP]);
+    //     }
+    // }, [selectedIP]);
 
 
 
@@ -193,7 +193,7 @@ const NetConfig = (props) => {
     }
     return (
         <div>
-            <div className="container mt-10">
+            <div className="container mt-5">
                 <div className="row d-flex justify-content-center align-items-center">
                     <div className="col-md-8">
                         <form onSubmit={handleSubmit} id="regForm">

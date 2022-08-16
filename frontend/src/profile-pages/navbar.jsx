@@ -65,6 +65,15 @@ function Navbar(props) {
                                 {(props.getToken()) ?
                                     (
                                         <>
+                                            <a href="/monitoring" className="navbar-item">
+                                                Monitoring
+                                            </a>
+                                        </>
+                                    ) : <></>}
+
+                                {(props.getToken()) ?
+                                    (
+                                        <>
                                             <a href="/logout" className="navbar-item">
                                                 Logout
                                             </a>
