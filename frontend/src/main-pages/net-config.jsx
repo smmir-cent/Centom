@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import Button from 'react-bootstrap/Button';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../bulma.min.css';
@@ -12,37 +15,67 @@ const NetConfig = (props) => {
     const [ips, setIps] = useState([])
     const [selectedNet, setSelectedNet] = useState('');
     const [selectedIP, setSelectedIP] = useState('');
-    const [config, setConfig] = useState([{
+    const [config, setConfig] = useState({
         ip: "",
         network: "",
         username: "",
         password: "",
         engineId: "",
-    }])
+        oid_name: "",
+        oid_location: "",
+        oid_description: "",
+        params: ""
+    });
+    let json_sample = {
+        params: [
+            {
+                "fav_name": {
+                    oid: "value",
+                    rate: 5
+                }
+            },
+            {
+                "fav_name2": {
+                    oid: "value2",
+                    rate: 52
+                }
+            }
+        ]
+    };
+
+    const popover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Sample</Popover.Header>
+            <Popover.Body>
+                <pre>{JSON.stringify(json_sample, null, 2)}</pre>
+            </Popover.Body>
+        </Popover>
+    );
+
+
     function handleChange(event) {
         const { value, name } = event.target
-        setConfig(prevNote => ({
-            ...prevNote, [name]: value
+        setConfig({
+            ...config, [name]: value
         })
-        )
+
     }
     useEffect(() => {
+        async function getOptions() {
+            await axios({
+                method: "GET",
+                url: "/get-networks",
+                headers: {
+                    Authorization: props.getToken()
+                }
+            }).then((response) => {
+                setNetworks(response.data['networks'])
+            })
+        }
         getOptions()
-        // console.log(networks)
     }, []);
     let handleSubmit = (event) => {
         event.preventDefault();
-    }
-    async function getOptions() {
-        await axios({
-            method: "GET",
-            url: "/get-networks",
-            headers: {
-                Authorization: props.getToken()
-            }
-        }).then((response) => {
-            setNetworks(response.data['networks'])
-        })
     }
     const handleNetChange = event => {
 
@@ -52,10 +85,11 @@ const NetConfig = (props) => {
             setSelectedNet('');
             setSelectedIP('');
             setIps([]);
-
+            setConfig({ ...config, ip: "" })
+            setConfig({ ...config, network: "" })
         } else {
             setSelectedNet(req_net);
-
+            setConfig({ ...config, network: req_net })
         }
     };
     const handleIpChange = event => {
@@ -64,8 +98,13 @@ const NetConfig = (props) => {
         if (req_ip.length === 0) {
             alert('choose a ip')
             setSelectedIP('');
+            setConfig({ ...config, ip: "" })
+            // config.ip = ""
         } else {
             setSelectedIP(req_ip);
+            // config.ip = req_ip
+            setConfig({ ...config, ip: req_ip })
+
 
         }
     };
@@ -118,11 +157,15 @@ const NetConfig = (props) => {
             items.push(<option key={i} value={ips[i]}>{ips[i]}</option>);
         }
         return items;
+    }
 
+    function submitButton() {
+        console.log(JSON.stringify(config, null, 2))
+        //todo
     }
     return (
         <div>
-            <div className="container mt-5">
+            <div className="container mt-10">
                 <div className="row d-flex justify-content-center align-items-center">
                     <div className="col-md-8">
                         <form onSubmit={handleSubmit} id="regForm">
@@ -145,6 +188,8 @@ const NetConfig = (props) => {
                                         <select value={selectedIP} id="" className=" form-select" onChange={handleIpChange} >
                                             <option value="">Choose a IP</option>
                                             {createSelectIps()}
+                                            <option value="all">All</option>
+
                                         </select>
                                     </div>) : null
                             }
@@ -153,20 +198,44 @@ const NetConfig = (props) => {
 
 
                             <div className="row mt-2">
-                                <div className="col-md-6"><label style={{ color: "black" }} className="labels">IP</label><input onChange={handleChange} type="text"
-                                    className="form-control" readOnly placeholder="IP" value={config.ip} /></div>
-                                <div className="col-md-6"><label style={{ color: "black" }} className="labels">Network</label><input onChange={handleChange} type="text"
-                                    className="form-control" value={config.network} readOnly placeholder="network" /></div>
-                            </div>
-                            <div className="row mt-2">
-                                <div className="col-md-6"><label style={{ color: "black" }} className="labels">Username</label><input onChange={handleChange} type="text"
-                                    className="form-control" placeholder="username" value={config.ip} /></div>
-                                <div className="col-md-6"><label style={{ color: "black" }} className="labels">Password</label><input onChange={handleChange} type="text"
-                                    className="form-control" value={config.network} placeholder="password" /></div>
+                                <div className="col-md-6"><label style={{ color: "black", fontSize: 15 }} className="labels">Username</label><input onChange={handleChange} name="username" type="text"
+                                    className="form-control" placeholder="username" /></div>
+                                <div className="col-md-6"><label style={{ color: "black", fontSize: 15 }} className="labels">Password</label><input onChange={handleChange} name="password" type="text"
+                                    className="form-control" placeholder="password" /></div>
                             </div>
                             <div className="row mt-3">
-                                <div className="col-md-12"><label style={{ color: "black" }} className="labels">Engine ID</label><input onChange={handleChange} type="text"
-                                    className="form-control" placeholder="enginID" value={config.mobile_number} /></div>
+                                <div className="col-md-12"><label style={{ color: "black", fontSize: 15 }} className="labels">Engine ID</label><input onChange={handleChange} name="engineId" type="text"
+                                    className="form-control" placeholder="enginID" /></div>
+                            </div>
+                            <div className="row mt-2">
+                                <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Name</label><input onChange={handleChange} name="oid_name" type="text"
+                                    className="form-control" placeholder="oid name" /></div>
+                                <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Location</label><input onChange={handleChange} name="oid_location" type="text"
+                                    className="form-control" placeholder="oid location" /></div>
+                                <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Description</label><input onChange={handleChange} name="oid_description" type="text"
+                                    className="form-control" placeholder="oid description" /></div>
+                            </div>
+                            <div className="row mt-2">
+                                <div className="col-md-4">
+                                    <label style={{ color: "black", fontSize: 20 }} htmlFor="exampleFormControlTextarea3">params in json format</label>
+                                </div>
+                                <div className="col-md-4">
+                                    <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+                                        <Button variant="success">Sample Input</Button>
+                                    </OverlayTrigger>
+
+                                </div>
+                            </div>
+                            <div className="row mt-2">
+                                <div className="col-md-12">
+                                    <textarea className="form-control" id="exampleFormControlTextarea3" rows="7" onChange={handleChange} name="params"></textarea>
+                                </div>
+                            </div>
+                            <br />
+                            <div style={{ overflow: "auto" }} id="nextprevious">
+                                <div style={{ float: "right" }}>
+                                    <button onClick={submitButton} type="submit" className="btn btn-success">Scan</button>
+                                </div>
                             </div>
                         </form>
 
@@ -176,6 +245,8 @@ const NetConfig = (props) => {
         </div >
     );
 };
+
+
 
 
 NetConfig.propTypes = {
