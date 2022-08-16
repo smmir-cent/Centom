@@ -5,21 +5,30 @@ import './quick-scan.css';
 import '../profile-pages/profile.css';
 import './loading.css';
 import axios from 'axios';
+import './loading.css';
 
 
 const Monitoring = (props) => {
-    const [networks, setNetworks] = useState([])
-    const [ips, setIps] = useState([])
-    const [selectedNet, setSelectedNet] = useState('');
-    const [selectedIP, setSelectedIP] = useState('');
-    const [info, setInfo] = useState({
+    let initialInfo = {
         username: "",
         password: "",
         engineId: "",
         oid_name: "",
         oid_location: "",
         oid_description: ""
-    });
+    };
+    let initialSpecs = {
+        name: "",
+        location: "",
+        description: ""
+    };
+    const [networks, setNetworks] = useState([]);
+    const [ips, setIps] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState(initialSpecs);
+    const [selectedNet, setSelectedNet] = useState('');
+    const [selectedIP, setSelectedIP] = useState('');
+    const [info, setInfo] = useState(initialInfo);
     const handleNetChange = event => {
 
         let req_net = event.target.selectedOptions[0].value
@@ -28,6 +37,7 @@ const Monitoring = (props) => {
             setSelectedNet('');
             setSelectedIP('');
             setIps([]);
+            setInfo(initialInfo);
         } else {
             setSelectedNet(req_net);
         }
@@ -36,8 +46,9 @@ const Monitoring = (props) => {
 
         let req_ip = event.target.selectedOptions[0].value
         if (req_ip.length === 0) {
-            alert('choose a ip')
+            alert('choose a ip');
             setSelectedIP('');
+            setInfo(initialInfo);
 
         } else {
             setSelectedIP(req_ip);
@@ -83,11 +94,10 @@ const Monitoring = (props) => {
 
         }
     }, [selectedNet]);
-    function scanButton() {
-        // setLoading(true)
+    function fetchConfig() {
         axios({
             method: "POST",
-            url: "/monitoring",
+            url: "/fetch-config",
             headers: {
                 Authorization: props.getToken()
             },
@@ -110,6 +120,27 @@ const Monitoring = (props) => {
             }
         })
 
+    }
+    function monitorButton() {
+        setLoading(true)
+        axios({
+            method: "GET",
+            url: "/monitoring",
+            headers: {
+                Authorization: props.getToken()
+            },
+            params: {
+                ip: selectedIP,
+                network: selectedNet,
+                name: info.oid_name,
+                location: info.oid_location,
+                description: info.oid_description
+            }
+        }).then((response) => {
+            setLoading(false)
+            console.log(response.data.specs);
+            setResult(response.data.specs)
+        })
     }
     return (
         <div>
@@ -144,28 +175,56 @@ const Monitoring = (props) => {
                             {selectedIP !== '' ? (
                                 <div style={{ overflow: "auto" }} id="nextprevious">
                                     <div style={{ float: "right" }}>
-                                        <button onClick={scanButton} type="submit" className="btn btn-success">Scan</button>
+                                        <button onClick={fetchConfig} type="submit" className="btn btn-success">Fetch Config</button>
                                     </div>
                                 </div>) : null
                             }
-                            <div className="row mt-2">
-                                <div className="col-md-6"><label style={{ color: "black", fontSize: 15 }} className="labels">Username</label><input value={info.username} name="username" type="text"
-                                    className="form-control" placeholder="username" /></div>
-                                <div className="col-md-6"><label style={{ color: "black", fontSize: 15 }} className="labels">Password</label><input value={info.password} name="password" type="text"
-                                    className="form-control" placeholder="password" /></div>
-                            </div>
-                            <div className="row mt-3">
-                                <div className="col-md-12"><label style={{ color: "black", fontSize: 15 }} className="labels">Engine ID</label><input value={info.engineId} name="engineId" type="text"
-                                    className="form-control" placeholder="enginID" /></div>
-                            </div>
-                            <div className="row mt-2">
-                                <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Name</label><input value={info.oid_name} name="oid_name" type="text"
-                                    className="form-control" placeholder="oid name" /></div>
-                                <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Location</label><input value={info.oid_location} name="oid_location" type="text"
-                                    className="form-control" placeholder="oid location" /></div>
-                                <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Description</label><input value={info.oid_description} name="oid_description" type="text"
-                                    className="form-control" placeholder="oid description" /></div>
-                            </div>
+                            {
+                                info.username !== "" ? (
+                                    <div>
+                                        <div className="row mt-2">
+                                            <div className="col-md-6"><label style={{ color: "black", fontSize: 15 }} className="labels">Username</label><input readOnly value={info.username} name="username" type="text"
+                                                className="form-control" placeholder="username" /></div>
+                                            <div className="col-md-6"><label style={{ color: "black", fontSize: 15 }} className="labels">Password</label><input readOnly value={info.password} name="password" type="text"
+                                                className="form-control" placeholder="password" /></div>
+                                        </div>
+                                        <div className="row mt-3">
+                                            <div className="col-md-12"><label style={{ color: "black", fontSize: 15 }} className="labels">Engine ID</label><input readOnly value={info.engineId} name="engineId" type="text"
+                                                className="form-control" placeholder="enginID" /></div>
+                                        </div>
+                                        <div className="row mt-2">
+                                            <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Name</label><input readOnly value={info.oid_name} name="oid_name" type="text"
+                                                className="form-control" placeholder="oid name" /></div>
+                                            <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Location</label><input readOnly value={info.oid_location} name="oid_location" type="text"
+                                                className="form-control" placeholder="oid location" /></div>
+                                            <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Description</label><input readOnly value={info.oid_description} name="oid_description" type="text"
+                                                className="form-control" placeholder="oid description" /></div>
+                                        </div>
+                                    </div>) : null
+                            }
+                            <br />
+                            {info.username !== "" ? (
+                                <div>
+                                    <div style={{ overflow: "auto" }} id="nextprevious">
+                                        <div style={{ float: "right" }}>
+                                            <button onClick={monitorButton} type="submit" className="btn btn-success">Monitoring</button>
+                                        </div>
+                                    </div>
+                                    <div className="row mt-2">
+                                        <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Name</label><input readOnly value={info.oid_name} name="oid_name" type="text"
+                                            className="form-control" placeholder="oid name" /></div>
+                                        <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Location</label><input readOnly value={info.oid_location} name="oid_location" type="text"
+                                            className="form-control" placeholder="oid location" /></div>
+                                        <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Description</label><input readOnly value={info.oid_description} name="oid_description" type="text"
+                                            className="form-control" placeholder="oid description" /></div>
+                                    </div>
+
+                                </div>
+
+
+                            ) : null
+
+                            }
                         </div>
                     </div>
                 </div>

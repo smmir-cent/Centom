@@ -127,28 +127,6 @@ const NetConfig = (props) => {
     }, [selectedNet]);
 
 
-    // useEffect(() => {
-    //     console.log(selectedIP);
-    //     if (selectedNet.length !== 0) {
-    //         axios({
-    //             method: "GET",
-    //             url: "/get-ip-info",
-    //             headers: {
-    //                 Authorization: props.getToken()
-    //             },
-    //             params: {
-    //                 ip: selectedIP,
-    //                 subnet: selectedNet
-    //             }
-    //         }).then((response) => {
-    //             console.log(response.data);
-    //         })
-
-    //     }
-    // }, [selectedIP]);
-
-
-
     function createSelectIps() {
         let items = [];
         for (let i = 0; i < ips.length; i++) {

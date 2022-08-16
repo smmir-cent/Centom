@@ -217,7 +217,7 @@ def net_config_post(current_user):
 
 
 
-@main.route('/monitoring',methods=['POST'])
+@main.route('/fetch-config',methods=['POST'])
 @token_required
 def get_net_config(current_user):
     # get subnet
@@ -226,3 +226,16 @@ def get_net_config(current_user):
     network = form.get("network")
     config_json = get_ip_net_config(ip,network)
     return jsonify({'message' : config_json}), 200
+
+
+@main.route('/monitoring',methods=['GET'])
+@token_required
+def monitoring(current_user):
+    args = request.args
+    ip = args.get("ip")
+    network = args.get("network")
+    name = args.get("name")
+    location = args.get("location")
+    description = args.get("description")
+    ## todo run snmpcore and get specs info
+    return jsonify({'specs' : {}}), 200    
