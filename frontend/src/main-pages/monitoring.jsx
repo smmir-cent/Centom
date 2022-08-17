@@ -18,9 +18,9 @@ const Monitoring = (props) => {
         oid_description: ""
     };
     let initialSpecs = {
-        name: "",
-        location: "",
-        description: ""
+        name_res: "",
+        location_res: "",
+        description_res: ""
     };
     const [networks, setNetworks] = useState([]);
     const [ips, setIps] = useState([]);
@@ -204,27 +204,25 @@ const Monitoring = (props) => {
                             }
                             <br />
                             {info.username !== "" ? (
-                                <div>
-                                    <div style={{ overflow: "auto" }} id="nextprevious">
-                                        <div style={{ float: "right" }}>
-                                            <button onClick={monitorButton} type="submit" className="btn btn-success">Monitoring</button>
-                                        </div>
+                                <div style={{ overflow: "auto" }} id="nextprevious">
+                                    <div style={{ float: "right" }}>
+                                        <button onClick={monitorButton} type="submit" className="btn btn-success">Monitoring</button>
                                     </div>
-                                    <div className="row mt-2">
-                                        <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Name</label><input readOnly value={info.oid_name} name="oid_name" type="text"
-                                            className="form-control" placeholder="oid name" /></div>
-                                        <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Location</label><input readOnly value={info.oid_location} name="oid_location" type="text"
-                                            className="form-control" placeholder="oid location" /></div>
-                                        <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Description</label><input readOnly value={info.oid_description} name="oid_description" type="text"
-                                            className="form-control" placeholder="oid description" /></div>
-                                    </div>
-
                                 </div>
 
-
                             ) : null
-
                             }
+                            {result.name_res !== "" ? (
+                                <div className="row mt-2">
+                                    <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Name</label><input readOnly value={result.name_res} name="oid_name" type="text"
+                                        className="form-control" placeholder="oid name" /></div>
+                                    <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Location</label><input readOnly value={result.location_res} name="oid_location" type="text"
+                                        className="form-control" placeholder="oid location" /></div>
+                                    <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Description</label><input readOnly value={result.description_res} name="oid_description" type="text"
+                                        className="form-control" placeholder="oid description" /></div>
+                                </div>
+
+                            ) : null}
                         </div>
                     </div>
                 </div>

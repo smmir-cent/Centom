@@ -238,4 +238,17 @@ def monitoring(current_user):
     location = args.get("location")
     description = args.get("description")
     ## todo run snmpcore and get specs info
-    return jsonify({'specs' : {}}), 200    
+    args = ['../build/centom_engine','-get',ip]
+    args.append(name)
+    name_res = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode('utf-8')
+    args.pop()
+
+    args.append(location)
+    location_res = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode('utf-8')
+    args.pop()
+
+    args.append(description)
+    description_res = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode('utf-8')
+    args.pop()
+
+    return jsonify({'specs' : {'name_res':name_res,'location_res':location_res,'description_res':description_res}}), 200    

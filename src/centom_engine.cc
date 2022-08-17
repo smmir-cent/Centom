@@ -46,8 +46,8 @@ int main(int argc, char **argv)
   std::string log_level = document["log_level"].GetString();
   std::string snmp_version = document["snmp_version"].GetString();
   // std::cout << "log_level: " << log_level << std::endl;
-  std::cout << "snmp_version: " << snmp_version
-            << std::endl;
+  // std::cout << "snmp_version: " << snmp_version
+  //           << std::endl;
   fclose(fp);
   logger.setLevel(document["log_level"].GetString());
 

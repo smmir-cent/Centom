@@ -85,7 +85,6 @@ def scan_net(net_ip):
                 current_ip = match.group(1)
                 paths[str(ip)].append(current_ip)
 
-    ## todo: add each path as edeges to graph
     print(paths)
     return paths
 

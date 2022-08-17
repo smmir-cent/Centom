@@ -223,9 +223,9 @@ void Session::getOids(std::vector<const char *> oids)
         message.append(":");
         // appends scanned data to message for UI
         message.append(buf);
-        std::cout << "****************\n";
+        // std::cout << "****************\n";
         std::cout << message.c_str() << "\n";
-        std::cout << "****************\n";
+        // std::cout << "****************\n";
       }
     }
     else
