@@ -225,6 +225,7 @@ def get_net_config(current_user):
     ip = form.get("ip")
     network = form.get("network")
     config_json = get_ip_net_config(ip,network)
+    config_json.pop('params',None)
     return jsonify({'message' : config_json}), 200
 
 
