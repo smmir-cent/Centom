@@ -1,14 +1,17 @@
 # main.py
 
 import random
-from flask import Blueprint,request,jsonify
+from flask import Blueprint,request,jsonify,Response
 from project.auth import token_required
 import subprocess
 import sys
 import json
 sys.path.insert(1,'./utility/net-dis')
 sys.path.insert(1,'./utility/net-config')
+sys.path.insert(1,'./utility/monitoring')
+
 from discovery import scan_net
+from monitor import monitoring
 from net_config import save_ip_net_config,get_ip_net_config
 from project.models import Network
 from project import db
@@ -224,32 +227,45 @@ def get_net_config(current_user):
     form = request.json
     ip = form.get("ip")
     network = form.get("network")
-    config_json = get_ip_net_config(ip,network)
+    config_json = get_ip_net_config(ip,network)   
     config_json.pop('params',None)
     return jsonify({'message' : config_json}), 200
 
 
-@main.route('/monitoring',methods=['GET'])
+# import time
+# @main.route('/stream')
+# def stream():
+#     print("stream")
+
+#     def get_data():
+#         print("get_data")
+#         while True:
+#             print('*')
+#             #gotcha
+#             time.sleep(1)
+#             yield f'data: {datetime.now().second} \n\n'
+#     response = Response(get_data(), mimetype='text/event-stream')
+#     response.headers["Cache-Control"] = "no-cache"
+#     response.headers["X-Accel-Buffering"] = "no"
+#     response.headers.add('Access-Control-Allow-Origin', '*')
+#     return response,200
+
+
+@main.route('/monitoring',methods=['POST'])
 @token_required
-def monitoring(current_user):
-    args = request.args
+def monitor(current_user):
+    args = json. loads(request.data.decode('utf-8'))
+    print(args)
     ip = args.get("ip")
     network = args.get("network")
     name = args.get("name")
     location = args.get("location")
-    description = args.get("description")
-    ## todo run snmpcore and get specs info
-    args = ['../build/centom_engine','-get',ip]
-    args.append(name)
-    name_res = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode('utf-8')
-    args.pop()
-
-    args.append(location)
-    location_res = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode('utf-8')
-    args.pop()
-
-    args.append(description)
-    description_res = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode('utf-8')
-    args.pop()
-
-    return jsonify({'specs' : {'name_res':name_res,'location_res':location_res,'description_res':description_res}}), 200    
+    description = args.get("description") 
+    print("ip,network,name,location,description")
+    print(ip,network,name,location,description)
+    print("ip,network,name,location,description")
+    response = Response(monitoring(ip,network,name,location,description), mimetype="text/event-stream")
+    response.headers["Cache-Control"] = "no-cache"
+    response.headers["X-Accel-Buffering"] = "no"
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response,200

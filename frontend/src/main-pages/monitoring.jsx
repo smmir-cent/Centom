@@ -6,7 +6,7 @@ import '../profile-pages/profile.css';
 import './loading.css';
 import axios from 'axios';
 import './loading.css';
-
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 const Monitoring = (props) => {
     let initialInfo = {
@@ -29,6 +29,7 @@ const Monitoring = (props) => {
     const [selectedNet, setSelectedNet] = useState('');
     const [selectedIP, setSelectedIP] = useState('');
     const [info, setInfo] = useState(initialInfo);
+    const [data, setData] = useState('Initializing...')
     const handleNetChange = event => {
 
         let req_net = event.target.selectedOptions[0].value
@@ -94,6 +95,84 @@ const Monitoring = (props) => {
 
         }
     }, [selectedNet]);
+    useEffect(() => {
+        // console.log('before EventSource')
+        // const sse = new EventSource('http://localhost:5000/monitoring');
+        // function handleStream(e) {
+        //     console.log(e.data)
+        //     setData(e.data)
+        // }
+
+        // sse.onmessage = e => { handleStream(e) }
+
+        // // sse.onerror = e => {
+        // //     //GOTCHA - can close stream and 'stall'
+        // //     sse.close()
+        // // }
+
+        // // return () => {
+        // //     sse.close()
+
+        // // }
+
+        // console.log("***********************")
+        // console.log("***********************")
+        // console.log("***********************")
+
+        // const fetchData = async () => {
+        //     await fetchEventSource('http://localhost:5000/monitoring', {
+        //         method: "GET",
+        //         headers: {
+        //             Accept: "text/event-stream",
+        //             Authorization: props.getToken()
+        //         },
+        //         params: {
+        //             ip: selectedIP,
+        //             network: selectedNet,
+        //             name: info.oid_name,
+        //             location: info.oid_location,
+        //             description: info.oid_description
+        //         },
+        //         onopen(res) {
+        //             if (res.ok && res.status === 200) {
+        //                 console.log("Connection made ", res);
+        //             } else if (
+        //                 res.status >= 400 &&
+        //                 res.status < 500 &&
+        //                 res.status !== 429
+        //             ) {
+        //                 console.log("Client side error ", res);
+        //             }
+        //         },
+        //         onmessage(event) {
+        //             console.log(event.data);
+        //             const parsedData = JSON.parse(event.data);
+        //             setData((data) => [...data, parsedData]);
+        //         },
+        //         onclose() {
+        //             console.log("Connection closed by the server");
+        //         },
+        //         onerror(err) {
+        //             console.log("There was an error from server", err);
+        //         },
+        //     });
+        // };
+        // fetchData();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }, [loading]);
     function fetchConfig() {
         axios({
             method: "POST",
@@ -123,24 +202,85 @@ const Monitoring = (props) => {
     }
     function monitorButton() {
         setLoading(true)
-        axios({
-            method: "GET",
-            url: "/monitoring",
-            headers: {
-                Authorization: props.getToken()
-            },
-            params: {
-                ip: selectedIP,
-                network: selectedNet,
-                name: info.oid_name,
-                location: info.oid_location,
-                description: info.oid_description
-            }
-        }).then((response) => {
-            setLoading(false)
-            console.log(response.data.specs);
-            setResult(response.data.specs)
-        })
+        // axios({
+        //     method: "GET",
+        //     url: "/monitoring",
+        //     headers: {
+        //         Authorization: props.getToken()
+        //     },
+        //     params: {
+        //         ip: selectedIP,
+        //         network: selectedNet,
+        //         name: info.oid_name,
+        //         location: info.oid_location,
+        //         description: info.oid_description
+        //     }
+        // }).then((response) => {
+        //     setLoading(false)
+        //     console.log(response.data.specs);
+        //     setResult(response.data.specs)
+        // })
+
+        const fetchData = async () => {
+            // console.log("***********************")
+            // console.log("***********************")
+            // console.log("***********************")
+            await fetchEventSource('/monitoring', {
+                method: "POST",
+                headers: {
+                    Accept: "text/event-stream",
+                    Authorization: props.getToken()
+                },
+                body: JSON.stringify({
+                    ip: selectedIP,
+                    network: selectedNet,
+                    name: info.oid_name,
+                    location: info.oid_location,
+                    description: info.oid_description
+                }),
+                onopen(res) {
+                    if (res.ok && res.status === 200) {
+                        // console.log("name : ", res.name_res);
+                        // console.log("location : ", res.location_res);
+                        // console.log("desc : ", res.description_res);
+                        // console.log("#########################################");
+                        // console.log(res.data);
+                        // // // let res_obj = JSON.parse(res.data);
+                        // // console.log(typeof (res.data));
+
+                        // console.log("#########################################");
+
+                    } else if (
+                        res.status >= 400 &&
+                        res.status < 500 &&
+                        res.status !== 429
+                    ) {
+                        console.log("Client side error ", res);
+                    }
+                },
+                onmessage(event) {
+                    console.log("#########################################");
+                    // console.log(event.data);
+                    const parsedData = JSON.parse(event.data);
+                    console.log(parsedData)
+                    if (parsedData.name_res !== undefined || parsedData.location_res !== undefined || parsedData.description_res !== undefined) {
+                        setResult(parsedData)
+                        // console.log(parsedData.name_res);
+                        // console.log(parsedData.location_res);
+                        // console.log(parsedData.description_res);
+                    }
+                    console.log("#########################################");
+
+                },
+                onclose() {
+                    console.log("Connection closed by the server");
+                },
+                onerror(err) {
+                    console.log("There was an error from server", err);
+                }
+            });
+        };
+        fetchData();
     }
     return (
         <div>
@@ -223,11 +363,15 @@ const Monitoring = (props) => {
                                 </div>
 
                             ) : null}
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        // <div className="App">
+        //     The last streamed item was: {data}
+        // </div>
     );
 };
 

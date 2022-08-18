@@ -73,12 +73,12 @@ def get_ip_net_config(ip , network):
     oid_description = redis_cache.get(key_signature+'_oid_description').decode('utf-8')
     oids = redis_cache.get(key_signature+'_oids').decode('utf-8')
     oids_list = ast.literal_eval(oids)
-    for oid_name in oids_list:
-        oid_val_rate = redis_cache.get(key_signature+'_'+oid_name).decode('utf-8')
+    for _name in oids_list:
+        oid_val_rate = redis_cache.get(key_signature+'_'+_name).decode('utf-8')
         oid_val_rate_json = json.loads(oid_val_rate)
-        print(oid_val_rate)
+        # print(oid_val_rate)
         params.append({
-            'name':oid_name,
+            'name':_name,
             'oid':oid_val_rate_json['oid'],
             'rate':oid_val_rate_json['rate']
         })

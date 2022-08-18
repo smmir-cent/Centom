@@ -1,7 +1,7 @@
-import redis
 import subprocess
 import math
-import time
+import json
+import sys
 sys.path.insert(1,'./utility/net-config')
 from net_config import get_ip_net_config
 
@@ -13,45 +13,58 @@ def extract_snmp_value(output):
 
 
 def monitoring(ip,network,name,location,description):
-    redis_cache = redis.Redis(host='localhost', port=6379, db=0)
+    # redis_cache = redis.Redis(host='localhost', port=6379, db=0)
     args = ['../build/centom_engine','-get',ip]
+    print("################################################################")
     args.append(name)
     name_res = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode('utf-8')
+    print(name_res)
     args.pop()
 
     args.append(location)
     location_res = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode('utf-8')
+    print(location_res)
+
     args.pop()
 
     args.append(description)
     description_res = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode('utf-8')
+    print(description_res)
     args.pop()
-    # todo: send json info first
-    {'name_res':extract_snmp_value(name_res),'location_res':extract_snmp_value(location_res),'description_res':extract_snmp_value(description_res)}
+    # send json info first
+    info = {'name_res':extract_snmp_value(name_res),'location_res':extract_snmp_value(location_res),'description_res':extract_snmp_value(description_res)}
+    yield f"data:{json.dumps(info)}\n\n"
     json_config = get_ip_net_config(ip , network)
     params = json_config['params']
     oid_val_rate = {}
     rates = []
     for item in params:
-        oid_val_rate[item['name']] = {{
+        oid_val_rate[item['name']] = {
             'oid':item['oid'],
             'rate':item['rate']            
-        }}
+        }
         rates.append(item['rate'])
-    reates_gcd = math.gcd(rates)
+    print(json.dumps(oid_val_rate, indent=4))
+    reates_gcd = math.gcd(*rates)
+    print(reates_gcd)
     counter = 0
-    while True:
-        json_data = {}
-        for item in params:
-            if counter % item['rate'] == 0:
-                pass
-                ## run snmpcore for each item based on timeline
-                ## extract_snmp_value
-                # add to json_data
+    # while True:
+    #     json_data = {}
+    #     for item in params:
+    #         if counter % item['rate'] == 0:
+    #             pass
+    #             ## run snmpcore for each item based on timeline
+    #             args.append(item['oid'])
+    #             output = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode('utf-8')
+    #             args.pop()
+    #             ## extract_snmp_value
+    #             value = extract_snmp_value(output)
+    #             # add to json_data
+    #             json_data[item] = value
         
-        yield f"data:{json_data}\n\n"
-        counter += reates_gcd
-        time.sleep(reates_gcd)
+    #     yield f"data:{json_data}\n\n"
+    #     counter += reates_gcd
+    #     time.sleep(reates_gcd)
 
 if __name__ == '__main__':
     pass
