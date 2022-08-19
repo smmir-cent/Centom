@@ -265,9 +265,9 @@ const Monitoring = (props) => {
                     console.log(parsedData)
                     if (parsedData.name_res !== undefined || parsedData.location_res !== undefined || parsedData.description_res !== undefined) {
                         setResult(parsedData)
-                        // console.log(parsedData.name_res);
-                        // console.log(parsedData.location_res);
-                        // console.log(parsedData.description_res);
+                        console.log(parsedData.name_res);
+                        console.log(parsedData.location_res);
+                        console.log(parsedData.description_res);
                     }
                     console.log("#########################################");
 
