@@ -232,35 +232,44 @@ def get_net_config(current_user):
     return jsonify({'message' : config_json}), 200
 
 
-# import time
-# @main.route('/stream')
-# def stream():
-#     print("stream")
+import time
+from datetime import datetime
+@main.route('/stream')
+def stream():
+    print("stream")
 
-#     def get_data():
-#         print("get_data")
-#         while True:
-#             print('*')
-#             #gotcha
-#             time.sleep(1)
-#             yield f'data: {datetime.now().second} \n\n'
-#     response = Response(get_data(), mimetype='text/event-stream')
-#     response.headers["Cache-Control"] = "no-cache"
-#     response.headers["X-Accel-Buffering"] = "no"
-#     response.headers.add('Access-Control-Allow-Origin', '*')
-#     return response,200
+    def get_data():
+        print("get_data")
+        while True:
+            print('*')
+            #gotcha
+            time.sleep(1)
+            yield f'data: {datetime.now().second} \n\n'
+    response = Response(get_data(), mimetype='text/event-stream')
+    response.headers["Cache-Control"] = "no-cache"
+    response.headers["X-Accel-Buffering"] = "no"
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response,200
 
 
-@main.route('/monitoring',methods=['POST'])
-@token_required
-def monitor(current_user):
-    args = json. loads(request.data.decode('utf-8'))
+@main.route('/monitoring',methods=['GET'])
+# @token_required
+def monitor():
+    print("monitor")
+    print("monitor")
+    print("monitor")
+    args = request.args
     print(args)
     ip = args.get("ip")
     network = args.get("network")
     name = args.get("name")
     location = args.get("location")
-    description = args.get("description") 
+    description = args.get("description")
+    # ip = "192.168.220.129"
+    # network = "simple network"
+    # name = "sysName.0"
+    # location = "sysLocation.0"
+    # description = "sysDescr.0"
     print("ip,network,name,location,description")
     print(ip,network,name,location,description)
     print("ip,network,name,location,description")
