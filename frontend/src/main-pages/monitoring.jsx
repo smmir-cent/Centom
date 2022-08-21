@@ -6,7 +6,7 @@ import '../profile-pages/profile.css';
 import './loading.css';
 import axios from 'axios';
 import './loading.css';
-import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { IotChart } from './iotChart';
 
 const Monitoring = (props) => {
     let initialInfo = {
@@ -248,7 +248,9 @@ const Monitoring = (props) => {
                                     // ReactDOM.render(React.createElement(ApexChart), domContainer) : null
                                     // <Line data={data_} /> : null
                                     // <Line data={data_} options={options_} /> : null
-                                    null : null
+                                    <IotChart /> : null
+
+                                // null : null
                             }
 
                             {/* {
