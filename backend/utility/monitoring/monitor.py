@@ -68,6 +68,13 @@ def monitoring(ip,network,name,location,description):
     reates_gcd = math.gcd(*rates)
     print(reates_gcd)
     counter = 0
+    params_info = {}
+    params_info['params'] = list(oid_val_rate.keys())
+    print(list(oid_val_rate.keys()))
+    print(json.dumps(params_info, indent=4))
+    
+    yield f"data: {json.dumps(params_info)} \n\n"
+
     while True:
         json_data = {}
         for item in params:

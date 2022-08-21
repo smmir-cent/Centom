@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { domContainer, useState, useEffect } from 'react';
+import ReactDOM from 'react-dom'
 import '../bulma.min.css';
 import './quick-scan.css';
 import '../profile-pages/profile.css';
@@ -26,10 +26,10 @@ const Monitoring = (props) => {
     const [ips, setIps] = useState([]);
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(initialSpecs);
+    const [paramsList, setParamsList] = useState([]);
     const [selectedNet, setSelectedNet] = useState('');
     const [selectedIP, setSelectedIP] = useState('');
     const [info, setInfo] = useState(initialInfo);
-    const [data, setData] = useState('Initializing...')
     const handleNetChange = event => {
 
         let req_net = event.target.selectedOptions[0].value
@@ -87,7 +87,15 @@ const Monitoring = (props) => {
 
             function handleStream(e) {
                 //processing data
-                console.log(e.data)
+                const recieved_data = JSON.parse(e.data)
+                console.log(recieved_data)
+                if (recieved_data['name_res'] && recieved_data['location_res'] && recieved_data['description_res']) {
+                    setResult(recieved_data);
+                }
+                else if (recieved_data['params']) {
+                    setParamsList(recieved_data['params']);
+                    console.log(paramsList)
+                }
                 // setData(e.data)
             }
 
@@ -233,15 +241,53 @@ const Monitoring = (props) => {
                                 </div>
 
                             ) : null}
+                            {
+                                paramsList.length !== 0 ?
+                                    // <LineChart></LineChart> : null
+                                    // <ApexChart /> : null
+                                    // ReactDOM.render(React.createElement(ApexChart), domContainer) : null
+                                    // <Line data={data_} /> : null
+                                    // <Line data={data_} options={options_} /> : null
+                                    null : null
+                            }
 
+                            {/* {
+                                paramsList.length !== 0 ?
+                                    (
+
+                                        paramsList.map((param) => (
+                                            // <ResponsiveContainer width="100%" height={200}>
+                                            //     <LineChart
+                                            //         width={500}
+                                            //         height={200}
+                                            //         data={data_}
+                                            //         margin={{
+                                            //             top: 10,
+                                            //             right: 30,
+                                            //             left: 0,
+                                            //             bottom: 0,
+                                            //         }}
+                                            //     >
+                                            //         <CartesianGrid strokeDasharray="3 3" />
+                                            //         <XAxis dataKey="name" />
+                                            //         <YAxis />
+                                            //         <Tooltip />
+                                            //         <Line connectNulls type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+                                            //     </LineChart>
+                                            // </ResponsiveContainer>
+                                            <div style={{ width: 500 }}>
+                                                <Line data={config.data} options={config.options} />
+                                            </div>
+                                        )
+                                        )
+                                    )
+                                    : null
+                            } */}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        // <div className="App">
-        //     The last streamed item was: {data}
-        // </div>
+        </div >
     );
 };
 
