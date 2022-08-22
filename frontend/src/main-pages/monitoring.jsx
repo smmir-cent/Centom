@@ -1,14 +1,19 @@
 import React, { domContainer, useState, useEffect } from 'react';
-import ReactDOM from 'react-dom'
 import '../bulma.min.css';
 import './quick-scan.css';
 import '../profile-pages/profile.css';
 import './loading.css';
 import axios from 'axios';
 import './loading.css';
-import { IotChart } from './iotChart';
+import Chart from 'chart.js/auto';
+import { CategoryScale } from 'chart.js';
+import { Line } from "react-chartjs-2";
 
+
+Chart.register(CategoryScale);
 const Monitoring = (props) => {
+    const _ = require('lodash');
+    // const lodashClonedeep = require("lodash.clonedeep");
     let initialInfo = {
         username: "",
         password: "",
@@ -22,6 +27,19 @@ const Monitoring = (props) => {
         location_res: "",
         description_res: ""
     };
+    const initChartData = {
+        labels: [], // add time
+        datasets: [
+            {
+                label: " ", // param name
+                data: [], // update with event source
+                fill: true,
+                backgroundColor: "rgba(75,192,192,0.2)",
+                borderColor: "rgba(75,192,192,1)"
+            }
+
+        ]
+    };
     const [networks, setNetworks] = useState([]);
     const [ips, setIps] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -30,6 +48,44 @@ const Monitoring = (props) => {
     const [selectedNet, setSelectedNet] = useState('');
     const [selectedIP, setSelectedIP] = useState('');
     const [info, setInfo] = useState(initialInfo);
+    const [monitoringInfo, setMonitoringInfo] = useState({});
+    const [state, setstate] = useState({
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"], // add time
+        datasets: [
+            {
+                label: "First dataset", // param name
+                data: [33, 53, 85, 41, 44, 65], // update with event source
+                fill: true,
+                backgroundColor: "rgba(75,192,192,0.2)",
+                borderColor: "rgba(75,192,192,1)"
+            }
+
+        ]
+    });
+    // const buttonFunction = () => {
+    //     console.log(JSON.stringify(state, null, 2));
+
+    //     setstate(current => {
+    //         return {
+    //             ...current,
+    //             labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "new"],
+    //             datasets: [
+    //                 {
+    //                     label: "First dataset",
+    //                     data: [50, 50, 50, 50, 50, 50, 60],
+    //                     fill: true,
+    //                     backgroundColor: "rgba(75,192,192,0.2)",
+    //                     borderColor: "rgba(75,192,192,1)"
+    //                 }
+    //             ],
+    //         };
+    //     });
+
+    //     console.log(JSON.stringify(state, null, 2));
+    // };
+
+
+
     const handleNetChange = event => {
 
         let req_net = event.target.selectedOptions[0].value
@@ -88,18 +144,78 @@ const Monitoring = (props) => {
             function handleStream(e) {
                 //processing data
                 const recieved_data = JSON.parse(e.data)
-                console.log(recieved_data)
+                console.log("=====================================");
+                console.log("recieved_data");
+                console.log(recieved_data);
                 if (recieved_data['name_res'] && recieved_data['location_res'] && recieved_data['description_res']) {
                     setResult(recieved_data);
+                    // console.log("recieved_data['name_res'] && recieved_data['location_res'] && recieved_data['description_res']");
+                    // console.log(JSON.stringify(monitoringInfo));
+                    // console.log("recieved_data['name_res'] && recieved_data['location_res'] && recieved_data['description_res']");
                 }
-                else if (recieved_data['params']) {
+                else if ('params' in recieved_data) {
                     setParamsList(recieved_data['params']);
-                    console.log(paramsList)
+                    for (let index = 0; index < recieved_data['params'].length; index++) {
+                        let newMonitoring = JSON.parse(JSON.stringify(initChartData));
+                        newMonitoring.datasets[0].label = recieved_data['params'][index];
+                        console.log("/////////////////////////////////////");
+                        console.log(recieved_data['params']);
+                        console.log(recieved_data['params'][index]);
+                        console.log(JSON.stringify(initChartData));
+                        console.log("/////////////////////////////////////");
+                        setMonitoringInfo({
+                            ...monitoringInfo,
+                            [recieved_data['params'][index]]: newMonitoring
+                        });
+                        // console.log("recieved_data['params'][index]");
+                        // console.log(recieved_data['params'][index]);
+                        // console.log(JSON.stringify(newMonitoring));
+                        // console.log("/recieved_data['params'][index]");
+
+                    }
+                    // console.log("recieved_data['params']");
+                    // console.log(JSON.stringify(monitoringInfo));
+                    // console.log("recieved_data['params']");
+                    // console.log(paramsList)
+                } else {
+                    Object.keys(recieved_data).forEach(function (key) {
+                        if (monitoringInfo.hasOwnProperty(key)) {
+                            // console.log(key);
+                            let labels = monitoringInfo[key].labels;
+                            labels.push(recieved_data[key].time);
+                            let newDatasets = (monitoringInfo[key].datasets)[0];
+                            newDatasets.data.push(parseFloat(recieved_data[key].value));
+                            setMonitoringInfo({ ...monitoringInfo, [key]: { ...monitoringInfo[key], labels: labels } });
+                            setMonitoringInfo({ ...monitoringInfo, [key]: { ...monitoringInfo[key], datasets: [newDatasets] } })
+                            console.log("key labels newDatasets");
+                            console.log(key);
+                            console.log(labels);
+                            console.log(newDatasets);
+                            console.log("/recieved_data['params'][index]");
+                            console.log("monitoringInfo");
+                            console.log(JSON.stringify(monitoringInfo));
+                            console.log("/monitoringInfo");
+                        }
+
+                    });
+                    // console.log("+++++++++++++++++++ else");
+                    // console.log(JSON.stringify(monitoringInfo));
+                    // console.log("+++++++++++++++++++ else");
+
                 }
-                // setData(e.data)
+                console.log("/=====================================");
+
             }
 
             sse.onmessage = e => { handleStream(e) }
+            sse.onerror = () => {
+                // error log here 
+
+                sse.close();
+            }
+            // return () => {
+            //     sse.close();
+            // };
         }
 
 
@@ -157,7 +273,11 @@ const Monitoring = (props) => {
 
     }
     function monitorButton() {
-        setLoading(true)
+        setLoading(true);
+        console.log("monitoringInfo[paramsList[0]]");
+        console.log(paramsList);
+        console.log(monitoringInfo[paramsList[0]]);
+        console.log("monitoringInfo[paramsList[0]]");
     }
 
     return (
@@ -166,7 +286,9 @@ const Monitoring = (props) => {
                 <div className="row d-flex justify-content-center align-items-center">
                     <div className="col-md-8">
                         <div id="regForm">
-
+                            <div style={{ color: "black" }}>
+                                {paramsList.toString()}
+                            </div>
                             <h1 style={{ color: "black" }} id="register">Monitoring</h1>
 
                             <h4 style={{ color: "black" }}>Saved Network</h4>
@@ -241,50 +363,43 @@ const Monitoring = (props) => {
                                 </div>
 
                             ) : null}
-                            {
-                                paramsList.length !== 0 ?
-                                    // <LineChart></LineChart> : null
-                                    // <ApexChart /> : null
-                                    // ReactDOM.render(React.createElement(ApexChart), domContainer) : null
-                                    // <Line data={data_} /> : null
-                                    // <Line data={data_} options={options_} /> : null
-                                    <IotChart /> : null
-
-                                // null : null
-                            }
-
                             {/* {
-                                paramsList.length !== 0 ?
+                                paramsList.length !== 0 && Object.keys(monitoringInfo).length !== 0 && monitoringInfo[paramsList[0]] && Object.keys(monitoringInfo[paramsList[0]]).length !== 0 ?
                                     (
-
-                                        paramsList.map((param) => (
-                                            // <ResponsiveContainer width="100%" height={200}>
-                                            //     <LineChart
-                                            //         width={500}
-                                            //         height={200}
-                                            //         data={data_}
-                                            //         margin={{
-                                            //             top: 10,
-                                            //             right: 30,
-                                            //             left: 0,
-                                            //             bottom: 0,
-                                            //         }}
-                                            //     >
-                                            //         <CartesianGrid strokeDasharray="3 3" />
-                                            //         <XAxis dataKey="name" />
-                                            //         <YAxis />
-                                            //         <Tooltip />
-                                            //         <Line connectNulls type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-                                            //     </LineChart>
-                                            // </ResponsiveContainer>
-                                            <div style={{ width: 500 }}>
-                                                <Line data={config.data} options={config.options} />
+                                        paramsList.map((parameter) => (
+                                            // let json_mon =JSON.parse(monitoringInfo[parameter]);
+                                            <div>
+                                                <div style={{ backgroundColor: '#ffffff', color: "black" }} >
+                                                    <Line data={JSON.parse(monitoringInfo[parameter])} />
+                                                    {JSON.stringify(monitoringInfo[parameter])}
+                                                </div >
                                             </div>
+
                                         )
                                         )
                                     )
                                     : null
                             } */}
+
+                            {/* {
+                                paramsList.map((parameter) => (
+                                    // let json_mon =JSON.parse(monitoringInfo[parameter]);
+                                    <div>
+                                        <div style={{ backgroundColor: '#ffffff', color: "black" }} >
+                                            <Line data={JSON.parse(monitoringInfo[parameter])} />
+                                            {JSON.stringify(monitoringInfo[parameter])}
+                                        </div >
+                                    </div>
+
+                                ))
+                            } */}
+                            <div style={{ backgroundColor: '#ffffff', color: "black" }}>
+                                {/* {JSON.stringify(monitoringInfo['percentages_cpu'])} */}
+                                {monitoringInfo['cpu_load_1min'] ?
+                                    <Line data={monitoringInfo['cpu_load_1min']} /> : null
+                                }
+                                {/* {JSON.stringify(monitoringInfo)} */}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -294,9 +409,6 @@ const Monitoring = (props) => {
 };
 
 
-Monitoring.propTypes = {
-
-};
 
 
 export default Monitoring;

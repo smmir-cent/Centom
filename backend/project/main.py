@@ -252,7 +252,7 @@ def stream():
     return response,200
 
 
-@main.route('/monitoring',methods=['GET'])
+@main.route('/monitoring',methods=['OPTIONS','GET'])
 # @token_required
 def monitor():
     print("monitor")
@@ -277,4 +277,8 @@ def monitor():
     response.headers["Cache-Control"] = "no-cache"
     response.headers["X-Accel-Buffering"] = "no"
     response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Methods' ,'*')
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Credentials' ,'true')
+    response.headers.add('Access-Control-Allow-Private-Network' ,'true')
     return response,200

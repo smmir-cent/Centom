@@ -3,9 +3,11 @@ import math
 import json
 import sys
 import time
-
+from datetime import datetime
 sys.path.insert(1,'./utility/net-config')
 from net_config import get_ip_net_config
+format_date = "%m/%d/%Y, %H:%M:%S"
+
 
 
 def extract_snmp_value(output):
@@ -28,7 +30,8 @@ def extract_snmp_value(output):
             final_res = res[1]
 
     # print(final_res)
-    return final_res
+    return final_res.strip('\n')
+
 
 
 
@@ -87,7 +90,7 @@ def monitoring(ip,network,name,location,description):
                 ## extract_snmp_value
                 value = extract_snmp_value(output)
                 # add to json_data
-                json_data[item['name']] = value
+                json_data[item['name']] = {'time':datetime.now().strftime(format_date),'value':value}
         if len(json_data) != 0:
             print("#####################")
             print(json.dumps(json_data, indent=4))
@@ -109,13 +112,29 @@ if __name__ == '__main__':
     {
       "name": "percentages_cpu",
       "oid": "ssCpuSystem.0",
-      "rate": 5
+      "rate": 10
     },
     {
       "name": "cpu_load_1min",
       "oid": "laLoad.1",
-      "rate": 2
+      "rate": 7
     }
   ]
 }
 '''        
+
+
+
+
+'''
+
+
+{"labels":["test","08/22/2022, 10:53:23","08/22/2022, 10:53:23","08/22/2022, 10:53:23","08/22/2022, 10:53:23","08/22/2022, 10:53:30","08/22/2022, 10:53:30","08/22/2022, 10:53:34","08/22/2022, 10:53:34","08/22/2022, 10:53:38","08/22/2022, 10:53:38","08/22/2022, 10:53:44","08/22/2022, 10:53:44","08/22/2022, 10:53:45","08/22/2022, 10:53:45","08/22/2022, 10:53:52","08/22/2022, 10:53:52","08/22/2022, 10:53:54","08/22/2022, 10:53:54"],"datasets":[{"label":"cpu_load_1min","data":[1,0,0.08,0,0.08,0.07,0.07,0,0,0.3,0.3,0,0,0.28,0.28,0.25,0.25,0,0],"fill":true,"backgroundColor":"rgba(75,192,192,0.2)","borderColor":"rgba(75,192,192,1)"}]}
+
+
+
+
+
+
+
+'''
