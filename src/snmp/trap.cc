@@ -71,6 +71,7 @@ void TrapListener::listen()
         std::string command = "echo " + trapData + " | tr -d ' '  | xxd -r -p | openssl asn1parse -inform DER -i";
         // executes decoding command and writes human readable result to UI result list
         std::cout << "trap ---> " << decodeData(command.c_str(), address) << std::endl;
+        std::cout << "end of trap message" << std::endl;
         // writeToUI(decodeData(command.c_str(), address));
     }
 }
@@ -103,14 +104,3 @@ std::string TrapListener::decodeData(const char *command, std::string &address)
     result.insert(0, "New incoming trap message from: " + address + "\n");
     return result;
 }
-
-// // writes decoded data to UI list
-// void TrapListener::writeToUI(const std::string &trap_result)
-// {
-//     // locks mutex
-//     trapLock.lock();
-//     // adds new item to trap results list and writes decoded trap message into it
-//     trapResultsList->addItem(trap_result.c_str());
-//     // unlocks mutex
-//     trapLock.unlock();
-// }

@@ -74,6 +74,15 @@ function Navbar(props) {
                                 {(props.getToken()) ?
                                     (
                                         <>
+                                            <a href="/notification" className="navbar-item">
+                                                Notification
+                                            </a>
+                                        </>
+                                    ) : <></>}
+
+                                {(props.getToken()) ?
+                                    (
+                                        <>
                                             <a href="/logout" className="navbar-item">
                                                 Logout
                                             </a>

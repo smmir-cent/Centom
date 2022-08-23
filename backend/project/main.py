@@ -12,6 +12,7 @@ sys.path.insert(1,'./utility/monitoring')
 
 from discovery import scan_net
 from monitor import monitoring
+from notify import notifying
 from net_config import save_ip_net_config,get_ip_net_config
 from project.models import Network
 from project import db
@@ -282,3 +283,46 @@ def monitor():
     response.headers.add('Access-Control-Allow-Credentials' ,'true')
     response.headers.add('Access-Control-Allow-Private-Network' ,'true')
     return response,200
+
+
+@main.route('/notification',methods=['GET'])
+# @token_required
+def notify_trap():
+    print("notify_trap")
+    print("notify_trap")
+    print("notify_trap")
+    args = request.args
+    print(args)
+    # ip = args.get("ip")
+    # network = args.get("network")
+    # name = args.get("name")
+    # location = args.get("location")
+    # description = args.get("description")
+
+
+    # print("ip,network,name,location,description")
+    # print(ip,network,name,location,description)
+    # print("ip,network,name,location,description")
+
+    response = Response(notifying(), mimetype="text/event-stream")
+    response.headers["Cache-Control"] = "no-cache"
+    response.headers["X-Accel-Buffering"] = "no"
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Methods' ,'*')
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Credentials' ,'true')
+    response.headers.add('Access-Control-Allow-Private-Network' ,'true')
+    return response,200    
+
+@main.before_request   
+def after_request_callback():   
+    path = request.path   
+    args = ["fuser" ,"-k" ,"162/udp"]
+    engine_result = subprocess.run(args, stdout=subprocess.PIPE)
+    print(engine_result.stdout.decode('utf-8'))
+
+
+    # if path == '/notification':
+    #     pass
+  
+    
