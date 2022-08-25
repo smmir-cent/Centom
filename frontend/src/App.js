@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route }
   from 'react-router-dom';
 
@@ -18,6 +18,7 @@ import Monitoring from './main-pages/monitoring';
 import Stream from './main-pages/stream';
 import Notification from './main-pages/notification';
 import { Filecontext } from './Filecontext';
+import axios from 'axios';
 
 function App() {
   const { token, removeToken, setToken, getToken } = useToken();
@@ -25,6 +26,19 @@ function App() {
   const setPer = (per) => {
     setPermission(per);
   };
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: "/get-role",
+      headers: {
+        Authorization: getToken()
+      }
+    }).then((response) => {
+      console.log(response.data.role);
+      setPermission(response.data.role)
+    })
+
+  });
   return (
     <Router>
       <div>

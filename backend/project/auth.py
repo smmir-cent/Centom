@@ -114,6 +114,14 @@ def get_roles(current_user):
     return response_body,200
 
 
+@auth.route('/get-role', methods=['GET'])
+@token_required
+def get_role(current_user):
+    response_body = {'role':access[current_user.user_role]}
+    return response_body,200
+
+
+
 @auth.route('/register', methods=['POST'])
 @token_required
 def register(current_user):
