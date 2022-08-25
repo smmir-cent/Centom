@@ -1,9 +1,12 @@
 import axios from "axios";
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Filecontext } from './../Filecontext';
+import { useContext } from 'react';
 
 function Logout(props) {
     const navigate = useNavigate();
+    const permission = useContext(Filecontext);
 
     function logMeOut() {
         axios({
@@ -15,6 +18,7 @@ function Logout(props) {
         })
             .then((response) => {
                 props.removeToken()
+                permission.setPermission(-1);
             }).catch((error) => {
                 if (error.response) {
                     console.log(error.response)

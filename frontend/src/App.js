@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route }
   from 'react-router-dom';
 
@@ -17,33 +17,39 @@ import NetConfig from './main-pages/net-config';
 import Monitoring from './main-pages/monitoring';
 import Stream from './main-pages/stream';
 import Notification from './main-pages/notification';
+import { Filecontext } from './Filecontext';
 
 function App() {
   const { token, removeToken, setToken, getToken } = useToken();
-
+  const [permission, setPermission] = useState(-1);
+  const setPer = (per) => {
+    setPermission(per);
+  };
   return (
     <Router>
       <div>
         <section className="hero is-primary is-fullheight">
-          <Navbar getToken={getToken} />
-          <div className="hero-body">
-            <div className="container has-text-centered">
-              <Routes>
-                <Route exact path='/' element={<Home />} />
-                <Route exact path='/home' element={<Home />} />
-                <Route exact path='/logout' element={<Logout getToken={getToken} removeToken={removeToken} />} />
-                <Route exact path="/login" element={<Login token={token} setToken={setToken} />}></Route>
-                <Route exact path='/register' element={<Register getToken={getToken} />} />
-                <Route exact path='/quick-scan' element={<QuickScan getToken={getToken} />} />
-                <Route exact path='/net-discovery' element={<NetDiscovery getToken={getToken} />} />
-                <Route exact path='/net-config' element={<NetConfig getToken={getToken} />} />
-                <Route exact path='/monitoring' element={<Monitoring getToken={getToken} />} />
-                <Route exact path='/notification' element={<Notification getToken={getToken} />} />
-                <Route exact path='/stream' element={<Stream getToken={getToken} />} />
+          <Filecontext.Provider value={{ permission: permission, setPermission: setPer }}>
+            <Navbar />
+            <div className="hero-body">
+              <div className="container has-text-centered">
+                <Routes>
+                  <Route exact path='/' element={<Home />} />
+                  <Route exact path='/home' element={<Home />} />
+                  <Route exact path='/logout' element={<Logout getToken={getToken} removeToken={removeToken} />} />
+                  <Route exact path="/login" element={<Login token={token} setToken={setToken} />}></Route>
+                  <Route exact path='/register' element={<Register getToken={getToken} />} />
+                  <Route exact path='/quick-scan' element={<QuickScan getToken={getToken} />} />
+                  <Route exact path='/net-discovery' element={<NetDiscovery getToken={getToken} />} />
+                  <Route exact path='/net-config' element={<NetConfig getToken={getToken} />} />
+                  <Route exact path='/monitoring' element={<Monitoring getToken={getToken} />} />
+                  <Route exact path='/notification' element={<Notification getToken={getToken} />} />
+                  <Route exact path='/stream' element={<Stream getToken={getToken} />} />
 
-              </Routes>
+                </Routes>
+              </div>
             </div>
-          </div>
+          </Filecontext.Provider>
         </section>
       </div>
     </Router>

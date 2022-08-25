@@ -1,7 +1,10 @@
 import React from "react";
 import '../bulma.min.css';
-
+import { useContext } from 'react';
+import { Filecontext } from './../Filecontext';
+import { Link } from "react-router-dom";
 function Navbar(props) {
+    const permission = useContext(Filecontext);
     return (
         <>
             <div className="hero-head">
@@ -10,73 +13,73 @@ function Navbar(props) {
 
                         <div id="navbarMenuHeroA" className="navbar navbar-expand-lg navbar-light">
                             <div className="navbar-end">
-                                <a href="/home" className="navbar-item">
+                                <Link to="/home" className="navbar-item">
                                     Home
-                                </a>
+                                </Link>
 
-                                {(!props.getToken()) ?
+                                {(permission.permission === -1) ?
                                     (
                                         <>
-                                            <a href="/login" className="navbar-item">
+                                            <Link to="/login" className="navbar-item">
                                                 Login
-                                            </a>
+                                            </Link>
                                         </>
                                     ) : <></>}
-
-                                <a href="/register" className="navbar-item">
-                                    Register
-                                </a>
-                                {(props.getToken()) ?
+                                {(permission.permission > 1) ? (
+                                    <Link to="/register" className="navbar-item">
+                                        Register
+                                    </Link>) : <></>}
+                                {(permission.permission > -1) ?
                                     (
                                         <>
-                                            <a href="/quick-scan" className="navbar-item">
+                                            <Link to="/quick-scan" className="navbar-item">
                                                 Quick Scan
-                                            </a>
+                                            </Link>
                                         </>
                                     ) : <></>}
 
-                                {(props.getToken()) ?
+                                {(permission.permission > 1) ?
                                     (
                                         <>
-                                            <a href="/net-discovery" className="navbar-item">
+                                            <Link to="/net-discovery" className="navbar-item">
                                                 Net Discovery
-                                            </a>
+                                            </Link>
                                         </>
                                     ) : <></>}
 
-                                {(props.getToken()) ?
+                                {(permission.permission > 1) ?
                                     (
                                         <>
-                                            <a href="/net-config" className="navbar-item">
+                                            <Link to="/net-config" className="navbar-item">
                                                 Network Config
-                                            </a>
+                                            </Link>
                                         </>
                                     ) : <></>}
 
-                                {(props.getToken()) ?
+                                {(permission.permission > 0) ?
                                     (
                                         <>
-                                            <a href="/monitoring" className="navbar-item">
+                                            <Link to="/monitoring" className="navbar-item">
                                                 Monitoring
-                                            </a>
+                                            </Link>
                                         </>
                                     ) : <></>}
 
-                                {(props.getToken()) ?
+                                {(permission.permission > 0) ?
                                     (
                                         <>
-                                            <a href="/notification" className="navbar-item">
+                                            <Link to="/notification" className="navbar-item">
                                                 Notification
-                                            </a>
+                                            </Link>
                                         </>
                                     ) : <></>}
 
-                                {(props.getToken()) ?
+                                {(permission.permission !== -1) ?
                                     (
                                         <>
-                                            <a href="/logout" className="navbar-item">
+                                            <Link to="/logout" className="navbar-item">
                                                 Logout
-                                            </a>
+                                            </Link>
                                         </>
                                     ) : <></>}
                                 {/* todo: add "about" page */}

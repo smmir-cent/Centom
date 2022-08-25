@@ -15,6 +15,9 @@ function Register(props) {
         axios({
             method: "POST",
             url: "/register",
+            headers: {
+                Authorization: props.getToken()
+            },
             data: {
                 email: signUpForm.email,
                 role: signUpForm.role,
@@ -72,7 +75,8 @@ function Register(props) {
                     Authorization: props.getToken()
                 }
             }).then((response) => {
-                setRoles(response.data['roles'])
+                setRoles(response.data.roles);
+                console.log(response.data.roles);
             })
         }
         getOptions();
@@ -106,7 +110,7 @@ function Register(props) {
                                 <option value="">Choose a Role</option>
                                 {
                                     roles.map((item, i) =>
-                                        <option key={i} value={item.name}>{item.name}</option>
+                                        <option key={i} value={item.role_name}>{item.role_name}</option>
                                     )}
                             </select>
                         </div>

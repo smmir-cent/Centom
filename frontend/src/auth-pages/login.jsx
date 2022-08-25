@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import axios from "axios";
+import { useContext } from 'react';
+import { Filecontext } from './../Filecontext';
 function Login(props) {
 
     const [loginForm, setloginForm] = useState({
@@ -8,6 +10,8 @@ function Login(props) {
         is_remember: "off",
         message: ""
     })
+    const permission = useContext(Filecontext);
+
 
     function loginButton(event) {
         axios({
@@ -22,6 +26,10 @@ function Login(props) {
             .then((response) => {
                 if (response.data.access_token) {
                     props.setToken(response.data.access_token)
+                    permission.setPermission(response.data.role)
+                    console.log("response.data.role");
+                    console.log(response.data.role);
+                    console.log("/response.data.role");
                 }
             }).catch((error) => {
                 if (error.response) {
