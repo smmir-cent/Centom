@@ -13,15 +13,6 @@ function Navbar(props) {
                                 <a href="/home" className="navbar-item">
                                     Home
                                 </a>
-                                {(props.getToken()) ?
-                                    (
-                                        <>
-                                            <a href="/profile" className="navbar-item">
-                                                Profile
-                                            </a>
-                                        </>
-                                    ) : <></>}
-
 
                                 {(!props.getToken()) ?
                                     (
@@ -32,8 +23,8 @@ function Navbar(props) {
                                         </>
                                     ) : <></>}
 
-                                <a href="/sign-up" className="navbar-item">
-                                    Sign Up
+                                <a href="/register" className="navbar-item">
+                                    Register
                                 </a>
                                 {(props.getToken()) ?
                                     (
@@ -88,6 +79,7 @@ function Navbar(props) {
                                             </a>
                                         </>
                                     ) : <></>}
+                                {/* todo: add "about" page */}
 
                             </div>
                         </div>

@@ -47,17 +47,6 @@ def quick_scan_post(current_user):
     print(result)
     return {"result":result},200
 
-@main.route('/profile',methods=["GET"])
-@token_required
-def my_profile(current_user):
-    response_body = {
-        "name": current_user.name, 
-        "surname": current_user.surname, 
-        "mobile_number": current_user.mobile_number, 
-        "email": current_user.email 
-    }
-
-    return response_body,200
 
 def random_color():
     return "#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)])

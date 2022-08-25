@@ -105,7 +105,7 @@ def login_post():
     return jsonify({'message' : 'Could not verify'}),403
 
 
-@auth.route('/sign-up', methods=['POST'])
+@auth.route('/register', methods=['POST'])
 def signup_post():
     auth = request.json
 

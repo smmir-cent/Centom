@@ -3,14 +3,13 @@ import { BrowserRouter as Router, Routes, Route }
   from 'react-router-dom';
 
 import Navbar from './profile-pages/navbar';
-import Profile from './profile-pages/profile';
 
 import Home from './main-pages';
 
 import Login from './auth-pages/login';
 import Logout from './auth-pages/logout';
 import useToken from './auth-pages/useToken'
-import SignUp from './auth-pages/signup';
+import Register from './auth-pages/register';
 
 import QuickScan from './main-pages/quick-scan';
 import NetDiscovery from './main-pages/net-discovery';
@@ -32,10 +31,9 @@ function App() {
               <Routes>
                 <Route exact path='/' element={<Home />} />
                 <Route exact path='/home' element={<Home />} />
-                <Route exact path='/profile' element={<Profile getToken={getToken} />} />
                 <Route exact path='/logout' element={<Logout getToken={getToken} removeToken={removeToken} />} />
                 <Route exact path="/login" element={<Login token={token} setToken={setToken} />}></Route>
-                <Route exact path='/sign-up' element={<SignUp />} />
+                <Route exact path='/register' element={<Register getToken={getToken} />} />
                 <Route exact path='/quick-scan' element={<QuickScan getToken={getToken} />} />
                 <Route exact path='/net-discovery' element={<NetDiscovery getToken={getToken} />} />
                 <Route exact path='/net-config' element={<NetConfig getToken={getToken} />} />

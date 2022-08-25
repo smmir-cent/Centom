@@ -1,26 +1,23 @@
 import axios from 'axios';
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-function SignUp(props) {
+function Register(props) {
     const [signUpForm, setSignUpForm] = useState({
         email: "",
-        name: "",
-        surname: "",
-        mobile_number: "",
+        role: "",
         password: "",
         message: ""
     })
+    const [roles, setRoles] = useState([]);
 
     function signUpButton(event) {
         axios({
             method: "POST",
-            url: "/sign-up",
+            url: "/register",
             data: {
                 email: signUpForm.email,
-                name: signUpForm.name,
-                surname: signUpForm.surname,
-                mobile_number: signUpForm.mobile_number,
+                role: signUpForm.role,
                 password: signUpForm.password,
             }
         })
@@ -36,9 +33,7 @@ function SignUp(props) {
             })
         setSignUpForm(({
             email: "",
-            name: "",
-            surname: "",
-            mobile_number: "",
+            role: "",
             password: "",
             message: ""
         }))
@@ -58,10 +53,33 @@ function SignUp(props) {
         })
         )
     }
+    const handleRoleChange = event => {
 
+        let req_net = event.target.selectedOptions[0].value
+        if (req_net.length === 0) {
+            setSignUpForm({ ...signUpForm, role: "" });
+            alert('choose a Role')
+        } else {
+            setSignUpForm({ ...signUpForm, role: req_net });
+        }
+    };
+    useEffect(() => {
+        async function getOptions() {
+            await axios({
+                method: "GET",
+                url: "/get-roles",
+                headers: {
+                    Authorization: props.getToken()
+                }
+            }).then((response) => {
+                setRoles(response.data['roles'])
+            })
+        }
+        getOptions();
+    }, []);
     return (
         <div className="column is-4 is-offset-4">
-            <h3 className="title">Sign Up</h3>
+            <h3 className="title">Register</h3>
             <div className="box">
 
                 <div className={signUpForm.message.includes("exist") ? "notification is-danger" : (signUpForm.message.includes("Success") ? "notification is-success" : "")}>{signUpForm.message ? signUpForm.message : ""}</div>
@@ -73,24 +91,7 @@ function SignUp(props) {
                         </div>
                     </div>
 
-                    <div className="field">
-                        <div className="control">
-                            <input onChange={handleChange} className="input is-large" type="text" name="name" placeholder="Name" autoFocus="" />
-                        </div>
-                    </div>
 
-                    <div className="field">
-                        <div className="control">
-                            <input onChange={handleChange} className="input is-large" type="text" name="surname" placeholder="Surname" autoFocus="" />
-                        </div>
-                    </div>
-
-                    <div className="field">
-                        <div className="control">
-                            <input onChange={handleChange} className="input is-large" type="text" name="mobile_number" placeholder="Mobile Number"
-                                autoFocus="" />
-                        </div>
-                    </div>
 
                     <div className="field">
                         <div className="control">
@@ -98,11 +99,23 @@ function SignUp(props) {
                         </div>
                     </div>
 
-                    <button className="button is-block is-info is-large is-fullwidth" onClick={signUpButton}>Sign Up</button>
+                    <div className="field">
+                        <div className="control">
+
+                            <select value={signUpForm.role} id="" className="input is-medium form-select" onChange={handleRoleChange} >
+                                <option value="">Choose a Role</option>
+                                {
+                                    roles.map((item, i) =>
+                                        <option key={i} value={item.name}>{item.name}</option>
+                                    )}
+                            </select>
+                        </div>
+                    </div>
+                    <button className="button is-block is-info is-large is-fullwidth" onClick={signUpButton}>Register</button>
                 </form>
             </div>
         </div>
     );
 };
 
-export default SignUp;
+export default Register;
