@@ -17,27 +17,6 @@ function Navbar(props) {
                                     Home
                                 </Link>
 
-                                {(permission.permission === -1) ?
-                                    (
-                                        <>
-                                            <Link to="/login" className="navbar-item">
-                                                Login
-                                            </Link>
-                                        </>
-                                    ) : <></>}
-                                {(permission.permission > 1) ? (
-                                    <Link to="/register" className="navbar-item">
-                                        Register
-                                    </Link>) : <></>}
-                                {(permission.permission > -1) ?
-                                    (
-                                        <>
-                                            <Link to="/quick-scan" className="navbar-item">
-                                                Quick Scan
-                                            </Link>
-                                        </>
-                                    ) : <></>}
-
                                 {(permission.permission > 1) ?
                                     (
                                         <>
@@ -46,7 +25,6 @@ function Navbar(props) {
                                             </Link>
                                         </>
                                     ) : <></>}
-
                                 {(permission.permission > 1) ?
                                     (
                                         <>
@@ -55,7 +33,6 @@ function Navbar(props) {
                                             </Link>
                                         </>
                                     ) : <></>}
-
                                 {(permission.permission > 0) ?
                                     (
                                         <>
@@ -73,6 +50,27 @@ function Navbar(props) {
                                             </Link>
                                         </>
                                     ) : <></>}
+                                {(permission.permission === -1) ?
+                                    (
+                                        <>
+                                            <Link to="/login" className="navbar-item">
+                                                Login
+                                            </Link>
+                                        </>
+                                    ) : <></>}
+                                {(permission.permission > -1) ?
+                                    (
+                                        <>
+                                            <Link to="/quick-scan" className="navbar-item">
+                                                Pro Tools
+                                            </Link>
+                                        </>
+                                    ) : <></>}
+
+                                {(permission.permission > 1) ? (
+                                    <Link to="/register" className="navbar-item">
+                                        Register
+                                    </Link>) : <></>}
 
                                 {(permission.permission !== -1) ?
                                     (
