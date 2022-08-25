@@ -8,27 +8,15 @@ from flask_jwt_extended import unset_jwt_cookies
 from functools import wraps
 from datetime import datetime, timedelta
 import jwt
+import copy
+
 auth = Blueprint('auth', __name__)
 
-##############################################
-
-# @auth.after_request
-# def refresh_expiring_jwts(response):
-#     try:
-#         exp_timestamp = get_jwt()["exp"]
-#         now = datetime.now(timezone.utc)
-#         target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
-#         if target_timestamp > exp_timestamp:
-#             access_token = create_access_token(identity=get_jwt_identity())
-#             data = response.get_json()
-#             if type(data) is dict:
-#                 data["access_token"] = access_token 
-#                 response.data = json.dumps(data)
-#         return response
-#     except (RuntimeError, KeyError):
-#         # Case where there is not a valid JWT. Just return the original respone
-#         return response
-
+access = {
+    'user': 0,
+    'admin': 1,
+    'superAdmin': 2
+}
 
 
 @auth.route("/logout",methods=['POST'])
@@ -91,6 +79,8 @@ def login_post():
         # returns 401 if user does not exist
         return jsonify({'message' : 'user does not exist'}),401
 
+    print(user.password)
+    print(password)
 
     if check_password_hash(user.password, password):
         # generates the JWT Token
@@ -100,41 +90,57 @@ def login_post():
             "email": user.email,
             'exp' : datetime.utcnow() + timedelta(minutes = 30)
         }, current_app.config['SECRET_KEY'], algorithm='HS256')
-        
-        return jsonify({'access_token' : token}), 201
+        return jsonify({'access_token' : token,'role':access[user.user_role]}), 201
     return jsonify({'message' : 'Could not verify'}),403
 
 
+
+@auth.route('/get-roles', methods=['GET'])
+@token_required
+def get_roles(current_user):
+
+    if current_user.user_role != 'superAdmin':
+        return jsonify({'message' : 'not allowed!'}),405 
+
+    access_copy = copy.deepcopy(access)
+    access_copy.pop('superAdmin',None)
+    response_body = {'roles':[]}
+    for key in access_copy.keys():
+        response_body['roles'].append({
+            'role_name':key,
+            'role_value':access_copy[key]
+        })
+
+    return response_body,200
+
+
 @auth.route('/register', methods=['POST'])
-def signup_post():
+@token_required
+def register(current_user):
     auth = request.json
 
+    if current_user.user_role != 'superAdmin':
+        return jsonify({'message' : 'not allowed!'}),405 
+
     email = auth.get('email')
-    name = auth.get('name')
-    surname = auth.get('surname')
-    mobile_number = auth.get('mobile_number')
+    user_role = auth.get('role')
     password = auth.get('password')
 
     print("recieved form")
     print(email)
-    print(name)
-    print(surname)
-    print(mobile_number)
+    print(user_role)
     print(password)
     print("/recieved form")
 
-
-
-
-
-
     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
 
-    if user: # if a user is found, we want to redirect back to signup page so user can try again  
-        return jsonify({'message' : 'User already exists. Please Log in.'}), 401
+    if user: # if a user is found, we want to redirect back to register page so user can try again  
+        return jsonify({'message' : 'User already exists!'}), 401
 
+    if user_role not in list(access.keys()) or user_role == 'superAdmin':
+        return jsonify({'message' : 'role not allowed!'}),405 
     # create new user with the form data. Hash the password so plaintext version isn't saved.
-    new_user = User(email=email, name=name,surname=surname,mobile_number=mobile_number, password=generate_password_hash(password, method='sha256'))
+    new_user = User(email=email,user_role=user_role, password=generate_password_hash(password, method='sha256'))
 
     # add the new user to the database
     db.session.add(new_user)

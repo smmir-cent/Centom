@@ -62,10 +62,8 @@ sqlite3 project/db.sqlite
 ```sql
 CREATE TABLE user (
 	id INTEGER PRIMARY KEY,
-	name TEXT NOT NULL,
-	surname TEXT NOT NULL,
 	email TEXT NOT NULL UNIQUE,
-	mobile_number TEXT NOT NULL,
+	user_role TEXT NOT NULL,
 	password TEXT NOT NULL
 );
 CREATE TABLE network (
@@ -74,6 +72,8 @@ CREATE TABLE network (
 	agents TEXT NOT NULL,
 	info TEXT NOT NULL
 );
+INSERT INTO user (id,email,password,user_role)
+VALUES (0,"superAdmin@gmail.com","08c1e89c0590b66c452d7370540b2dc6cf8be5c381a18f6ae5de234069ff79e2","superAdmin");
 ```
 
 ```sh
