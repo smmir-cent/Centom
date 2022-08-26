@@ -52,7 +52,7 @@ def random_color():
     return "#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)])
 
 
-def create_network_json(res_info):
+def create_network_json(res_info,targets):
     network_graph = {"nodes": [],"edges": []}
     all_nodes = {}
     ids = 1
@@ -61,6 +61,7 @@ def create_network_json(res_info):
     network_graph['nodes'].append({
         "id" : ids,
         "label" : "manager",
+        "types" : "Manager",
         "color": random_color()
         })
     ids += 1
@@ -70,6 +71,7 @@ def create_network_json(res_info):
             network_graph['nodes'].append({
                 "id" : ids,
                 "label" : node,
+                "types" : str(targets[node]),
                 "color": random_color()
             })
             ids += 1
@@ -81,6 +83,7 @@ def create_network_json(res_info):
                 network_graph['nodes'].append({
                     "id" : ids,
                     "label" : node,
+                    "types" : 'None',
                     "color": random_color()
                 })
                 ids += 1
@@ -127,7 +130,9 @@ def net_dis_post(current_user):
             return jsonify({'message' : 'Network already exists. Please try again.'}), 401
 
     # run net-dis utility
-    res_info = scan_net(subnet)
+    res_info,targets = scan_net(subnet)
+    print("res_info")
+    print(res_info)
     if len(res_info) == 0:
         ## invalid IP network
         return {"message":"invalid IP network"},200
@@ -137,7 +142,9 @@ def net_dis_post(current_user):
     # info: {subnet:res_info}
     # name: name
     ############################################## res_info.keys(): have snmp agent
-    network_graph = create_network_json(res_info)
+    network_graph = create_network_json(res_info,targets)
+    print(json.dumps(network_graph, indent=4))
+
     if save:
         # create new net with the form data.
         new_net = Network(name=name,subnet=subnet,agents=json.dumps({'agents':list(res_info.keys())}),info=json.dumps(network_graph, indent = 4))

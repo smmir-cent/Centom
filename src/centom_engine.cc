@@ -136,7 +136,7 @@ int main(int argc, char **argv)
   {
 
     std::string ip(argv[2]);
-    oids.push_back("system");
+    oids.push_back("sysServices");
     char *temp0 = (char *)"public";
     init_snmp("snmpapp");
     Session session(ip, "uMD5", "PMD51111");

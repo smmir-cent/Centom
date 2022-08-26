@@ -2,7 +2,10 @@ import subprocess
 import sys
 import ipaddress
 import re
+import json
 
+sys.path.insert(1,'../monitoring/monitor')
+from monitor import extract_snmp_value
 
 def ip_validation(address):
     try:
@@ -35,12 +38,29 @@ def line_iterator(str): return iter(str.splitlines())
 #     # plt.show()
 #     exit()
 
+def device_type(value):
+    ## https://oidref.com/1.3.6.1.2.1.1.7
+    ## https://knowledge.broadcom.com/external/article/32164/how-are-device-type-values-selected-for.html#:~:text=Determining%20the%20Device%20Type&text=The%20sysServices%20OID%20value%20type,its%20binary%20form%20is%201100101.
+    bin_value = int(value)
+    types = []
+    if bin_value & 0b0000001 == 0b0000001:
+      types.append('Repeater')  
+    if bin_value & 0b0000010 == 0b0000010:
+      types.append('Switch')
+    if bin_value & 0b0000100 == 0b0000100:
+      types.append('Router')
+    if bin_value & 0b0001000 == 0b0001000 or bin_value & 0b1000000 == 0b1000000:
+      types.append('Server')
+    if len(types) == 0:
+      types.append('Other')
+    return types
 
+      
 def scan_net(net_ip):
 
     if not ip_validation(net_ip):
         return {}
-    targets = []
+    targets = {}
     mask = int(net_ip.split('/',1)[1])
 
     for ip in ipaddress.IPv4Network(net_ip):
@@ -56,18 +76,17 @@ def scan_net(net_ip):
 
             if "Timeout".lower() in result_out.lower() or "Timeout".lower() in result_err.lower():
                 print(f'{str(ip)} is dead')
-                pass
             else:
                 print(f'{str(ip)} is alive')
-                targets.append(ip)
-                # break
+                targets[str(ip)] = device_type(extract_snmp_value(result_out))
+
     
     # targets = ['185.13.228.162','127.0.0.1','142.251.36.46']
     print("alive servers/switches/routers")
-    print(targets)
+    print(json.dumps(targets, indent=4))
 
     paths = {}
-    for ip in targets:
+    for ip in targets.keys():
         paths[str(ip)] = []
         args = ['traceroute','-I','-d','-m 3',str(ip)]
         trace_result = subprocess.run(args, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -78,15 +97,13 @@ def scan_net(net_ip):
         for line in line_iterator(result_out):
             if 'traceroute'in line:
                 continue
-            # if str(ip) in line:
-            #     continue
             match = re.search(r"\(([\d.]+)\)", line)
             if match:
                 current_ip = match.group(1)
                 paths[str(ip)].append(current_ip)
 
     print(paths)
-    return paths
+    return paths,targets
 
 
 
