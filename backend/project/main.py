@@ -62,7 +62,7 @@ def create_network_json(res_info,targets):
     network_graph['nodes'].append({
         "id" : ids,
         "label" : "manager",
-        "types" : "Manager",
+        "title" : "Manager",
         "color": random_color()
         })
     ids += 1
@@ -72,7 +72,7 @@ def create_network_json(res_info,targets):
             network_graph['nodes'].append({
                 "id" : ids,
                 "label" : node,
-                "types" : str(targets[node]),
+                "title" : str(targets[node]),
                 "color": random_color()
             })
             ids += 1
@@ -84,7 +84,7 @@ def create_network_json(res_info,targets):
                 network_graph['nodes'].append({
                     "id" : ids,
                     "label" : node,
-                    "types" : 'None',
+                    "title" : 'None',
                     "color": random_color()
                 })
                 ids += 1
