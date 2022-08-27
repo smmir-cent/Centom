@@ -61,7 +61,7 @@ def scan_net(net_ip):
     if not ip_validation(net_ip):
         return {}
     targets = {}
-    mask = int(net_ip.split('/',1)[1])
+    mask = int(str(ipaddress.IPv4Network(net_ip)).split('/',1)[1])
 
     for ip in ipaddress.IPv4Network(net_ip):
         # print(ip)

@@ -12,9 +12,11 @@ import Network from './network';
 function NetDiscovery(props) {
 
     const [result, setResult] = useState({})
-    const [checked, setChecked] = React.useState(false);
-    const [info, setInfo] = useState({ name: "", ip: "" })
+    const [msgResult, setMsgResult] = useState("")
+    const [info, setInfo] = useState({ mask: "", ip: "" })
     const [loading, setLoading] = useState(false)
+    const [name, setName] = useState("")
+    const [agents, setAgents] = useState("")
 
     let handleSubmit = (event) => {
         event.preventDefault();
@@ -26,29 +28,28 @@ function NetDiscovery(props) {
         })
         )
     }
-    const handleChange = () => {
-        setChecked(!checked);
-    };
-
+    const handleNameChange = (event) => {
+        setName(event.target.value);
+    }
     function scanButton() {
         setLoading(true)
         axios({
-            method: "POST",
+            method: "GET",
             url: "/net-discovery",
             headers: {
                 Authorization: props.getToken()
             },
-            data: {
+            params: {
                 ip: info.ip,
-                name: info.name,
-                save: checked
+                mask: info.mask
             }
         }).then((response) => {
             // graph rendering
             setLoading(false)
-            const res = response.data
-            console.log(res.message)
-            setResult(res.message)
+            const res = response.data;
+            console.log(res.message);
+            setResult(res.message);
+            setAgents(res.agents)
         }).catch((error) => {
             if (error.response) {
                 setResult(error.response.data.message)
@@ -59,6 +60,40 @@ function NetDiscovery(props) {
         })
 
     }
+
+
+    function saveButton() {
+        axios({
+            method: "POST",
+            url: "/net-discovery",
+            headers: {
+                Authorization: props.getToken()
+            },
+            data: {
+                network: result,
+                name: name,
+                ip: info.ip,
+                mask: info.mask,
+                agents: agents
+            }
+        }).then((response) => {
+            const res = response.data
+            console.log(res.message)
+            setMsgResult(res.message)
+        }).catch((error) => {
+            if (error.response) {
+                setMsgResult(error.response.data.message)
+                console.log(error.response)
+                console.log(error.response.status)
+                console.log(error.response.headers)
+            }
+        })
+
+    }
+
+
+
+
     return (
         <div>
             <div className="container mt-5">
@@ -67,19 +102,22 @@ function NetDiscovery(props) {
                         <form onSubmit={handleSubmit} id="regForm">
                             <h1 style={{ color: "black" }} id="register">Network Discovery</h1>
 
-                            <h4 style={{ color: "black" }}>Network IP Address</h4>
+                            <h4 style={{ color: "black" }}>Network Address</h4>
 
-                            <input onChange={handleInfoChange} placeholder="192.168.1.0/24 ..." name="ip" />
+                            <input onChange={handleInfoChange} placeholder="192.168.1.0 ..." name="ip" />
+                            {/* <br />
+                            <input onChange={handleInfoChange} placeholder="Name ..." name="name" /> */}
                             <br />
-                            <input onChange={handleInfoChange} placeholder="Name ..." name="name" />
-                            <div className="bd-example">
+                            <input onChange={handleInfoChange} placeholder="Subnet Mask ..." name="mask" />
+                            {/* <div className="bd-example">
                                 <div className="form-check">
                                     <input onChange={handleChange} className="form-check-input" style={{ marginTop: "0em" }} name="c_check" type="checkbox" value="sysDescr.0" id="flexCheckDefault" />
                                     <label className="form-check-label" style={{ color: "black", display: "block", float: "left" }} htmlFor="flexCheckDefault">
                                         Save in DB
                                     </label>
                                 </div>
-                            </div>
+                            </div> */}
+                            <br />
                             <br />
                             <div style={{ overflow: "auto" }} id="nextprevious">
                                 <div style={{ float: "right" }}>
@@ -95,15 +133,35 @@ function NetDiscovery(props) {
                             </div>
                         ) : (
                             Object.keys(result).length !== 0 ?
-                                < div className="container rounded bg-white mt-5 mb-5" >
+                                < div className="rounded bg-white mt-5 mb-5 col-md-8" >
                                     <div className="col-md-auto border-center">
                                         <div className="p-3 py-5">
                                             <div className="d-flex justify-content-between align-items-center mb-3">
                                                 <h4 style={{ color: "black" }} className=" text-right">Result</h4>
                                             </div>
-                                            <img alt='success' src={require("../assets/photos/O18mJ1K.png")} width="100" className="mb-4" />
+                                            {/* <img alt='success' src={require("../assets/photos/O18mJ1K.png")} width="100" className="mb-4" /> */}
                                             <div>
                                                 <Network id="result" data={result}></Network>
+                                            </div>
+                                            <div>
+
+
+                                                <br />
+                                                <input onChange={handleNameChange} placeholder="Name ..." name="name" />
+                                                <div style={{ overflow: "auto" }} id="nextprevious">
+                                                    <div style={{ float: "right" }}>
+                                                        <button onClick={saveButton} type="submit" className="btn btn-success">Save</button>
+                                                    </div>
+                                                </div>
+                                                <div>
+
+                                                    {
+                                                        msgResult !== "" ?
+                                                            (
+                                                                msgResult
+                                                            ) : null
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

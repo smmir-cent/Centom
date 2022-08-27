@@ -5,6 +5,7 @@ from flask import Blueprint,request,jsonify,Response
 from project.auth import token_required
 import subprocess
 import sys
+import ast
 import json
 sys.path.insert(1,'./utility/net-dis')
 sys.path.insert(1,'./utility/net-config')
@@ -111,50 +112,60 @@ def create_network_json(res_info,targets):
 
 
 
-@main.route('/net-discovery',methods=['POST'])
+@main.route('/net-discovery',methods=['POST','GET'])
 @token_required
 def net_dis_post(current_user):
-    # get subnet
-    form = request.json
-    subnet = form.get("ip")
-    name = form.get("name")
-    save = form.get("save")
-    print("subnet")
-    print(subnet)
-    print(name)
-    print(save)
-    print("name")
-    if save:
+    if request.method == 'POST':
+        # get subnet
+        form = request.json
+        network = form.get("network")
+        name = form.get("name")
+        ip = form.get("ip")
+        mask = form.get("mask")
+        agents = form.get("agents")
+        subnet = ip + '/' + mask
+
+        print("subnet")
+        print(json.dumps(network, indent=4))
+        print(name)
+        print(ip)
+        print(mask)
+        print(agents)
+        print(subnet)
+        print("name")
+
         net = Network.query.filter_by(name=name).first() # if this returns a user, then the email already exists in database
         if net: # if a net is found, user must try again  
             return jsonify({'message' : 'Network already exists. Please try again.'}), 401
-
-    # run net-dis utility
-    res_info,targets = scan_net(subnet)
-    print("res_info")
-    print(res_info)
-    if len(res_info) == 0:
-        ## invalid IP network
-        return {"message":"invalid IP network"},200
-    
-    # add infos to network table
-    
-    # info: {subnet:res_info}
-    # name: name
-    ############################################## res_info.keys(): have snmp agent
-    network_graph = create_network_json(res_info,targets)
-    print(json.dumps(network_graph, indent=4))
-
-    if save:
         # create new net with the form data.
-        new_net = Network(name=name,subnet=subnet,agents=json.dumps({'agents':list(res_info.keys())}),info=json.dumps(network_graph, indent = 4))
+        new_net = Network(name=name,subnet=subnet,agents=json.dumps({'agents':ast.literal_eval(agents)}),info=json.dumps(network, indent = 4))
 
         # add the new net to the database
         db.session.add(new_net)
         db.session.commit()
+        return {"message":"Saved successfully"},200
 
-    # return net graph image or json to render in js
-    return jsonify({'message' : network_graph}), 200
+    if request.method == 'GET':
+        args = request.args
+        ip = args.get('ip')
+        mask = args.get('mask')
+        subnet = ip + '/' + mask
+        # run net-dis utility
+        res_info,targets = scan_net(subnet)
+        print("res_info")
+        print(res_info)
+        if len(res_info) == 0:
+            ## invalid IP network
+            return {"message":"invalid IP network"},200
+    
+
+        # info: {subnet:res_info}
+        # name: name
+        ############################################## res_info.keys(): have snmp agent
+        network_graph = create_network_json(res_info,targets)
+        print(json.dumps(network_graph, indent=4))
+        # return net graph image or json to render in js
+        return jsonify({'message' : network_graph,'agents':str(list(res_info.keys()))}), 200
 
 
 
@@ -185,6 +196,7 @@ def get_ips(current_user):
     args = request.args
     subnet = args.get("subnet")
     ips = Network.query.filter_by(name=subnet).first()    
+    ## todo for network config search
     agents = json.loads(ips.agents)    
     response_body = {'ips':agents['agents']}
     return response_body,200
