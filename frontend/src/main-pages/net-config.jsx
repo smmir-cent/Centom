@@ -12,9 +12,11 @@ import './loading.css';
 
 const NetConfig = (props) => {
     const [networks, setNetworks] = useState([])
+    const [types, setTypes] = useState(["Repeater", "Switch", "Router", "Server", "Other", "All"])
     const [ips, setIps] = useState([])
     const [selectedNet, setSelectedNet] = useState('');
     const [selectedIP, setSelectedIP] = useState('');
+    const [selectedType, setSelectedType] = useState('');
     const [config, setConfig] = useState({
         ip: "",
         network: "",
@@ -82,12 +84,28 @@ const NetConfig = (props) => {
             alert('choose a network')
             setSelectedNet('');
             setSelectedIP('');
+            setSelectedType('');
             setIps([]);
             setConfig({ ...config, ip: "" })
             setConfig({ ...config, network: "" })
         } else {
             setSelectedNet(req_net);
             setConfig({ ...config, network: req_net })
+        }
+    };
+    const handleTypeChange = event => {
+
+        let type = event.target.selectedOptions[0].value
+        if (type.length === 0) {
+            alert('choose a type')
+            setSelectedNet('');
+            setSelectedIP('');
+            setSelectedType('');
+            setIps([]);
+            setConfig({ ...config, ip: "" })
+            setConfig({ ...config, network: "" })
+        } else {
+            setSelectedType(type);
         }
     };
     const handleIpChange = event => {
@@ -97,18 +115,15 @@ const NetConfig = (props) => {
             alert('choose a ip')
             setSelectedIP('');
             setConfig({ ...config, ip: "" })
-            // config.ip = ""
         } else {
             setSelectedIP(req_ip);
-            // config.ip = req_ip
             setConfig({ ...config, ip: req_ip })
-
-
         }
     };
     useEffect(() => {
         console.log(selectedNet);
-        if (selectedNet.length !== 0) {
+        console.log(selectedType);
+        if (selectedNet.length !== 0 && selectedNet !== '') {
             axios({
                 method: "GET",
                 url: "/get-ips",
@@ -116,7 +131,8 @@ const NetConfig = (props) => {
                     Authorization: props.getToken()
                 },
                 params: {
-                    subnet: selectedNet
+                    subnet: selectedNet,
+                    type: selectedType,
                 }
             }).then((response) => {
                 console.log(response.data.ips);
@@ -124,7 +140,7 @@ const NetConfig = (props) => {
             })
 
         }
-    }, [selectedNet]);
+    }, [selectedType]);
 
 
     function createSelectIps() {
@@ -186,7 +202,21 @@ const NetConfig = (props) => {
                                         <option key={i} value={item.name}>{item.name}</option>
                                     )}
                             </select>
+                            {
+                                selectedNet !== '' ? (
+                                    <div>
+                                        <label style={{ color: "black" }}>Device Types: </label>
+                                        <select value={selectedType} id="" className=" form-select" onChange={handleTypeChange} >
+                                            <option value="">Choose a Type</option>
+                                            {
+                                                types.map((item, i) =>
+                                                    <option key={i} value={item}>{item}</option>
+                                                )}
+                                        </select>
+                                    </div>
 
+                                ) : null
+                            }
                             {
                                 ips.length !== 0 ? (
                                     <div>
@@ -200,49 +230,51 @@ const NetConfig = (props) => {
                                     </div>) : null
                             }
 
+                            {selectedIP !== '' ?
+                                (
+                                    <div>
+                                        <div className="row mt-2">
+                                            <div className="col-md-6"><label style={{ color: "black", fontSize: 15 }} className="labels">Username</label><input onChange={handleChange} name="username" type="text"
+                                                className="form-control" placeholder="username" /></div>
+                                            <div className="col-md-6"><label style={{ color: "black", fontSize: 15 }} className="labels">Password</label><input onChange={handleChange} name="password" type="text"
+                                                className="form-control" placeholder="password" /></div>
+                                        </div>
+                                        <div className="row mt-3">
+                                            <div className="col-md-12"><label style={{ color: "black", fontSize: 15 }} className="labels">Engine ID</label><input onChange={handleChange} name="engineId" type="text"
+                                                className="form-control" placeholder="enginID" /></div>
+                                        </div>
+                                        <div className="row mt-2">
+                                            <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Name</label><input onChange={handleChange} name="oid_name" type="text"
+                                                className="form-control" placeholder="oid name" /></div>
+                                            <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Location</label><input onChange={handleChange} name="oid_location" type="text"
+                                                className="form-control" placeholder="oid location" /></div>
+                                            <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Description</label><input onChange={handleChange} name="oid_description" type="text"
+                                                className="form-control" placeholder="oid description" /></div>
+                                        </div>
+                                        <div className="row mt-2">
+                                            <div className="col-md-4">
+                                                <label style={{ color: "black", fontSize: 20 }} htmlFor="exampleFormControlTextarea3">params in json format</label>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+                                                    <Button variant="success">Sample Input</Button>
+                                                </OverlayTrigger>
 
-
-
-                            <div className="row mt-2">
-                                <div className="col-md-6"><label style={{ color: "black", fontSize: 15 }} className="labels">Username</label><input onChange={handleChange} name="username" type="text"
-                                    className="form-control" placeholder="username" /></div>
-                                <div className="col-md-6"><label style={{ color: "black", fontSize: 15 }} className="labels">Password</label><input onChange={handleChange} name="password" type="text"
-                                    className="form-control" placeholder="password" /></div>
-                            </div>
-                            <div className="row mt-3">
-                                <div className="col-md-12"><label style={{ color: "black", fontSize: 15 }} className="labels">Engine ID</label><input onChange={handleChange} name="engineId" type="text"
-                                    className="form-control" placeholder="enginID" /></div>
-                            </div>
-                            <div className="row mt-2">
-                                <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Name</label><input onChange={handleChange} name="oid_name" type="text"
-                                    className="form-control" placeholder="oid name" /></div>
-                                <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Location</label><input onChange={handleChange} name="oid_location" type="text"
-                                    className="form-control" placeholder="oid location" /></div>
-                                <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Description</label><input onChange={handleChange} name="oid_description" type="text"
-                                    className="form-control" placeholder="oid description" /></div>
-                            </div>
-                            <div className="row mt-2">
-                                <div className="col-md-4">
-                                    <label style={{ color: "black", fontSize: 20 }} htmlFor="exampleFormControlTextarea3">params in json format</label>
-                                </div>
-                                <div className="col-md-4">
-                                    <OverlayTrigger trigger="click" placement="right" overlay={popover}>
-                                        <Button variant="success">Sample Input</Button>
-                                    </OverlayTrigger>
-
-                                </div>
-                            </div>
-                            <div className="row mt-2">
-                                <div className="col-md-12">
-                                    <textarea className="form-control" id="exampleFormControlTextarea3" rows="7" onChange={handleChange} name="params"></textarea>
-                                </div>
-                            </div>
-                            <br />
-                            <div style={{ overflow: "auto" }} id="nextprevious">
-                                <div style={{ float: "right" }}>
-                                    <button onClick={submitButton} type="submit" className="btn btn-success">Scan</button>
-                                </div>
-                            </div>
+                                            </div>
+                                        </div>
+                                        <div className="row mt-2">
+                                            <div className="col-md-12">
+                                                <textarea className="form-control" id="exampleFormControlTextarea3" rows="7" onChange={handleChange} name="params"></textarea>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div style={{ overflow: "auto" }} id="nextprevious">
+                                            <div style={{ float: "right" }}>
+                                                <button onClick={submitButton} type="submit" className="btn btn-success">Scan</button>
+                                            </div>
+                                        </div>
+                                    </div>) : null
+                            }
                         </form>
 
                     </div>

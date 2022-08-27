@@ -158,7 +158,10 @@ function NetDiscovery(props) {
                                                     {
                                                         msgResult !== "" ?
                                                             (
-                                                                msgResult
+                                                                <div style={{ color: "black" }} >
+                                                                    {msgResult}
+                                                                </div>
+
                                                             ) : null
                                                     }
                                                 </div>

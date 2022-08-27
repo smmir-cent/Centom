@@ -195,10 +195,17 @@ def get_networks(current_user):
 def get_ips(current_user):
     args = request.args
     subnet = args.get("subnet")
+    types = args.get("type")
     ips = Network.query.filter_by(name=subnet).first()    
     ## todo for network config search
-    agents = json.loads(ips.agents)    
-    response_body = {'ips':agents['agents']}
+    agents = json.loads(ips.agents)
+    net_info = json.loads(ips.info)
+    req_ips = []
+    for node in net_info['nodes']:
+        if (types in node['title'] or types== "All") and (node["label"] in agents['agents']) :
+            print(str(node))
+            req_ips.append(node["label"])
+    response_body = {'ips':req_ips}
     return response_body,200
 
 
