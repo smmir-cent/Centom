@@ -41,9 +41,9 @@ def save_ip_net_config(config_json):
     ## ip_net_oidname ---> {oid , rate}
     param_list = []
     for param in params:
-        param_list.append(param['name'])
+        param_list.append(param['params_name'])
         redis_cache.set(
-            key_signature+'_'+param['name'],json.dumps({
+            key_signature+'_'+param['params_name'],json.dumps({
                 'oid':param['oid'],
                 'rate':param['rate']
                 }))
@@ -78,7 +78,7 @@ def get_ip_net_config(ip , network):
         oid_val_rate_json = json.loads(oid_val_rate)
         # print(oid_val_rate)
         params.append({
-            'name':_name,
+            'params_name':_name,
             'oid':oid_val_rate_json['oid'],
             'rate':oid_val_rate_json['rate']
         })

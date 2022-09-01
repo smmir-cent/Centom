@@ -223,11 +223,27 @@ def net_config_post(current_user):
     config_json['oid_name'] = form.get("oid_name")
     config_json['oid_location'] = form.get("oid_location")
     config_json['oid_description'] = form.get("oid_description")
-    config_json['params'] = json.loads(form.get("params"))['params']
+    config_json['params'] = json.loads(form.get("params"))
+
+    im_oids = open('../assets/im_oids.json')
+    data = json.load(im_oids)
+
+    for param in config_json['params']:
+        param['oid'] = data['params'][param['params_name']]['oid']
+
+    for def_param in data['def_params'].keys():
+        config_json['params'].append({
+            "params_name":def_param,
+            "oid": data['def_params'][def_param]['oid'],
+            "rate":data['def_params'][def_param]['rate']
+        })
+    im_oids.close()
+
+
     save_ip_net_config(config_json)
-    # print("////////////////////")
-    # print(json.dumps(config_json, indent=4))
-    # print("////////////////////")
+    print("////////////////////")
+    print(json.dumps(config_json, indent=4))
+    print("////////////////////")
     return jsonify({'message' : "Saved Successfully."}), 200
 
 
@@ -298,6 +314,20 @@ def monitor():
     response.headers.add('Access-Control-Allow-Credentials' ,'true')
     response.headers.add('Access-Control-Allow-Private-Network' ,'true')
     return response,200
+
+
+
+@main.route('/get-params',methods=["GET"])
+@token_required
+def get_params(current_user):
+    im_oids = open('../assets/im_oids.json')
+    data = json.load(im_oids)
+    oid_params = list(data['params'].keys())
+    print(oid_params)
+    response_body = {'params':oid_params}
+    im_oids.close()
+    return response_body,200
+
 
 
 @main.route('/notification',methods=['GET'])
