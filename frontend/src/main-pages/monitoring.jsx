@@ -163,7 +163,9 @@ const Monitoring = (props) => {
                     Authorization: props.getToken()
                 },
                 params: {
-                    subnet: selectedNet
+                    subnet: selectedNet,
+                    type: "All",
+
                 }
             }).then((response) => {
                 console.log(response.data.ips);

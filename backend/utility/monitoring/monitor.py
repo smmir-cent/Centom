@@ -62,11 +62,11 @@ def monitoring(ip,network,name,location,description):
     oid_val_rate = {}
     rates = []
     for item in params:
-        oid_val_rate[item['name']] = {
+        oid_val_rate[item['params_name']] = {
             'oid':item['oid'],
-            'rate':item['rate']            
+            'rate':int(item['rate'])            
         }
-        rates.append(item['rate'])
+        rates.append(int(item['rate']))
     print(json.dumps(oid_val_rate, indent=4))
     reates_gcd = math.gcd(*rates)
     print(reates_gcd)
@@ -81,7 +81,7 @@ def monitoring(ip,network,name,location,description):
     while True:
         json_data = {}
         for item in params:
-            if counter % item['rate'] == 0:
+            if counter % int(item['rate']) == 0:
                 ## run snmpcore for each item based on timeline
                 args.append(item['oid'])
                 # print(args)
@@ -90,7 +90,7 @@ def monitoring(ip,network,name,location,description):
                 ## extract_snmp_value
                 value = extract_snmp_value(output)
                 # add to json_data
-                json_data[item['name']] = {'time':datetime.now().strftime(format_date),'value':value}
+                json_data[item['params_name']] = {'time':datetime.now().strftime(format_date),'value':value}
         if len(json_data) != 0:
             print("#####################")
             print(json.dumps(json_data, indent=4))

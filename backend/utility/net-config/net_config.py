@@ -45,7 +45,7 @@ def save_ip_net_config(config_json):
         redis_cache.set(
             key_signature+'_'+param['params_name'],json.dumps({
                 'oid':param['oid'],
-                'rate':param['rate']
+                'rate':int(param['rate'])
                 }))
     ## ip_net ---> [oids list]
 
