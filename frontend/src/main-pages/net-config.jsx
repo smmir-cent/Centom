@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import Button from 'react-bootstrap/Button';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Popover from 'react-bootstrap/Popover';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../bulma.min.css';
@@ -32,47 +28,15 @@ const NetConfig = (props) => {
         oid_description: "",
         params: ""
     });
-    let json_sample = {
-        params: [
-            {
-                name: "fav_name",
-                oid: "value",
-                rate: 5
-            },
-            {
-                name: "fav_name2",
-                oid: "value2",
-                rate: 52
-            }
-        ]
-    };
+
     let addFormFields = () => {
-        // let selectedParams = [];
-        // for (let i = 0; i < formValues.length; i++) {
-        //     selectedParams.push(formValues[i]['params_name']);
-        // }
-        // let difference = oidParams.filter(x => !selectedParams.includes(x));
         setFormValues([...formValues, { params_name: "", rate: "" }])
-
-        // if (difference.length !== 0) {
-        //     setFormValues([...formValues, { params_name: difference[0], rate: 5 }])
-        // }
-
     }
     let removeFormFields = (i) => {
         let newFormValues = [...formValues];
         newFormValues.splice(i, 1);
         setFormValues(newFormValues)
     }
-    const popover = (
-        <Popover id="popover-basic">
-            <Popover.Header as="h3">Sample</Popover.Header>
-            <Popover.Body>
-                <pre>{JSON.stringify(json_sample, null, 2)}</pre>
-            </Popover.Body>
-        </Popover>
-    );
-
 
     function handleChange(event) {
         const { value, name } = event.target
@@ -163,22 +127,12 @@ const NetConfig = (props) => {
         console.log(req_param);
         if (req_param.length === 0) {
             alert('choose a param')
-            // setSelectedIP('');
-            // setConfig({ ...config, ip: "" })
-        } else {
-            // setSelectedIP(req_ip);
-            // setConfig({ ...config, ip: req_ip })
 
         }
         let newFormValues = [...formValues];
         newFormValues[i][e.target.name] = e.target.value;
         setFormValues(newFormValues);
     };
-
-
-
-
-
 
     useEffect(() => {
         console.log(selectedNet);
@@ -202,7 +156,6 @@ const NetConfig = (props) => {
         }
     }, [selectedType]);
 
-
     function createSelectIps() {
         let items = [];
         for (let i = 0; i < ips.length; i++) {
@@ -216,11 +169,7 @@ const NetConfig = (props) => {
         for (let i = 0; i < formValues.length; i++) {
             selectedParams.push(formValues[i]['params_name']);
         }
-
-        console.log("oidParams[i]['params_name']------------------");
-
         for (let i = 0; i < oidParams.length; i++) {
-            console.log(oidParams[i]);
             items.push(<option key={i} value={oidParams[i]}>{oidParams[i]}</option>);
         }
         return items;
@@ -305,16 +254,6 @@ const NetConfig = (props) => {
                     console.log(error.response.headers)
                 }
             })
-
-
-
-
-
-
-
-
-
-
         }
 
     }
@@ -384,41 +323,11 @@ const NetConfig = (props) => {
                                             <div className="col-md-4"><label style={{ color: "black", fontSize: 15 }} className="labels">Description</label><input onChange={handleChange} name="oid_description" type="text"
                                                 className="form-control" placeholder="oid description" /></div>
                                         </div>
-                                        {/* <div className="row mt-2">
-                                            <div className="col-md-4">
-                                                <label style={{ color: "black", fontSize: 20 }} htmlFor="exampleFormControlTextarea3">params in json format</label>
-                                            </div>
-                                            <div className="col-md-4">
-                                                <OverlayTrigger trigger="click" placement="right" overlay={popover}>
-                                                    <Button variant="success">Sample Input</Button>
-                                                </OverlayTrigger>
-
-                                            </div>
-                                        </div>
-                                        <div className="row mt-2">
-                                            <div className="col-md-12">
-                                                <textarea className="form-control" id="exampleFormControlTextarea3" rows="7" onChange={handleChange} name="params"></textarea>
-                                            </div>
-                                        </div>
-                                        <br />
-                                        <div style={{ overflow: "auto" }} id="nextprevious">
-                                            <div style={{ float: "right" }}>
-                                                <button onClick={submitButton} type="submit" className="btn btn-success">Scan</button>
-                                            </div>
-                                        </div> */}
-
-
                                         {formValues.map((element, index) => (
                                             <div className="form-inline" key={index}>
                                                 <div className="form-row align-items-center">
                                                     <div className="col-auto my-1">
                                                         <label style={{ color: "black" }}>IPs: </label>
-                                                        {/* 
-                                                        <select name="mode" onChange={e => handleChange(index, e)} defaultValue={'get'} className="custom-select mr-sm-2" id="inlineFormCustomSelect">
-                                                            <option value="get">Get</option>
-                                                            <option value="walk">Walk</option>
-                                                        </select> */}
-
                                                         <select name="params_name" value={formValues[index].params_name} id="" className="form-select" onChange={e => handleParamChange(index, e)} >
                                                             <option value="">Choose a Param</option>
                                                             {createLeftOids()}
@@ -440,12 +349,6 @@ const NetConfig = (props) => {
                                                 <button className="btn add btn-primary" type="submit" onClick={() => addFormFields()}>Add</button>
                                             </div>
                                         </div>
-
-
-
-
-
-
                                     </div>) : null
                             }
                             {result !== '' ?
@@ -454,7 +357,6 @@ const NetConfig = (props) => {
                                 </div> : null
                             }
                         </form>
-
                     </div>
                 </div>
             </div>

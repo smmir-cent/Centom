@@ -5,34 +5,10 @@ import sys
 import time
 from datetime import datetime
 sys.path.insert(1,'./utility/net-config')
+sys.path.insert(1,'./utility/data-processing')
 from net_config import get_ip_net_config
+from processing import extract_snmp_value
 format_date = "%m/%d/%Y, %H:%M:%S"
-
-
-
-def extract_snmp_value(output):
-    final_res = ''
-    types = {
-        "Hex_STRING":'= Hex-STRING: ',
-        "counter32":'= Counter32: ',
-        "integer":'= INTEGER: ',
-        "string":'= STRING: ',
-        "gauge32":'= Gauge32: ',
-        "oid":'= OID: ',
-        "counter64":'= Counter64: ',
-        "timeticks":'= Timeticks: ',
-        "ipAddress":'= IpAddress: ',
-        "bits":'= BITS: '
-        }
-    for item in types.keys():
-        if types[item] in output :
-            res = output.split(types[item], 1)
-            final_res = res[1]
-
-    # print(final_res)
-    return final_res.strip('\n')
-
-
 
 
 def monitoring(ip,network,name,location,description):
@@ -104,37 +80,3 @@ def monitoring(ip,network,name,location,description):
 if __name__ == '__main__':
     while True:
         print(extract_snmp_value(input()))
-
-
-'''
-{
-  "params": [
-    {
-      "name": "percentages_cpu",
-      "oid": "ssCpuSystem.0",
-      "rate": 10
-    },
-    {
-      "name": "cpu_load_1min",
-      "oid": "laLoad.1",
-      "rate": 7
-    }
-  ]
-}
-'''        
-
-
-
-
-'''
-
-
-{"labels":["test","08/22/2022, 10:53:23","08/22/2022, 10:53:23","08/22/2022, 10:53:23","08/22/2022, 10:53:23","08/22/2022, 10:53:30","08/22/2022, 10:53:30","08/22/2022, 10:53:34","08/22/2022, 10:53:34","08/22/2022, 10:53:38","08/22/2022, 10:53:38","08/22/2022, 10:53:44","08/22/2022, 10:53:44","08/22/2022, 10:53:45","08/22/2022, 10:53:45","08/22/2022, 10:53:52","08/22/2022, 10:53:52","08/22/2022, 10:53:54","08/22/2022, 10:53:54"],"datasets":[{"label":"cpu_load_1min","data":[1,0,0.08,0,0.08,0.07,0.07,0,0,0.3,0.3,0,0,0.28,0.28,0.25,0.25,0,0],"fill":true,"backgroundColor":"rgba(75,192,192,0.2)","borderColor":"rgba(75,192,192,1)"}]}
-
-
-
-
-
-
-
-'''
