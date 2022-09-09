@@ -1,6 +1,9 @@
 
 import subprocess
 import json
+import sys
+sys.path.insert(1,'./utility/data-processing')
+from processing import extract_snmptrap_value
 
 def notifying():
     print('notifying')
@@ -21,7 +24,7 @@ def notifying():
         elif 'end of trap message' in decoded_line:
             print('previous ---->')
             ## send output to client
-            yield f"data: {json.dumps(output)} \n\n"
+            yield f"data: {json.dumps(extract_snmptrap_value(output))} \n\n"
             print(output['trap'])
             print('<--- end')
             pass

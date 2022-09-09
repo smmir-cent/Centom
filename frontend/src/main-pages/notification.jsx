@@ -59,7 +59,7 @@ const Notification = () => {
                             {
                                 traps.map((trap) => (
                                     <div>
-                                        <textarea className="form-control" id="exampleFormControlTextarea3" rows="15" readOnly value={trap}></textarea>
+                                        <textarea className="form-control" id="exampleFormControlTextarea3" rows="1" readOnly value={trap}></textarea>
                                     </div>
                                 ))
                             }
