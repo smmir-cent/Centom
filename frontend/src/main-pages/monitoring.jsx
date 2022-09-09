@@ -1,4 +1,4 @@
-import React, { domContainer, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../bulma.min.css';
 import './quick-scan.css';
 import '../profile-pages/profile.css';
@@ -83,17 +83,7 @@ const Monitoring = (props) => {
         return items;
     }
     useEffect(() => {
-        async function getOptions() {
-            await axios({
-                method: "GET",
-                url: "/get-networks",
-                headers: {
-                    Authorization: props.getToken()
-                }
-            }).then((response) => {
-                setNetworks(response.data['networks'])
-            })
-        }
+
 
         if (loading) {
 
@@ -125,11 +115,14 @@ const Monitoring = (props) => {
                     Object.keys(recieved_data).forEach(function (key) {
                         if (monitoringInfo.hasOwnProperty(key)) {
                             let labels = monitoringInfo[key].labels;
-                            labels.push(recieved_data[key].time);
-                            let newDatasets = monitoringInfo[key].datasets[0];
-                            newDatasets.data.push(parseFloat(recieved_data[key].value));
-                            setMonitoringInfo({ ...monitoringInfo, [key]: { ...monitoringInfo[key], labels: labels } });
-                            setMonitoringInfo({ ...monitoringInfo, [key]: { ...monitoringInfo[key], datasets: [newDatasets] } })
+                            if (!labels.includes(recieved_data[key].time)) {
+                                labels.push(recieved_data[key].time);
+                                let newDatasets = monitoringInfo[key].datasets[0];
+                                newDatasets.data.push(parseFloat(recieved_data[key].value));
+                                setMonitoringInfo({ ...monitoringInfo, [key]: { ...monitoringInfo[key], labels: labels } });
+                                setMonitoringInfo({ ...monitoringInfo, [key]: { ...monitoringInfo[key], datasets: [newDatasets] } })
+
+                            }
                         }
                     });
                 }
@@ -147,6 +140,19 @@ const Monitoring = (props) => {
         }
 
 
+    },);
+    useEffect(() => {
+        async function getOptions() {
+            await axios({
+                method: "GET",
+                url: "/get-networks",
+                headers: {
+                    Authorization: props.getToken()
+                }
+            }).then((response) => {
+                setNetworks(response.data['networks'])
+            })
+        }
         if (networks.length === 0) {
             console.log("***********************")
             getOptions();
