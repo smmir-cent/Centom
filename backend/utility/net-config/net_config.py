@@ -93,6 +93,52 @@ def get_ip_net_config(ip , network):
     json_config['params'] = params    
     return json_config
 
+
+def save_oid_value(ip,net,param,id,time,value):
+    key_signature = ip + '_' + net + '_' + param + '_' + str(id) + '_' + time
+    redis_cache = redis.Redis(host='localhost', port=6379, db=0)
+    redis_cache.set(key_signature, value)
+    return True
+
+
+
+def get_oid_value(ip,net,params):
+    redis_cache = redis.Redis(host='localhost', port=6379, db=0)
+    un_id = -1
+    params_id = {}
+    key_signature = ip + '_' + net + '_'
+    for param in params:
+        params_id[param] = []
+        all_keys = redis_cache.keys(key_signature + param + '_' +'*')
+        for key in all_keys:
+            temp = key.decode('utf-8').split(key_signature,1)[1]
+            id = temp.split('_',1)[1].split('_',1)[0]
+            params_id[param].append(int(id))
+
+    print("json.dumps(params_id, indent=4)")
+    print(json.dumps(params_id, indent=4))
+    print("/json.dumps(params_id, indent=4)")
+
+    output = {}
+    for param in params_id.keys():
+        output[param] = []
+        if len(params_id[param]) != 0:
+            un_id = max(max(params_id[param]),un_id)
+        for id in sorted(params_id[param]):
+            key = redis_cache.keys(key_signature + param + '_' + str(id) + '_*')[0].decode('utf-8')
+            time = key.split("_")[-1]
+            value = redis_cache.get(key).decode('utf-8')
+            output[param].append({
+                param:{
+                    "time":time,
+                    "value":value,
+                }
+            })
+    print("json.dumps(params_id, indent=4)")
+    print(json.dumps(output, indent=4))
+    print("/json.dumps(params_id, indent=4)")
+    return un_id,output
+
 if __name__ == '__main__':
     output = get_ip_net_config('192.168.220.129','simple network')
     print(json.dumps(output, indent=4))

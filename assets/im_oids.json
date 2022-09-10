@@ -1,38 +1,38 @@
 {
     "def_params": {
-        "received_MB": {
+        "received-MB": {
             "oid": "ifInOctets.2",
             "rate": 10,
             "display": "/1048576"
         },
-        "sent_MB": {
+        "sent-MB": {
             "oid": "ifOutOctets.2",
             "rate": 10,
             "display": "/1048576"
         }
     },
     "params": {
-        "cpu_percent": {
+        "cpu-percent": {
             "oid": "ssCpuSystem.0",
             "rate": 0,
             "display": ""
         },
-        "cpu_load_1min": {
+        "cpu-load-1min": {
             "oid": "laLoad.1",
             "rate": 0,
             "display": ""
         },
-        "memory_available": {
+        "memory-available": {
             "oid": "memTotalFree.0",
             "rate": 0,
             "display": "remove last 3 character - /1000"
         },
-        "swap_available": {
+        "swap-available": {
             "oid": "memAvailSwap.0",
             "rate": 0,
             "display": "remove last 3 character - /1000"
         },
-        "disk_percent": {
+        "disk-percent": {
             "oid": "dskPercent.1",
             "rate": 0,
             "display": ""

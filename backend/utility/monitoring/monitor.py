@@ -7,6 +7,8 @@ from datetime import datetime
 sys.path.insert(1,'./utility/net-config')
 sys.path.insert(1,'./utility/data-processing')
 from net_config import get_ip_net_config
+from net_config import save_oid_value
+from net_config import get_oid_value
 from processing import extract_snmp_value
 format_date = "%m/%d/%Y, %H:%M:%S"
 
@@ -54,6 +56,17 @@ def monitoring(ip,network,name,location,description):
     
     yield f"data: {json.dumps(params_info)} \n\n"
 
+
+    un_id,output = get_oid_value(ip,network,params_info['params'])
+    
+    print("***********************************************")
+    print(un_id)
+    print(json.dumps(output, indent=4))
+    for par in output.keys():
+        for item in output[par]:
+            yield f"data:{json.dumps(item)}\n\n"
+    print("***********************************************")
+
     while True:
         json_data = {}
         for item in params:
@@ -70,6 +83,10 @@ def monitoring(ip,network,name,location,description):
         if len(json_data) != 0:
             print("#####################")
             print(json.dumps(json_data, indent=4))
+            for param in json_data.keys():
+                un_id += 1
+                save_oid_value(ip,network,param,un_id,json_data[param]['time'],json_data[param]['value'])
+                
             print("#####################")
             yield f"data:{json.dumps(json_data)}\n\n"
         time.sleep(reates_gcd)
