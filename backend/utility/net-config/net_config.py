@@ -10,8 +10,8 @@ import ast
 ## monitoring... ip_net_oidname_time&data ---> value
 
 
-def save_ip_net_config(config_json):
-    redis_cache = redis.Redis(host='localhost', port=6379, db=0)
+def save_ip_net_config(config_json,redis_pass):
+    redis_cache = redis.Redis(host='localhost', port=6379, db=0,password=redis_pass)
 
     ip = config_json['ip']
     network = config_json['network']
@@ -59,9 +59,9 @@ def save_ip_net_config(config_json):
 
 
 
-def get_ip_net_config(ip , network):
+def get_ip_net_config(ip , network,redis_pass):
     key_signature = f'{ip}_{network}'
-    redis_cache = redis.Redis(host='localhost', port=6379, db=0)
+    redis_cache = redis.Redis(host='localhost', port=6379, db=0,password=redis_pass)
     oids_list = []
     params = []
     print("key_signature")
@@ -97,16 +97,16 @@ def get_ip_net_config(ip , network):
     return json_config
 
 
-def save_oid_value(ip,net,param,id,time,value):
+def save_oid_value(ip,net,param,id,time,value,redis_pass):
     key_signature = ip + '_' + net + '_' + param + '_' + str(id) + '_' + time
-    redis_cache = redis.Redis(host='localhost', port=6379, db=0)
+    redis_cache = redis.Redis(host='localhost', port=6379, db=0,password=redis_pass)
     redis_cache.set(key_signature, value)
     return True
 
 
 
-def get_oid_value(ip,net,params):
-    redis_cache = redis.Redis(host='localhost', port=6379, db=0)
+def get_oid_value(ip,net,params,redis_pass):
+    redis_cache = redis.Redis(host='localhost', port=6379, db=0,password=redis_pass)
     un_id = -1
     params_id = {}
     key_signature = ip + '_' + net + '_'
@@ -143,8 +143,8 @@ def get_oid_value(ip,net,params):
     return un_id,output
 
 
-def get_uname_passwd(ip,network):
-    redis_cache = redis.Redis(host='localhost', port=6379, db=0)
+def get_uname_passwd(ip,network,redis_pass):
+    redis_cache = redis.Redis(host='localhost', port=6379, db=0,password=redis_pass)
     key_signature = f'{ip}_{network}'
     ## ip_net_username ---> value
     uname = redis_cache.get(key_signature+'_username').decode('utf-8')

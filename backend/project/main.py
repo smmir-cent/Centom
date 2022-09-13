@@ -1,7 +1,7 @@
 # main.py
 
 import random
-from flask import Blueprint,request,jsonify,Response
+from flask import Blueprint,request,jsonify,Response,current_app 
 from project.auth import token_required
 import subprocess
 import sys
@@ -241,7 +241,7 @@ def net_config_post(current_user):
     im_oids.close()
 
 
-    save_ip_net_config(config_json)
+    save_ip_net_config(config_json,current_app.config["redis_pass"])
     print("////////////////////")
     print(json.dumps(config_json, indent=4))
     print("////////////////////")
@@ -260,7 +260,7 @@ def get_net_config(current_user):
     form = request.json
     ip = form.get("ip")
     network = form.get("network")
-    config_json = get_ip_net_config(ip,network)   
+    config_json = get_ip_net_config(ip,network,current_app.config["redis_pass"])   
     config_json.pop('params',None)
     return jsonify({'message' : config_json}), 200
 
@@ -306,7 +306,7 @@ def monitor():
     print("ip,network,name,location,description")
     print(ip,network,name,location,description)
     print("ip,network,name,location,description")
-    response = Response(monitoring(ip,network,name,location,description), mimetype="text/event-stream")
+    response = Response(monitoring(ip,network,name,location,description,current_app.config["redis_pass"]), mimetype="text/event-stream")
     response.headers["Cache-Control"] = "no-cache"
     response.headers["X-Accel-Buffering"] = "no"
     response.headers.add('Access-Control-Allow-Origin', '*')

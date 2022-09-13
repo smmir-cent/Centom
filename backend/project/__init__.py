@@ -5,12 +5,15 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager 
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
+import json
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 
-def create_app():
+def create_app(redis_pass,sqlite_pass):
     app = Flask(__name__)
 
+    app.config['redis_pass'] = redis_pass
+    app.config['sqlite_pass'] = sqlite_pass
     app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopO'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
     app.config["JWT_SECRET_KEY"] = "please-remember-to-change-me"
@@ -39,4 +42,10 @@ def create_app():
 
     return app
 if __name__ == "__main__":
-    create_app().run(host= '0.0.0.0', port=5000,debug=True)
+    with open("/etc/centom/centom.json", "r") as jsonfile:
+        data = json.load(jsonfile)
+        print("Read successful")
+    print(data)    
+    redis_pass =  data['redis_pass']
+    sqlite_pass =  data['sqlite_pass']
+    create_app(redis_pass,sqlite_pass).run(host= '0.0.0.0', port=5000,debug=True)

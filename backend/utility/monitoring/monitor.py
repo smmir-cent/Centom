@@ -14,9 +14,8 @@ from processing import extract_snmp_value
 format_date = "%m/%d/%Y, %H:%M:%S"
 
 
-def monitoring(ip,network,name,location,description):
-    # redis_cache = redis.Redis(host='localhost', port=6379, db=0)
-    uname,passwd = get_uname_passwd(ip,network)
+def monitoring(ip,network,name,location,description,redis_pass):
+    uname,passwd = get_uname_passwd(ip,network,redis_pass)
     args = ['../build/centom_engine','-uname',uname,'-passwd',passwd,'-get',ip]
     print("################################################################")
     args.append(name)
@@ -37,7 +36,7 @@ def monitoring(ip,network,name,location,description):
     # send json info first
     info = {'name_res':extract_snmp_value(name_res),'location_res':extract_snmp_value(location_res),'description_res':extract_snmp_value(description_res)}
     yield f"data: {json.dumps(info)} \n\n"
-    json_config = get_ip_net_config(ip , network)
+    json_config = get_ip_net_config(ip , network,redis_pass)
     params = json_config['params']
     oid_val_rate = {}
     rates = []
@@ -59,7 +58,7 @@ def monitoring(ip,network,name,location,description):
     yield f"data: {json.dumps(params_info)} \n\n"
 
 
-    un_id,output = get_oid_value(ip,network,params_info['params'])
+    un_id,output = get_oid_value(ip,network,params_info['params'],redis_pass)
     
     print("***********************************************")
     print(un_id)
@@ -87,7 +86,7 @@ def monitoring(ip,network,name,location,description):
             print(json.dumps(json_data, indent=4))
             for param in json_data.keys():
                 un_id += 1
-                save_oid_value(ip,network,param,un_id,json_data[param]['time'],json_data[param]['value'])
+                save_oid_value(ip,network,param,un_id,json_data[param]['time'],json_data[param]['value'],redis_pass)
                 
             print("#####################")
             yield f"data:{json.dumps(json_data)}\n\n"
