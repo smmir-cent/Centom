@@ -62,13 +62,13 @@ def scan_net(net_ip):
         return {}
     targets = {}
     mask = int(str(ipaddress.IPv4Network(net_ip)).split('/',1)[1])
-
     for ip in ipaddress.IPv4Network(net_ip):
         # print(ip)
         bin_ip = ('.'.join([bin(int(x)+256)[3:] for x in str(ip).split('.')])).replace('.','')
         host_bits = bin_ip[mask-32:]
         if '0' in host_bits and '1' in host_bits:
-            args = ['../build/centom_engine','-systest']
+            uname,passwd = "uMD5","PMD51111"
+            args = ['../build/centom_engine','-uname',uname,'-passwd',passwd,'-systest']
             args.extend([str(ip)])
             engine_result = subprocess.run(args, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             result_out = engine_result.stdout.decode('utf-8')

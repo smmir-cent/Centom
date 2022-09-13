@@ -74,12 +74,20 @@ int main(int argc, char **argv)
   bool is_get = false;
   bool is_trap = false;
   bool is_sys_test = false;
+  std::string uname("uMD5");
+  std::string passwd("PMD51111");
 
-  if (strcmp(argv[1], "-walk") == 0)
+  if (strcmp(argv[1], "-uname") == 0)
+    uname = argv[2];
+  if (strcmp(argv[3], "-passwd") == 0)
+    passwd = argv[4];
+  // std::cout << "** " << uname << " *** " << passwd << " *** \n";
+  // return 0;
+  if (strcmp(argv[5], "-walk") == 0)
   {
     is_walk = true;
   }
-  else if (strcmp(argv[1], "-get") == 0)
+  else if (strcmp(argv[5], "-get") == 0)
   {
     is_get = true;
   }
@@ -87,59 +95,59 @@ int main(int argc, char **argv)
   {
     is_trap = true;
   }
-  else if (strcmp(argv[1], "-systest") == 0)
+  else if (strcmp(argv[5], "-systest") == 0)
   {
     is_sys_test = true;
   }
   else
   {
-    std::cout << "USAGE: centom_engine [ -walk | -get | -trap | -systest ] [ip] [OIDs]\n";
+    std::cout << "USAGE: centom_engine [ -uname [uname] -passwd [passwd] ] [ -walk | -get | -trap | -systest ] [ip] [OIDs]\n";
     return 1;
   }
 
   if (is_walk)
   {
-    std::string ip(argv[2]);
-    for (int i = 3; i < argc; ++i)
+    std::string ip(argv[6]);
+    for (int i = 7; i < argc; ++i)
     {
       oids.push_back(argv[i]);
     }
     if (oids.size() == 0)
     {
-      std::cout << "USAGE: centom_engine [ -walk | -get | -trap | -systest ] [ip] [OIDs]\n";
+      std::cout << "USAGE: centom_engine [ -uname [uname] -passwd [passwd] ] [ -walk | -get | -trap | -systest ] [ip] [OIDs]\n";
       return 1;
     }
     char *temp0 = (char *)"public";
     init_snmp("snmpapp");
-    Session session(ip, "uMD5", "PMD51111");
+    Session session(ip, uname, passwd);
     session.walkOids(oids);
   }
   else if (is_get)
   {
-    std::string ip(argv[2]);
-    for (int i = 3; i < argc; ++i)
+    std::string ip(argv[6]);
+    for (int i = 7; i < argc; ++i)
     {
       oids.push_back(argv[i]);
     }
     if (oids.size() == 0)
     {
-      std::cout << "USAGE: centom_engine [ -walk | -get | -trap | -systest ] [ip] [OIDs]\n";
+      std::cout << "USAGE: centom_engine [ -uname [uname] -passwd [passwd] ] [ -walk | -get | -trap | -systest ] [ip] [OIDs]\n";
       return 1;
     }
     char *temp0 = (char *)"public";
     init_snmp("snmpapp");
-    Session session(ip, "uMD5", "PMD51111");
+    Session session(ip, uname, passwd);
 
     session.getOids(oids);
   }
   else if (is_sys_test)
   {
 
-    std::string ip(argv[2]);
+    std::string ip(argv[6]);
     oids.push_back("sysServices");
     char *temp0 = (char *)"public";
     init_snmp("snmpapp");
-    Session session(ip, "uMD5", "PMD51111");
+    Session session(ip, uname, passwd);
     session.walkOids(oids);
   }
   else if (is_trap)

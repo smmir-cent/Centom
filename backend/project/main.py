@@ -35,15 +35,16 @@ def quick_scan_post(current_user):
     print(oids)
     result = ""
     for item in oids.keys():
-        mode = '-'+ item
-        args = ['../build/centom_engine',mode]
-        args.extend([ip])
-        args.extend( oids[item])
+        if len(oids[item]) != 0:
+            mode = '-'+ item
+            args = ['../build/centom_engine','-uname','uMD5','-passwd','PMD51111',mode]
+            args.extend([ip])
+            args.extend( oids[item])
 
-        engine_result = subprocess.run(args, stdout=subprocess.PIPE)
-        print(engine_result.stdout.decode('utf-8'))
-        result += engine_result.stdout.decode('utf-8')
-        result += "\n\n"
+            engine_result = subprocess.run(args, stdout=subprocess.PIPE)
+            print(engine_result.stdout.decode('utf-8'))
+            result += engine_result.stdout.decode('utf-8')
+            result += "\n\n"
 
     print(result)
     return {"result":result},200

@@ -9,13 +9,15 @@ sys.path.insert(1,'./utility/data-processing')
 from net_config import get_ip_net_config
 from net_config import save_oid_value
 from net_config import get_oid_value
+from net_config import get_uname_passwd
 from processing import extract_snmp_value
 format_date = "%m/%d/%Y, %H:%M:%S"
 
 
 def monitoring(ip,network,name,location,description):
     # redis_cache = redis.Redis(host='localhost', port=6379, db=0)
-    args = ['../build/centom_engine','-get',ip]
+    uname,passwd = get_uname_passwd(ip,network)
+    args = ['../build/centom_engine','-uname',uname,'-passwd',passwd,'-get',ip]
     print("################################################################")
     args.append(name)
     name_res = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode('utf-8')

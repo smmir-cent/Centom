@@ -64,6 +64,9 @@ def get_ip_net_config(ip , network):
     redis_cache = redis.Redis(host='localhost', port=6379, db=0)
     oids_list = []
     params = []
+    print("key_signature")
+    print(key_signature)
+    print("/key_signature")
 
     username = redis_cache.get(key_signature+'_username').decode('utf-8')
     password = redis_cache.get(key_signature+'_password').decode('utf-8')
@@ -138,6 +141,18 @@ def get_oid_value(ip,net,params):
     print(json.dumps(output, indent=4))
     print("/json.dumps(params_id, indent=4)")
     return un_id,output
+
+
+def get_uname_passwd(ip,network):
+    redis_cache = redis.Redis(host='localhost', port=6379, db=0)
+    key_signature = f'{ip}_{network}'
+    ## ip_net_username ---> value
+    uname = redis_cache.get(key_signature+'_username').decode('utf-8')
+    ## ip_net_password ---> value
+    passwd = redis_cache.get(key_signature+'_password').decode('utf-8')
+    return uname,passwd
+
+
 
 if __name__ == '__main__':
     output = get_ip_net_config('192.168.220.129','simple network')
