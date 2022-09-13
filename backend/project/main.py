@@ -1,6 +1,5 @@
 # main.py
 
-import random
 from flask import Blueprint,request,jsonify,Response,current_app 
 from project.auth import token_required
 import subprocess
@@ -50,9 +49,8 @@ def quick_scan_post(current_user):
     return {"result":result},200
 
 
-def random_color():
-    return "#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)])
-
+def get_color():
+    return "#7BEAF3"
 
 def create_network_json(res_info,targets):
     network_graph = {"nodes": [],"edges": []}
@@ -64,7 +62,7 @@ def create_network_json(res_info,targets):
         "id" : ids,
         "label" : "manager",
         "title" : "Manager",
-        "color": random_color()
+        "color": get_color()
         })
     ids += 1
     for node in res_info.keys():
@@ -74,7 +72,7 @@ def create_network_json(res_info,targets):
                 "id" : ids,
                 "label" : node,
                 "title" : str(targets[node]),
-                "color": random_color()
+                "color": get_color()
             })
             ids += 1
 
@@ -86,7 +84,7 @@ def create_network_json(res_info,targets):
                     "id" : ids,
                     "label" : node,
                     "title" : 'None',
-                    "color": random_color()
+                    "color": get_color()
                 })
                 ids += 1
 
