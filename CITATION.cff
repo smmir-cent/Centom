@@ -2,13 +2,14 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: Centom
+title: "Centom"
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
-type: software
+type: "software"
 authors:
-  - given-names: Mahdi
-    family-names: Mirfendereski
-    email: mirmahdiseyyed@gmail.com
-    affiliation: Amirkabir University of Technology
+  - given-names: "Mahdi"
+    family-names: "Mirfendereski"
+    email: "mirmahdiseyyed@gmail.com"
+    affiliation: "Amirkabir University of Technology"
+url: "https://github.com/smmir-cent/Centom"
